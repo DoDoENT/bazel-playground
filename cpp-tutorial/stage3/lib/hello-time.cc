@@ -5,4 +5,9 @@
 void print_localtime() {
   std::time_t result = std::time(nullptr);
   std::cout << std::asctime(std::localtime(&result));
+#ifdef __clang__
+  std::cout << "Clang hello!" << std::endl;
+#else
+  std::cout << "Another compiler hello!" << std::endl;
+#endif // __clang__
 }

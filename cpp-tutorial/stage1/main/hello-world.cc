@@ -18,5 +18,10 @@ int main(int argc, char** argv) {
   }
   std::cout << get_greet(who) << std::endl;
   print_localtime();
+#ifdef __clang__
+  std::cout << "Hello from Clang!" << std::endl;
+#else
+  std::cout << "Hello from another compiler!" << std::endl;
+#endif // __clang__
   return 0;
 }

@@ -5,6 +5,7 @@ cc_library(
     name = "hello-greet",
     srcs = ["hello-greet.cc"],
     hdrs = ["hello-greet.h"],
+    linkstatic = True,
 )
 
 cc_binary(
@@ -15,3 +16,18 @@ cc_binary(
         "//lib:hello-time",
     ],
 )
+
+cc_test(
+    name = "hello-world-test",
+    srcs = ["hello-test.cc"],
+    copts = [
+      "-Iexternal/gtest/googletest/include",
+      "-Iexternal/gtest/googletest",
+    ],
+    deps = [
+        "@googletest//:gtest_main",
+        "//main:hello-greet",
+    ],
+    args = ["--gtest_filter=*"],
+)
+
