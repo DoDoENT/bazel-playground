@@ -1,1 +1,4 @@
 build:xcode16.2 --action_env=DEVELOPER_DIR=/Applications/Xcode-16.2.0.app/Contents/Developer/
+
+# add this to ~/.bazelrc:
+# build --disk_cache=~/bazel-cache --experimental_disk_cache_gc_max_size=50G
