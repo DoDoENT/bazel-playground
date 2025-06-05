@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
 #endif
 #endif
 #ifdef __APPLE__
-    std::cout << "Helloworld compiled for Apple platform! Clang version is: " << __clang_major__ << std::endl;
+    std::cout << "Hello world compiled for Apple platform! Clang version is: " << __clang_major__ << std::endl;
 #endif
   return 0;
 }
