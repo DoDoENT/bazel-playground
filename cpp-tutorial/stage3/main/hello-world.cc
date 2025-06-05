@@ -19,5 +19,8 @@ int main(int argc, char** argv) {
   std::cout << "Running in WebAssembly Threads mode!" << std::endl;
 #endif
 #endif
+#ifdef __APPLE__
+    std::cout << "Helloworld compiled for Apple platform! Clang version is: " << __clang_major__ << std::endl;
+#endif
   return 0;
 }

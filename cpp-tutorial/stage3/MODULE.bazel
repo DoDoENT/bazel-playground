@@ -12,6 +12,7 @@ bazel_dep(name = "googletest", version = "1.17.0")
 bazel_dep(name = "bazel_skylib", version = "1.7.1")
 # bazel_dep(name = "opencv", version = "4.11.0.bcr.1")
 
+# refresh with bazel run @hedron_compile_commands//:refresh_all
 bazel_dep(name = "hedron_compile_commands", dev_dependency = True)
 git_override(
     module_name = "hedron_compile_commands",
