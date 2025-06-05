@@ -10,6 +10,10 @@ cc_library(
     srcs = ["hello-greet.cc"],
     hdrs = ["hello-greet.h"],
     linkstatic = True,
+    copts = select({
+        "//conditions:default": [],
+        "//:release": ["-O3", "-flto"],
+    }),
 )
 
 cc_binary(
@@ -19,6 +23,10 @@ cc_binary(
         ":hello-greet",
         "//lib:hello-time",
     ],
+    copts = select({
+        "//conditions:default": [],
+        "//:release": ["-O3", "-flto"],
+    }),
     linkopts = ["-Wl,-rpath,/usr/local/lib", "-Wl,-rpath,/usr/local/lib/aarch64-unknown-linux-gnu", "-Wl,-rpath,/usr/local/lib/x86_64-unknown-linux-gnu"],
 )
 
