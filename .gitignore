@@ -15,3 +15,5 @@ node_modules
 # VScode
 /.vscode/
 Session.vim
+.tasks.json
+.vimspector.json

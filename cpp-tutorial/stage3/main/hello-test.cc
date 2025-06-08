@@ -2,6 +2,13 @@
 
 #include <gtest/gtest.h>
 
-TEST(HelloGreetTest, DefaultGreeting) {
-  EXPECT_EQ(get_greet("world"), "Hello world");
+TEST(HelloGreetTest, DefaultGreeting)
+{
+    auto greet{ get_greet( "world" ) };
+    EXPECT_EQ(greet, "Hello world");
+}
+
+TEST(HelloGreetTest, NonDefaultGreeting)
+{
+    EXPECT_EQ(get_greet("bazel"), "Hello bazel");
 }

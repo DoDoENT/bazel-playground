@@ -1,6 +1,4 @@
-build --remote_cache=grpc://pablo.microblink.com:9092 --remote_cache_compression=true
+# build --remote_cache=grpc://pablo.microblink.com:9092 --remote_cache_compression=true
+build --disk_cache=~/.bazel-cache/build --repository_cache=~/.bazel-cache/repo --experimental_disk_cache_gc_max_size=50G
 
 build:xcode16.2 --action_env=DEVELOPER_DIR=/Applications/Xcode-16.2.0.app/Contents/Developer/
-
-# add this to ~/.bazelrc:
-# build --disk_cache=~/bazel-cache/build --repository_cache=~/bazel-cache/repo --experimental_disk_cache_gc_max_size=50G
