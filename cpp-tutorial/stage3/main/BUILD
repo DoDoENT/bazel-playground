@@ -76,6 +76,7 @@ cc_test(
     deps = [
         "@googletest//:gtest_main",
         "//main:hello-greet",
+        "//lib:hello-time",
     ],
     linkopts = ["-Wl,-rpath,/usr/local/lib", "-Wl,-rpath,/usr/local/lib/aarch64-unknown-linux-gnu", "-Wl,-rpath,/usr/local/lib/x86_64-unknown-linux-gnu"],
     args = ["--gtest_filter=*"],
