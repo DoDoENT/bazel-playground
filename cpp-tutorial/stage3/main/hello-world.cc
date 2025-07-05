@@ -2,6 +2,14 @@
 #include "main/hello-greet.h"
 #include <iostream>
 #include <string>
+#include <thread>
+
+#ifdef __EMSCRIPTEN_PTHREADS__
+void threadWork()
+{
+    std::cout << "Hello from another thread: " << std::this_thread::get_id() << std::endl;
+}
+#endif
 
 int main(int argc, char** argv) {
   std::string who = "world";
@@ -17,6 +25,8 @@ int main(int argc, char** argv) {
 #endif
 #ifdef __EMSCRIPTEN_PTHREADS__
   std::cout << "Running in WebAssembly Threads mode!" << std::endl;
+  std::thread someThread{ threadWork };
+  someThread.join();
 #endif
 #endif
 #ifdef __APPLE__

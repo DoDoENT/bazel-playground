@@ -1,4 +1,4 @@
-emsdk_version = "4.0.9"
+emsdk_version = "4.0.10"
 bazel_dep(name = "emsdk", version = emsdk_version)
 git_override(
     module_name = "emsdk",
