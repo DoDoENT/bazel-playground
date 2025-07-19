@@ -50,6 +50,9 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags):
         # runner = "@rules_apple//apple/testing/default_runner:ios_xctestrun_ordered_runner",
         runner = "//macros/ios-test:device-runner",
         tags = tags + ["ios"],
+        target_compatible_with = [
+            "@platforms//os:macos",
+        ],
     )
     xcodeproj(
         name = name + "-xcodeproj",
