@@ -5,6 +5,10 @@ load(
     "xcodeproj",
 )
 load("@rules_swift//mixed_language:mixed_language_library.bzl", "mixed_language_library")
+load(
+    "@rules_apple//apple/testing/default_runner:ios_test_runner.bzl",
+    "ios_test_runner",
+)
 
 def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags):
     mixed_language_library(
@@ -41,8 +45,10 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags):
         ],
         args = args,
         minimum_os_version = "15.0",
+        provisioning_profile = "//ios:ios_provisioning_profile",
         test_host = "//macros/ios-test/GoogleTestHost:GoogleTestHost",
-        runner = "@rules_apple//apple/testing/default_runner:ios_xctestrun_ordered_runner",
+        # runner = "@rules_apple//apple/testing/default_runner:ios_xctestrun_ordered_runner",
+        runner = "//macros/ios-test:device-runner",
         tags = tags + ["ios"],
     )
     xcodeproj(
@@ -50,7 +56,7 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags):
         project_name = name,
         tags = ["manual"],
         top_level_targets = [
-            top_level_target(name, target_environments = ["device", "simulator"]),
+            top_level_target(name, target_environments = ["device"]),
         ],
     )
 
