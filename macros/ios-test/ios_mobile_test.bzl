@@ -43,7 +43,7 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags):
         minimum_os_version = "15.0",
         test_host = "//macros/ios-test/GoogleTestHost:GoogleTestHost",
         runner = "@rules_apple//apple/testing/default_runner:ios_xctestrun_ordered_runner",
-        # tags = tags + ["ios"],
+        tags = tags + ["ios"],
     )
     xcodeproj(
         name = name + "-xcodeproj",
@@ -79,6 +79,7 @@ ios_mobile_test = macro(
         "tags": attr.string_list(
             default = [],
             doc = "Arguments for the iOS mobile test.",
+            configurable = False,
         ),
     },
 )
