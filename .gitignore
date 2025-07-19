@@ -4,3 +4,7 @@ Session.vim
 /bazel-*
 # lock ignored during development
 MODULE.bazel.lock
+
+derived-data
+
+*.xcodeproj

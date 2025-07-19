@@ -6,3 +6,11 @@ filegroup(
     ],
     visibility = ["//visibility:public"],
 )
+
+filegroup(
+    name = "GoogleTestsSwiftIosHelper",
+    srcs = [
+        "GoogleTestBridge.swift",
+    ],
+    visibility = ["//visibility:public"],
+)

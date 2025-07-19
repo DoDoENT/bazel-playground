@@ -26,6 +26,7 @@ ios_application(
     ],
     infoplists = [":Info.plist"],
     minimum_os_version = "15.0",
+    provisioning_profile = "//ios:ios_provisioning_profile",
     version = ":GoogleTestHostVersion",
     deps = [":GoogleTestHostSources"],  # Adjust the dependencies as needed
     tags = ["manual"],
