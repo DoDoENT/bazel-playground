@@ -1,7 +1,8 @@
 import XCTest
+internal import CxxStdlib
 
 final class HelloWorldSwiftTests: XCTestCase {
     func testInit() {
-        XCTAssertNotNil(nil)
+        XCTAssertEqual(0, GoogleTest.executeGoogleTests(CommandLine.argc, CommandLine.unsafeArgv));
     }
 }

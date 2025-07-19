@@ -1,5 +1,0 @@
-module GoogleTestIos {
-    header "SwiftCxxBridge.hpp"
-
-    requires cplusplus
-}

@@ -14,6 +14,7 @@ def _mobile_test_impl(name, visibility, **kwargs):
     srcs = kwargs.pop("srcs") or select({
         "//conditions:default": [],
     })
+    tags = kwargs.pop("tags") or []
     cc_test(
         name = name,
         srcs = srcs,
@@ -33,6 +34,7 @@ def _mobile_test_impl(name, visibility, **kwargs):
         deps = deps + [
             "@googletest//:gtest_main",
         ],
+        tags = tags + ["host"],
         **kwargs,
     )
     ios_mobile_test(
@@ -41,6 +43,7 @@ def _mobile_test_impl(name, visibility, **kwargs):
         srcs = srcs,
         copts = copts,
         deps = deps,
+        tags = tags,
     )
 
 

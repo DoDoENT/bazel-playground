@@ -7,17 +7,18 @@ filegroup(
 )
 
 filegroup(
-    name = "GoogleTestSwiftModuleMap",
+    name = "GoogleTestInvokerHeader",
     srcs = [
-        "module.modulemap",
+        "GoogleTestInvoker.hpp",
     ],
     visibility = ["//visibility:public"],
 )
 
 filegroup(
-    name = "GoogleTestSwiftIosBridgeHeader",
+    name = "GoogleTestInvokerSource",
     srcs = [
-        "SwiftCxxBridge.hpp"
+        "GoogleTestInvoker.cpp",
     ],
     visibility = ["//visibility:public"],
 )
+
