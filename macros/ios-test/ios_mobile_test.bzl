@@ -1,14 +1,13 @@
 load("@rules_apple//apple:ios.bzl", "ios_unit_test")
-load(
-    "@rules_xcodeproj//xcodeproj:defs.bzl",
-    "top_level_target",
-    "xcodeproj",
-)
 load("@rules_swift//mixed_language:mixed_language_library.bzl", "mixed_language_library")
 load(
     "@rules_apple//apple/testing/default_runner:ios_test_runner.bzl",
     "ios_test_runner",
 )
+
+load("@rules_xcodeproj//xcodeproj:top_level_target.bzl", "top_level_target")
+load("@rules_xcodeproj//xcodeproj:xcodeproj.bzl", "xcodeproj")
+load("@rules_xcodeproj//xcodeproj:xcschemes.bzl", "xcschemes")
 
 def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags):
     mixed_language_library(
@@ -43,12 +42,11 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags):
         deps = [
             name + "-ios-srcs",
         ],
-        args = args,
         minimum_os_version = "15.0",
-        provisioning_profile = "//ios:ios_provisioning_profile",
+        provisioning_profile = "//macros/ios-test:xcode_profile",
         test_host = "//macros/ios-test/GoogleTestHost:GoogleTestHost",
-        # runner = "@rules_apple//apple/testing/default_runner:ios_xctestrun_ordered_runner",
-        runner = "//macros/ios-test:device-runner",
+        runner = "@rules_apple//apple/testing/default_runner:ios_xctestrun_ordered_runner",
+        # runner = "//macros/ios-test:device-runner",
         tags = tags + ["ios"],
         target_compatible_with = [
             "@platforms//os:macos",
@@ -56,11 +54,19 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags):
     )
     xcodeproj(
         name = name + "-xcodeproj",
-        project_name = name,
         tags = ["manual"],
         top_level_targets = [
-            top_level_target(name, target_environments = ["device"]),
+            top_level_target(name, target_environments = ["device", "simulator"]),
         ],
+        xcschemes = [
+            xcschemes.scheme(
+                name = name,
+                test = xcschemes.test(
+                    args = args,
+                    test_targets = [name],
+                )
+            )
+        ]
     )
 
 
@@ -84,6 +90,7 @@ ios_mobile_test = macro(
         "args": attr.string_list(
             default = [],
             doc = "Arguments for the iOS mobile test.",
+            configurable = False,
         ),
         "tags": attr.string_list(
             default = [],

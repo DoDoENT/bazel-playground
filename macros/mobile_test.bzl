@@ -15,6 +15,7 @@ def _mobile_test_impl(name, visibility, **kwargs):
         "//conditions:default": [],
     })
     tags = kwargs.pop("tags") or []
+    args = kwargs.pop("args") or []
     cc_test(
         name = name,
         srcs = srcs,
@@ -35,6 +36,7 @@ def _mobile_test_impl(name, visibility, **kwargs):
             "@googletest//:gtest_main",
         ],
         tags = tags + ["host"],
+        args = args,
         **kwargs,
     )
     ios_mobile_test(
@@ -44,11 +46,19 @@ def _mobile_test_impl(name, visibility, **kwargs):
         copts = copts,
         deps = deps,
         tags = tags,
+        args = args,
     )
 
 
 mobile_test = macro(
     implementation = _mobile_test_impl,
     inherit_attrs = native.cc_test,
+    attrs = {
+        "args": attr.string_list(
+            default = [],
+            doc = "Arguments for the iOS mobile test.",
+            configurable = False,
+        ),
+    }
 )
 
