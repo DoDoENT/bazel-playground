@@ -9,6 +9,9 @@ swift_library(
         "App.swift"
     ],
     tags = ["manual"],
+    target_compatible_with = [
+        "@platforms//os:macos",
+    ],
 )
 
 apple_bundle_version(
@@ -30,4 +33,7 @@ ios_application(
     version = ":GoogleTestHostVersion",
     deps = [":GoogleTestHostSources"],  # Adjust the dependencies as needed
     tags = ["manual"],
+    target_compatible_with = [
+        "@platforms//os:macos",
+    ],
 )

@@ -6,6 +6,9 @@ local_provisioning_profile(
     name = "provisioning_profile",
     profile_name = "fd096564-e746-4dcf-9aee-b9aa3aeb64fe",
     team_id = "CQTJWP89J7",
+    target_compatible_with = [
+        "@platforms//os:macos",
+    ],
 )
 
 xcode_provisioning_profile(
@@ -15,6 +18,9 @@ xcode_provisioning_profile(
     team_id = "CQTJWP89J7",
     provisioning_profile = ":provisioning_profile",
     visibility = ["//visibility:public"],
+    target_compatible_with = [
+        "@platforms//os:macos",
+    ],
 )
 
 ios_xctestrun_runner(
