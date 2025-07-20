@@ -1,7 +1,7 @@
 # common --remote_cache=grpc://pablo.microblink.com:9092 --remote_cache_compression=true
 common --disk_cache=~/.bazel-cache/build --repository_cache=~/.bazel-cache/repo --experimental_disk_cache_gc_max_size=50G
-common --apple_generate_dsym=true --output_groups=+dsyms
 common --cxxopt=-std=c++23
+build --ios_signing_cert_name="Microblink Ltd"
 
 # MacOS Debuggable Configuration needs disabled cache dir and disabled remote cache in order for the debugger to work properly
 common:mac_debuggable --copt="-g" --strip=never --spawn_strategy=local --disk_cache= --remote_cache=
