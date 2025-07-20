@@ -46,7 +46,6 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags):
         provisioning_profile = "//macros/ios-test:xcode_profile",
         test_host = "//macros/ios-test/GoogleTestHost:GoogleTestHost",
         runner = "@rules_apple//apple/testing/default_runner:ios_xctestrun_ordered_runner",
-        # runner = "//macros/ios-test:device-runner",
         tags = tags + ["ios"],
         target_compatible_with = [
             "@platforms//os:macos",
@@ -54,6 +53,7 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags):
     )
     xcodeproj(
         name = name + "-xcodeproj",
+        project_name = name,
         tags = ["manual"],
         top_level_targets = [
             top_level_target(name, target_environments = ["device", "simulator"]),
