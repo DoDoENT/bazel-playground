@@ -3,7 +3,7 @@ common --disk_cache=~/.bazel-cache/build --repository_cache=~/.bazel-cache/repo 
 common --apple_generate_dsym=true --output_groups=+dsyms
 common --cxxopt=-std=c++23
 
-common:xcode16.2 --action_env=DEVELOPER_DIR=/Applications/Xcode-16.2.0.app/Contents/Developer/
-
 # MacOS Debuggable Configuration needs disabled cache dir and disabled remote cache in order for the debugger to work properly
 common:mac_debuggable --copt="-g" --strip=never --spawn_strategy=local --disk_cache= --remote_cache=
+
+import xcode.bazelrc
