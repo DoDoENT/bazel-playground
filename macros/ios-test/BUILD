@@ -7,7 +7,7 @@ local_provisioning_profile(
     profile_name = "iOS Team Provisioning Profile: *",
     team_id = "CQTJWP89J7",
     target_compatible_with = [
-        "@platforms//os:macos",
+        "@platforms//os:ios",
     ],
 )
 
@@ -17,7 +17,7 @@ xcode_provisioning_profile(
     provisioning_profile = ":provisioning_profile",
     visibility = ["//visibility:public"],
     target_compatible_with = [
-        "@platforms//os:macos",
+        "@platforms//os:ios",
     ],
 )
 

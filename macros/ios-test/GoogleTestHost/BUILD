@@ -10,7 +10,7 @@ swift_library(
     ],
     tags = ["manual"],
     target_compatible_with = [
-        "@platforms//os:macos",
+        "@platforms//os:ios",
     ],
 )
 
@@ -34,6 +34,6 @@ ios_application(
     deps = [":GoogleTestHostSources"],  # Adjust the dependencies as needed
     tags = ["manual"],
     target_compatible_with = [
-        "@platforms//os:macos",
+        "@platforms//os:ios",
     ],
 )

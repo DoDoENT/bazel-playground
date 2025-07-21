@@ -48,6 +48,7 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags):
         runner = "@rules_apple//apple/testing/default_runner:ios_xctestrun_ordered_runner",
         tags = tags + ["ios"],
         target_compatible_with = [
+            # note: this target needs to run on macOS and introduces transition to iOS
             "@platforms//os:macos",
         ],
     )
@@ -67,7 +68,11 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags):
                     test_targets = [name],
                 )
             )
-        ]
+        ],
+        target_compatible_with = [
+            # note: this target needs to run on macOS as Xcode project is generated there
+            "@platforms//os:macos",
+        ],
     )
 
 
