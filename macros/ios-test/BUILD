@@ -23,8 +23,4 @@ xcode_provisioning_profile(
 
 ios_xctestrun_runner(
     name = "device-runner",
-    xcodebuild_args = [
-        "-destination",
-        "platform=iOS,name=dodophone"
-    ]
 )

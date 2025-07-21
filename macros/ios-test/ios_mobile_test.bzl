@@ -66,6 +66,12 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags):
                 test = xcschemes.test(
                     args = args,
                     test_targets = [name],
+                    build_targets = [
+                        "//macros/ios-test/GoogleTestHost:GoogleTestHost"
+                    ]
+                ),
+                run = xcschemes.run(
+                    launch_target = "//macros/ios-test/GoogleTestHost:GoogleTestHost"
                 )
             )
         ],
