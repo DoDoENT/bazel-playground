@@ -57,6 +57,7 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags):
         tags = ["manual"],
         top_level_targets = [
             top_level_target(name, target_environments = ["device", "simulator"]),
+            "//macros/ios-test/GoogleTestHost:GoogleTestHost"
         ],
         xcschemes = [
             xcschemes.scheme(

@@ -4,7 +4,7 @@ load("@rules_xcodeproj//xcodeproj:xcode_provisioning_profile.bzl", "xcode_provis
 
 local_provisioning_profile(
     name = "provisioning_profile",
-    profile_name = "fd096564-e746-4dcf-9aee-b9aa3aeb64fe",
+    profile_name = "iOS Team Provisioning Profile: *",
     team_id = "CQTJWP89J7",
     target_compatible_with = [
         "@platforms//os:macos",
@@ -14,8 +14,6 @@ local_provisioning_profile(
 xcode_provisioning_profile(
     name = "xcode_profile",
     managed_by_xcode = True,
-    profile_name = "fd096564-e746-4dcf-9aee-b9aa3aeb64fe",
-    team_id = "CQTJWP89J7",
     provisioning_profile = ":provisioning_profile",
     visibility = ["//visibility:public"],
     target_compatible_with = [
