@@ -6,7 +6,7 @@ bazel_dep(name = "platforms", version = "1.0.0")
 
 # Note: This needs to be beofre rules_cc in order to correctly configure the C++ toolchain.
 bazel_dep(name = "apple_support", version = "1.22.1")
-bazel_dep(name = "rules_apple", version = "4.0.1")
+bazel_dep(name = "rules_apple", version = "4.1.1")
 bazel_dep(name = "rules_swift", version = "3.1.1")
 bazel_dep(name = "rules_xcodeproj", version = "3.0.0")
 bazel_dep(name = "rules_cc", version = "0.1.2")

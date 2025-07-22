@@ -1,4 +1,3 @@
-load("@rules_apple//apple/testing/default_runner:ios_xctestrun_runner.bzl", "ios_xctestrun_runner")
 load("@rules_apple//apple:apple.bzl", "local_provisioning_profile")
 load("@rules_xcodeproj//xcodeproj:xcode_provisioning_profile.bzl", "xcode_provisioning_profile")
 
@@ -19,8 +18,4 @@ xcode_provisioning_profile(
     target_compatible_with = [
         "@platforms//os:ios",
     ],
-)
-
-ios_xctestrun_runner(
-    name = "device-runner",
 )

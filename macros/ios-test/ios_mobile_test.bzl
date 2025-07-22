@@ -36,6 +36,7 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags):
         tags = ["manual"],
         alwayslink = True,
     )
+    # note: to run on device, use --test_arg=--destination=platform=ios_device,id=device-id --ios_multi_cpus=arm64
     ios_unit_test(
         name = name,
         visibility = visibility + ["//visibility:public"],
@@ -45,7 +46,6 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags):
         minimum_os_version = "15.0",
         provisioning_profile = "//macros/ios-test:xcode_profile",
         test_host = "//macros/ios-test/GoogleTestHost:GoogleTestHost",
-        runner = "@rules_apple//apple/testing/default_runner:ios_xctestrun_ordered_runner",
         tags = tags + ["ios"],
         target_compatible_with = [
             # note: this target needs to run on macOS and introduces transition to iOS
