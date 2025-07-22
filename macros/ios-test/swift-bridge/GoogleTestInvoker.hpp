@@ -1,6 +1,12 @@
 #pragma once
 
+#include <string>
+#include <vector>
+
 namespace GoogleTest
 {
-int executeGoogleTests(int argc, char ** argv);
+
+using ArgVector = std::vector<std::string>;
+
+int executeGoogleTests( ArgVector const & args );
 }

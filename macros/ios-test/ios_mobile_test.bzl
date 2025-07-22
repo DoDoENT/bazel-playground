@@ -43,6 +43,10 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags):
         deps = [
             name + "-ios-srcs",
         ],
+        env = {
+            "TEST_ARGS": " ".join(args),
+            "TEST_ARGC": str(len(args)),
+        },
         minimum_os_version = "15.0",
         provisioning_profile = "//macros/ios-test:xcode_profile",
         test_host = "//macros/ios-test/GoogleTestHost:GoogleTestHost",
