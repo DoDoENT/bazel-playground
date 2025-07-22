@@ -12,9 +12,11 @@ bazel_dep(name = "rules_swift", version = "3.1.1")
 bazel_dep(name = "rules_xcodeproj", version = "3.0.0")
 bazel_dep(name = "rules_cc", version = "0.1.2")
 
-local_path_override(
+# Fix for running tests on iOS devices with Xcode 16.3+
+git_override(
     module_name = "rules_apple",
-    path = "/Users/dodo/Work/CloneOuts/rules_apple",
+    commit = "3c9404c484e70c10df81be6c20590ce2031b81b1",
+    remote = "https://github.com/DoDoENT/rules_apple.git",
 )
 
 emsdk_version = "4.0.11"
