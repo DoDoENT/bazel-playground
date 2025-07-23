@@ -12,6 +12,7 @@ def _mobile_library_impl(name, visibility, **kwargs):
             "//:release": ["-O3", "-flto"],
         }),
         linkstatic = kwargs.pop("linkstatic", True),
+        strip_include_prefix = kwargs.pop("strip_include_prefix") or "Include",
         **kwargs,
     )
 

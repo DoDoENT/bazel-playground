@@ -8,6 +8,5 @@ mobile_library(
     hdrs = [
         "Include/Paths/Paths.hpp",
     ],
-    strip_include_prefix = "Include",
     visibility = ["//visibility:public"],
 )
