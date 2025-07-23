@@ -3,6 +3,8 @@ common --disk_cache=~/.bazel-cache/build --repository_cache=~/.bazel-cache/repo 
 common --cxxopt=-std=c++23
 
 # MacOS Debuggable Configuration needs disabled cache dir and disabled remote cache in order for the debugger to work properly
-common:mac_debuggable --copt="-g" --strip=never --spawn_strategy=local --disk_cache= --remote_cache=
+build:mac_debuggable --copt="-g" --strip=never --spawn_strategy=local --disk_cache= --remote_cache=
+
+build:ios-device --ios_multi_cpus=arm64
 
 import xcode.bazelrc

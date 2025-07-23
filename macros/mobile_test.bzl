@@ -1,4 +1,4 @@
-load("//macros/ios-test:ios_mobile_test.bzl", "ios_mobile_test")
+load("//macros:ios_mobile_test.bzl", "ios_mobile_test")
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
 
 def _mobile_test_impl(name, visibility, **kwargs):
@@ -19,6 +19,12 @@ def _mobile_test_impl(name, visibility, **kwargs):
     data = kwargs.pop("data") or select({
         "//conditions:default": []
     })
+    deps = deps + select({
+        "//conditions:default": [
+            "//test-support/paths:test-paths",
+            "@googletest//:gtest_main",
+        ]
+    })
     cc_test(
         name = name,
         srcs = srcs,
@@ -35,9 +41,7 @@ def _mobile_test_impl(name, visibility, **kwargs):
             ],
             "//conditions:default": [],
         }),
-        deps = deps + [
-            "@googletest//:gtest_main",
-        ],
+        deps = deps,
         tags = tags + ["host"],
         args = args,
         data = data,

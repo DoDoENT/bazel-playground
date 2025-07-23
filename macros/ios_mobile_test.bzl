@@ -1,44 +1,32 @@
 load("@rules_apple//apple:ios.bzl", "ios_unit_test")
-load("@rules_swift//mixed_language:mixed_language_library.bzl", "mixed_language_library")
-load(
-    "@rules_apple//apple/testing/default_runner:ios_test_runner.bzl",
-    "ios_test_runner",
-)
+load("@rules_apple//apple:resources.bzl", "apple_resource_group")
 
 load("@rules_xcodeproj//xcodeproj:top_level_target.bzl", "top_level_target")
 load("@rules_xcodeproj//xcodeproj:xcodeproj.bzl", "xcodeproj")
 load("@rules_xcodeproj//xcodeproj:xcschemes.bzl", "xcschemes")
 
+load("//macros:mobile_library.bzl", "mobile_library")
+
 def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, data):
-    mixed_language_library(
+    mobile_library(
         name = name + "-ios-srcs",
-        swift_srcs = [
-            "//macros/ios-test/swift-bridge:GoogleTestsSwiftIosLoader",
-        ],
-        clang_srcs = srcs + [
-            "//macros/ios-test/swift-bridge:GoogleTestInvokerSource",
-        ],
-        hdrs = [
-            "//macros/ios-test/swift-bridge:GoogleTestInvokerHeader",
-        ],
-        clang_copts = copts + select({
-            "//conditions:default": [],
-            "//:release": ["-O3", "-flto"],
-        }),
-        swift_copts = [
-            "-cxx-interoperability-mode=default",
-        ],
-        visibility = ["//visibility:public"],
+        srcs = srcs,
         deps = deps + [
-            "@googletest//:gtest_main",
+            "//test-support/ios-test/swift-bridge:googletest-ios-swift-bridge",
         ],
-        testonly = True,
-        tags = ["manual"],
+        testonly = True, 
         alwayslink = True,
     )
+
+    apple_resource_group(
+        name = name + "-resources",
+        structured_resources = data,
+    )
+
     # note: to run on device, use --test_arg=--destination=platform=ios_device,id=device-id --ios_multi_cpus=arm64
     ios_unit_test(
         name = name,
+        bundle_id = "com.example." + name + "Tests",
         visibility = visibility + ["//visibility:public"],
         deps = [
             name + "-ios-srcs",
@@ -48,10 +36,10 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, data)
             "TEST_ARGC": str(len(args)),
         },
         minimum_os_version = "15.0",
-        provisioning_profile = "//macros/ios-test:xcode_profile",
-        test_host = "//macros/ios-test/GoogleTestHost:GoogleTestHost",
-        tags = tags + ["ios"],
-        data = data,
+        provisioning_profile = "//test-support/ios-test:xcode_profile",
+        test_host = "//test-support/ios-test/GoogleTestHost:GoogleTestHost",
+        tags = tags + ["ios", "exclusive"], # need to be exclusive to prevent parallel invocation on the same device
+        resources = [name + "-resources"],
         target_compatible_with = [
             # note: this target needs to run on macOS and introduces transition to iOS
             "@platforms//os:macos",
@@ -63,7 +51,7 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, data)
         tags = ["manual"],
         top_level_targets = [
             top_level_target(name, target_environments = ["device", "simulator"]),
-            "//macros/ios-test/GoogleTestHost:GoogleTestHost"
+            "//test-support/ios-test/GoogleTestHost:GoogleTestHost"
         ],
         xcschemes = [
             xcschemes.scheme(
@@ -72,11 +60,11 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, data)
                     args = args,
                     test_targets = [name],
                     build_targets = [
-                        "//macros/ios-test/GoogleTestHost:GoogleTestHost"
+                        "//test-support/ios-test/GoogleTestHost:GoogleTestHost"
                     ]
                 ),
                 run = xcschemes.run(
-                    launch_target = "//macros/ios-test/GoogleTestHost:GoogleTestHost"
+                    launch_target = "//test-support/ios-test/GoogleTestHost:GoogleTestHost",
                 )
             )
         ],

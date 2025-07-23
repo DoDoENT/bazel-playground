@@ -1,4 +1,5 @@
 #include "GoogleTestInvoker.hpp"
+#include "test-support/ios-test/swift-bridge/GoogleTestSwift-Swift.h"
 
 #include <gtest/gtest.h>
 
@@ -8,6 +9,11 @@
 namespace GoogleTest
 {
 
+std::string currentBundlePath()
+{
+    return std::string{ GoogleTestSwift::currentBundlePath() };
+}
+
 int executeGoogleTests( ArgVector const & args )
 {
     std::cout << "Num params: " << args.size() << std::endl;
@@ -15,7 +21,6 @@ int executeGoogleTests( ArgVector const & args )
     {
         std::cout << arg << std::endl;
     }
-//    std::cout << "XML_OUTPUT_FILE: " << std::getenv("XML_OUTPUT_FILE") << std::endl;
     int argc = static_cast< int >( args.size() );
     auto argv{ std::make_unique< char *[] >( argc ) };
     for ( auto i{ 0 }; auto const & arg : args )
@@ -28,8 +33,6 @@ int executeGoogleTests( ArgVector const & args )
 
    ::testing::InitGoogleTest( &argc, pArgv );
    return RUN_ALL_TESTS();
-    // return 0;
-
 }
 
 }

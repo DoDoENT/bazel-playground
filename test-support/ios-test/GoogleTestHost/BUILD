@@ -6,7 +6,7 @@ load("@rules_swift//swift:swift.bzl", "swift_library")
 swift_library(
     name = "GoogleTestHostSources",
     srcs = [
-        "App.swift"
+        "App.swift",
     ],
     tags = ["manual"],
     target_compatible_with = [
@@ -17,6 +17,7 @@ swift_library(
 apple_bundle_version(
     name = "GoogleTestHostVersion",
     build_version = "1.0",
+    visibility = ["//visibility:public"],
 )
 
 ios_application(
@@ -29,9 +30,9 @@ ios_application(
     ],
     infoplists = [":Info.plist"],
     minimum_os_version = "15.0",
-    provisioning_profile = "//macros/ios-test:xcode_profile",
+    provisioning_profile = "//test-support/ios-test:xcode_profile",
     version = ":GoogleTestHostVersion",
-    deps = [":GoogleTestHostSources"],  # Adjust the dependencies as needed
+    deps = [":GoogleTestHostSources"],  
     tags = ["manual"],
     target_compatible_with = [
         "@platforms//os:ios",

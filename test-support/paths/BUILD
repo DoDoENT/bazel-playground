@@ -1,12 +1,13 @@
 load("//macros:mobile_library.bzl", "mobile_library")
 
 mobile_library(
-    name = "paths",
+    name = "test-paths",
     srcs = [
-        "Source/Paths.cpp",
+        "Source/TestPaths.cpp",
     ],
     hdrs = [
-        "Include/Paths/Paths.hpp",
+        "Include/TestPaths/TestPaths.hpp",
     ],
     visibility = ["//visibility:public"],
+    testonly = True,
 )

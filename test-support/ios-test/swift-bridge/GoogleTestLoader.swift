@@ -23,6 +23,7 @@ final class GoogleTestInvoker: XCTestCase {
         let documentDirPath: String = documentDirList[0];
 
         cxxArgs.push_back(std.string("--gtest_output=xml:" + documentDirPath + "/test.xml"))
+
         XCTAssertEqual(0, GoogleTest.executeGoogleTests(cxxArgs));
     }
 }

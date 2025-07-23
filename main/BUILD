@@ -43,12 +43,9 @@ mobile_test(
 mobile_test(
     name = "hello-world-test-file",
     srcs = ["tests/hello-test-file.cc"],
-    deps = [
-        "//paths:paths",
-    ],
     args = ["--gtest_filter=HelloGreetTest.ReadFile"],
     data = [
         "//:test-data",
-    ]
+    ],
 )
 
