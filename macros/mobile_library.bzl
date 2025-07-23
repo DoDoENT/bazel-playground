@@ -11,6 +11,7 @@ def _mobile_library_impl(name, visibility, **kwargs):
             "//conditions:default": [],
             "//:release": ["-O3", "-flto"],
         }),
+        linkstatic = kwargs.pop("linkstatic", True),
         **kwargs,
     )
 

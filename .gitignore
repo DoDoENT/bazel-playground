@@ -9,3 +9,5 @@ derived-data
 
 *.xcodeproj
 xcode.bazelrc
+
+.vimspector.json

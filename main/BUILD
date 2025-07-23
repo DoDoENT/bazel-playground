@@ -40,11 +40,11 @@ mobile_test(
 )
 
 mobile_test(
-    name = "hello-world-test-fail",
-    srcs = ["tests/hello-test-fail.cc"],
+    name = "hello-world-test-file",
+    srcs = ["tests/hello-test-file.cc"],
     deps = [
-        "//main:hello-greet",
+        "//paths:paths",
     ],
-    args = ["--gtest_filter=HelloGreetTest.FailingTest"],
+    args = ["--gtest_filter=HelloGreetTest.ReadFile"],
 )
 
