@@ -40,6 +40,7 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, data)
         test_host = "//test-support/ios-test/GoogleTestHost:GoogleTestHost",
         tags = tags + ["ios", "exclusive"], # need to be exclusive to prevent parallel invocation on the same device
         resources = [name + "-resources"],
+        runner = "//test-support/ios-test:test_runner",
         target_compatible_with = [
             # note: this target needs to run on macOS and introduces transition to iOS
             "@platforms//os:macos",

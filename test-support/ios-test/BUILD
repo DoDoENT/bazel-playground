@@ -1,4 +1,6 @@
 load("@rules_apple//apple:apple.bzl", "local_provisioning_profile")
+load("@rules_apple//apple/testing/default_runner:ios_test_runner.bzl", "ios_test_runner")
+
 load("@rules_xcodeproj//xcodeproj:xcode_provisioning_profile.bzl", "xcode_provisioning_profile")
 
 local_provisioning_profile(
@@ -18,4 +20,11 @@ xcode_provisioning_profile(
     target_compatible_with = [
         "@platforms//os:ios",
     ],
+)
+
+ios_test_runner(
+    name = "test_runner",
+    device_type = "iPhone 16",
+    os_version = "18.5",
+    visibility = ["//visibility:public"],
 )
