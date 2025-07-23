@@ -18,3 +18,10 @@ config_setting(
         "compilation_mode": "dbg",
     },
 )
+
+filegroup(
+    name = "test-data",
+    data = glob(["test-data/**"]),
+    output_group = "",
+    visibility = ["//visibility:public"],
+)

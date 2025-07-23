@@ -9,7 +9,7 @@ load("@rules_xcodeproj//xcodeproj:top_level_target.bzl", "top_level_target")
 load("@rules_xcodeproj//xcodeproj:xcodeproj.bzl", "xcodeproj")
 load("@rules_xcodeproj//xcodeproj:xcschemes.bzl", "xcschemes")
 
-def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags):
+def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, data):
     mixed_language_library(
         name = name + "-ios-srcs",
         swift_srcs = [
@@ -51,6 +51,7 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags):
         provisioning_profile = "//macros/ios-test:xcode_profile",
         test_host = "//macros/ios-test/GoogleTestHost:GoogleTestHost",
         tags = tags + ["ios"],
+        data = data,
         target_compatible_with = [
             # note: this target needs to run on macOS and introduces transition to iOS
             "@platforms//os:macos",
@@ -112,6 +113,11 @@ ios_mobile_test = macro(
             default = [],
             doc = "Arguments for the iOS mobile test.",
             configurable = False,
+        ),
+        "data": attr.label_list(
+            allow_files = True,
+            default = [],
+            doc = "Test data files",
         ),
     },
 )

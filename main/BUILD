@@ -9,6 +9,7 @@ mobile_library(
     hdrs = ["hello-greet.h"],
     linkstatic = True,
     visibility = ["//visibility:public"],
+    strip_include_prefix = "",
 )
 
 mobile_binary(
@@ -46,5 +47,8 @@ mobile_test(
         "//paths:paths",
     ],
     args = ["--gtest_filter=HelloGreetTest.ReadFile"],
+    data = [
+        "//:test-data",
+    ]
 )
 
