@@ -49,3 +49,13 @@ mobile_test(
     ],
 )
 
+mobile_test(
+    name = "hello-test",
+    srcs = [
+        "hello-test.cc",
+    ],
+    deps = [
+        "//main:hello-greet",
+        "//lib:hello-time",
+    ],
+)

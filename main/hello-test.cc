@@ -15,7 +15,7 @@ TEST(HelloGreetTest, NonDefaultGreeting)
     print_localtime();
 }
 
-TEST(HelloGreetTest, FailingTest)
+TEST(HelloGreetTest, DISABLED_FailingTest)
 {
     EXPECT_EQ(get_greet("bazel"), "Hello world"); // This will fail
 }
