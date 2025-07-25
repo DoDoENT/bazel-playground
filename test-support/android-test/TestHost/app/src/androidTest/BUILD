@@ -1,0 +1,30 @@
+load("@rules_android//android:rules.bzl", "android_binary", "android_library")
+
+android_library(
+    name = "test-lib",
+    srcs = [
+        "java/com/example/app/ExampleInstrumendedTest.java",
+    ],
+    deps = [
+        "//test-support/android-test/TestHost/app/src/main:lib",
+        "@maven//:junit_junit",
+        "@maven//:androidx_test_rules",
+        "@maven//:androidx_test_ext_junit",
+    ]
+)
+
+android_binary(
+    name = "test-app",
+    manifest = "AndroidTestManifest.xml",
+    instruments = "//test-support/android-test/TestHost/app/src/main:app",
+    deps = [
+        ":test-lib",
+    ],
+)
+
+# not working with bazel 8
+
+# android_instrumentation_test(
+#     name = "test",
+#     test_app = ":test-app",
+# )
