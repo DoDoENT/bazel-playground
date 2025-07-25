@@ -1,5 +1,6 @@
 # common --remote_cache=grpc://pablo.microblink.com:9092 --remote_cache_compression=true
 common --disk_cache=~/.bazel-cache/build --repository_cache=~/.bazel-cache/repo --experimental_disk_cache_gc_max_size=50G
+common --android_platforms=//:arm64-v8a,//:armeabi-v7a
 common --cxxopt=-std=c++23
 
 # MacOS Debuggable Configuration needs disabled cache dir and disabled remote cache in order for the debugger to work properly
