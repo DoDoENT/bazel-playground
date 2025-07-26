@@ -2,7 +2,15 @@
 
 set -xe
 
-adb="$ANDROID_HOME/platform-tools/adb"
+adb="%(adb)s"
+# handle the case when script is not invoked by bazel rule
+# if [[ ! -f "$adb" ]]; then
+#     if [[ -z "$ANDROID_HOME" ]]; then
+#         echo "Error: ANDROID_HOME is not set."
+#         exit 1
+#     fi
+#     adb="$ANDROID_HOME/platform-tools/adb"
+# fi
 apkanalyzer="$ANDROID_HOME/cmdline-tools/latest/bin/apkanalyzer"
 
 test_host_apk="%(test_host_apk)s"
@@ -43,9 +51,19 @@ if [[ -n "$device_id" ]]; then
     device="-s $device_id"
 fi
 
-# determine application IDs
-test_host_app_id=$($apkanalyzer manifest application-id "$test_host_apk")
-instrumentation_app_id=$($apkanalyzer manifest application-id "$instrumentation_apk")
+test_host_app_id="%(test_host_app_id)s"
+
+# handle the case when script is not invoked by bazel rule
+# if [[ "$test_host_app_id" == "%(test_host_app_id)s" ]]; then
+#     test_host_app_id=$($apkanalyzer manifest application-id "$test_host_apk")
+# fi
+
+instrumentation_app_id="%(instrumentation_app_id)s"
+
+# handle the case when script is not invoked by bazel rule
+# if [[ "$instrumentation_app_id" == "%(instrumentation_app_id)s" ]]; then
+#     instrumentation_app_id=$($apkanalyzer manifest application-id "$instrumentation_apk")
+# fi
 
 # install both APKs
 $adb $device install-multi-package "$test_host_apk" "$instrumentation_apk"

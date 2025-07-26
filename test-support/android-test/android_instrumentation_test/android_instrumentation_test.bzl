@@ -20,6 +20,7 @@ def _android_instrumentation_test_impl(ctx):
         substitutions = {
             "%(test_host_apk)s": test_app.signed_apk.short_path,
             "%(instrumentation_apk)s": instrumentation_apk.signed_apk.short_path,
+            "%(adb)s": ctx.executable._adb.path,
         },
     )
     return [
@@ -41,6 +42,12 @@ android_instrumentation_test = rule(
         "_instrumentation_test_template": attr.label(
             default = "android_instrumentation_test.template.sh",
             allow_single_file = True,
+        ),
+        "_adb": attr.label(
+            allow_files = True,
+            cfg = "exec",
+            default = "@androidsdk//:platform-tools/adb",
+            executable = True,
         ),
     },
     test = True,
