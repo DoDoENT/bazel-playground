@@ -42,7 +42,6 @@ def _android_instrumentation_test_impl(ctx):
     ]
 
 
-
 android_instrumentation_test = rule(
     implementation = _android_instrumentation_test_impl,
     attrs = {
