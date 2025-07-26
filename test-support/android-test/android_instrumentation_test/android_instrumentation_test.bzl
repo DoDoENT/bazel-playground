@@ -13,6 +13,8 @@ def _android_instrumentation_test_impl(ctx):
 
     test_app = instrumentation_app_info.target
 
+    adb = ctx.executable._adb
+
     instrumentation_script = ctx.actions.declare_file("android_instrumentation_test.sh")
     ctx.actions.expand_template(
         output = instrumentation_script,
@@ -20,21 +22,17 @@ def _android_instrumentation_test_impl(ctx):
         substitutions = {
             "%(test_host_apk)s": test_app.signed_apk.short_path,
             "%(instrumentation_apk)s": instrumentation_apk.signed_apk.short_path,
-            "%(adb)s": ctx.executable._adb.path,
+            "%(adb)s": adb.short_path,
         },
     )
     return [
         DefaultInfo(
             executable = instrumentation_script,
-            runfiles = ctx.runfiles(
-                transitive_files = depset(
-                    direct = [
-                        test_app.signed_apk,
-                        instrumentation_apk.signed_apk,
-                        ctx.executable._adb,
-                    ]
-                )
-            )
+            runfiles = ctx.runfiles([
+                adb,
+                test_app.signed_apk,
+                instrumentation_apk.signed_apk,
+            ]),
         ),
     ]
 
