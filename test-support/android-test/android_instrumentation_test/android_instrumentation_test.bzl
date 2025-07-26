@@ -14,6 +14,7 @@ def _android_instrumentation_test_impl(ctx):
     test_app = instrumentation_app_info.target
 
     adb = ctx.executable._adb
+    aapt2 = ctx.files._aapt2[0]
 
     instrumentation_script = ctx.actions.declare_file("android_instrumentation_test.sh")
     ctx.actions.expand_template(
@@ -23,16 +24,20 @@ def _android_instrumentation_test_impl(ctx):
             "%(test_host_apk)s": test_app.signed_apk.short_path,
             "%(instrumentation_apk)s": instrumentation_apk.signed_apk.short_path,
             "%(adb)s": adb.short_path,
+            "%(aapt2)s": aapt2.short_path,
         },
     )
     return [
         DefaultInfo(
             executable = instrumentation_script,
             runfiles = ctx.runfiles([
-                adb,
-                test_app.signed_apk,
-                instrumentation_apk.signed_apk,
-            ]),
+                    adb,
+                    aapt2,
+                    test_app.signed_apk,
+                    instrumentation_apk.signed_apk,
+                ],
+                transitive_files = ctx.attr._aapt2.default_runfiles.files,
+            ),
         ),
     ]
 
@@ -55,6 +60,11 @@ android_instrumentation_test = rule(
             cfg = "exec",
             default = "@androidsdk//:platform-tools/adb",
             executable = True,
+        ),
+        "_aapt2": attr.label(
+            allow_files = True,
+            cfg = "exec",
+            default = "@androidsdk//:aapt2",
         ),
     },
     test = True,

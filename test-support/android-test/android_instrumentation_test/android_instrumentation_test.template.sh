@@ -3,15 +3,7 @@
 set -xe
 
 adb="%(adb)s"
-# handle the case when script is not invoked by bazel rule
-# if [[ ! -f "$adb" ]]; then
-#     if [[ -z "$ANDROID_HOME" ]]; then
-#         echo "Error: ANDROID_HOME is not set."
-#         exit 1
-#     fi
-#     adb="$ANDROID_HOME/platform-tools/adb"
-# fi
-apkanalyzer="$ANDROID_HOME/cmdline-tools/latest/bin/apkanalyzer"
+aapt2="%(aapt2)s"
 
 test_host_apk="%(test_host_apk)s"
 instrumentation_apk="%(instrumentation_apk)s"
@@ -45,25 +37,18 @@ if [[ ! -f "$adb" ]]; then
     echo "Error: $adb does not exist."
     exit 1
 fi
+if [[ ! -f "$aapt2" ]]; then
+    echo "Error: $aapt2 does not exist."
+    exit 1
+fi
 
 device=""
 if [[ -n "$device_id" ]]; then
     device="-s $device_id"
 fi
 
-test_host_app_id="%(test_host_app_id)s"
-
-# handle the case when script is not invoked by bazel rule
-# if [[ "$test_host_app_id" == "%(test_host_app_id)s" ]]; then
-#     test_host_app_id=$($apkanalyzer manifest application-id "$test_host_apk")
-# fi
-
-instrumentation_app_id="%(instrumentation_app_id)s"
-
-# handle the case when script is not invoked by bazel rule
-# if [[ "$instrumentation_app_id" == "%(instrumentation_app_id)s" ]]; then
-#     instrumentation_app_id=$($apkanalyzer manifest application-id "$instrumentation_apk")
-# fi
+test_host_app_id=$($aapt2 dump packagename "$test_host_apk")
+instrumentation_app_id=$($aapt2 dump packagename "$instrumentation_apk")
 
 # install both APKs
 "$adb" $device install-multi-package "$test_host_apk" "$instrumentation_apk"
