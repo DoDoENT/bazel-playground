@@ -3,7 +3,7 @@ load("@rules_android//android:rules.bzl", "android_binary", "android_library")
 android_library(
     name = "test-lib",
     srcs = [
-        "java/com/example/app/ExampleInstrumendedTest.java",
+        "java/com/example/app/ExampleInstrumentedTest.java",
     ],
     deps = [
         "//test-support/android-test/TestHost/app/src/main:lib",
@@ -22,7 +22,7 @@ android_binary(
     ],
 )
 
-# not working with bazel 8
+# not working with bazel 8 (maybe on Linux only?)
 
 # android_instrumentation_test(
 #     name = "test",

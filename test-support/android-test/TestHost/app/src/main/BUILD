@@ -22,6 +22,7 @@ android_library(
         # "@maven//:material",
         # "@maven//:androidx-constraintlayout",
     ],
+    visibility = ["//visibility:public"],
 )
 
 android_binary(
@@ -30,5 +31,6 @@ android_binary(
     manifest_values = {"applicationId": "com.example.app"},
     deps = [
         ":lib",
-    ]
+    ],
+    visibility = ["//visibility:public"],
 )
