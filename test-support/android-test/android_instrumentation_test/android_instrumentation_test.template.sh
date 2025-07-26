@@ -33,16 +33,16 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
-if [[ -z "$test_host_apk" ]]; then
-    echo "Error: test_host_apk is not set."
+if [[ ! -f "$test_host_apk" ]]; then
+    echo "Error: $test_host_apk does not exist."
     exit 1
 fi
-if [[ -z "$instrumentation_apk" ]]; then
-    echo "Error: instrumentation_apk is not set."
+if [[ ! -f "$instrumentation_apk" ]]; then
+    echo "Error: $instrumentation_apk does not exist."
     exit 1
 fi
-if [[ -z "$adb" ]]; then
-    echo "Error: adb is not set."
+if [[ ! -f "$adb" ]]; then
+    echo "Error: $adb does not exist."
     exit 1
 fi
 
@@ -66,19 +66,19 @@ instrumentation_app_id="%(instrumentation_app_id)s"
 # fi
 
 # install both APKs
-$adb $device install-multi-package "$test_host_apk" "$instrumentation_apk"
+"$adb" $device install-multi-package "$test_host_apk" "$instrumentation_apk"
 
 # clear the logcat
-$adb $device logcat -c
+"$adb" $device logcat -c
 
 # run the instrumentation test
-output=$($adb $device shell am instrument -r -w $instrumentation_app_id/androidx.test.runner.AndroidJUnitRunner)
+output=$("$adb" $device shell am instrument -r -w $instrumentation_app_id/androidx.test.runner.AndroidJUnitRunner)
 
 log_output=$($adb $device logcat -d)
 
 # uninstall the APKs
-$adb $device uninstall "$test_host_app_id"
-$adb $device uninstall "$instrumentation_app_id"
+"$adb" $device uninstall "$test_host_app_id"
+"$adb" $device uninstall "$instrumentation_app_id"
 
 # check if outputs contains errors
 if echo "$output" | grep -q "FAILURES"; then

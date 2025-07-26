@@ -26,6 +26,15 @@ def _android_instrumentation_test_impl(ctx):
     return [
         DefaultInfo(
             executable = instrumentation_script,
+            runfiles = ctx.runfiles(
+                transitive_files = depset(
+                    direct = [
+                        test_app.signed_apk,
+                        instrumentation_apk.signed_apk,
+                        ctx.executable._adb,
+                    ]
+                )
+            )
         ),
     ]
 
