@@ -23,6 +23,8 @@ android_binary(
 )
 
 # not working with bazel 8 (maybe on Linux only?)
+# works with 'adb shell am instrument -r -w com.example.app.test/androidx.test.runner.AndroidJUnitRunner'
+# obtain log from device with 'adb logcat -s AndroidJUnitRunner'
 
 # android_instrumentation_test(
 #     name = "test",
