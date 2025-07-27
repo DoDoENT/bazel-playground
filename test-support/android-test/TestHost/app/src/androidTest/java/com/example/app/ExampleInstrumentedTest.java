@@ -23,4 +23,16 @@ public class ExampleInstrumentedTest {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         assertEquals("com.example.app", appContext.getPackageName());
     }
+
+    @Test
+    public void testJNICode() {
+        // Context of the app under test.
+        assertEquals("Hello from Test C++", stringFromJNI());
+    }
+
+    static {
+        System.loadLibrary("test-app");
+    }
+
+    private native String stringFromJNI();
 }

@@ -8,3 +8,11 @@ Java_com_example_app_MainActivity_stringFromJNI(
     std::string hello = "Hello from C++";
     return env->NewStringUTF(hello.c_str());
 }
+
+extern "C" JNIEXPORT jstring JNICALL
+Java_com_example_myapplication_ExampleInstrumentedTest_stringFromJNI(
+        JNIEnv* env,
+        jobject /* this */) {
+    std::string hello = "Hello from Test C++";
+    return env->NewStringUTF(hello.c_str());
+}

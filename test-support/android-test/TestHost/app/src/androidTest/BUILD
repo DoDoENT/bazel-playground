@@ -7,8 +7,15 @@ android_binary(
         "java/com/example/app/ExampleInstrumentedTest.java",
     ],
     manifest = "AndroidTestManifest.xml",
+    manifest_values = {
+        "applicationId": "com.example.app.test",
+        "minSdkVersion": "21",
+        "targetSdkVersion": "31",
+        "targetPackage": "com.example.app",
+    },
     instruments = "//test-support/android-test/TestHost/app/src/main:app",
     deps = [
+        "//test-support/android-test/TestHost/app/src/main:native-lib",
         "@maven//:junit_junit",
         "@maven//:androidx_test_rules",
         "@maven//:androidx_test_ext_junit",

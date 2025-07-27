@@ -7,6 +7,7 @@ mobile_library(
     srcs = ["cpp/native-lib.cpp"],
     linkstatic = False,
     tags = ["manual"],
+    visibility = ["//visibility:public"],
 )
 
 android_binary(

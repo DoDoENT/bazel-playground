@@ -7,11 +7,7 @@
 
     <instrumentation
         android:name="androidx.test.runner.AndroidJUnitRunner"
-        android:targetPackage="com.example.app" />
-
-    <uses-sdk
-        android:minSdkVersion="21"
-        android:targetSdkVersion="31" />
+        android:targetPackage="com.example.replaceme" />
 
     <application >
        <!-- ... -->
