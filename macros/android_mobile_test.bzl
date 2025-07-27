@@ -49,6 +49,26 @@ _generate_test_java = rule(
     },
 )
 
+def _prepare_assets_impl(ctx):
+    output_dir = ctx.label.name
+    outputs = []
+    for dep in ctx.attr.data:
+        for file in dep.files.to_list():
+            output = ctx.actions.declare_file("%s/%s" % (output_dir, file.path))
+            ctx.actions.symlink(
+                output = output,
+                target_file = file,
+            )
+            outputs.append(output)
+    return [DefaultInfo(files = depset(outputs))]
+
+_prepare_assets = rule(
+    implementation = _prepare_assets_impl,
+    attrs = {
+        "data": attr.label_list(allow_files = True),
+    }
+)
+
 def _android_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, data):
     sanitized_name = _sanitize_name(name)
 
@@ -76,6 +96,11 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, d
         tags = ["manual"],
     )
 
+    _prepare_assets(
+        name = name + "-assets",
+        data = data
+    )
+
     android_binary(
         name = name + "-test-app",
         srcs = [
@@ -95,7 +120,10 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, d
             "@maven//:androidx_test_ext_junit",
         ],
         testonly = True,
-        assets = data,
+        assets = [
+            ":" + name + "-assets",
+        ],
+        assets_dir = name + "-assets",
         tags = ["manual"],
     )
 
