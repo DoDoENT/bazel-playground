@@ -42,10 +42,12 @@ if [[ ! -f "$aapt2" ]]; then
     exit 1
 fi
 
-device=""
-if [[ -n "$device_id" ]]; then
-    device="-s $device_id"
+if [[ -z "$device_id" ]]; then
+    echo "Error: --device_id is required."
+    exit 1
 fi
+
+device="-s $device_id"
 
 test_host_app_id=$($aapt2 dump packagename "$test_host_apk")
 instrumentation_app_id=$($aapt2 dump packagename "$instrumentation_apk")
