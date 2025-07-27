@@ -59,3 +59,18 @@ mobile_test(
         "//lib:hello-time",
     ],
 )
+
+test_suite(
+    name = "host",
+    tags = ["host"],
+)
+
+test_suite(
+    name = "android",
+    tags = ["android"],
+)
+
+test_suite(
+    name = "ios",
+    tags = ["ios"],
+)

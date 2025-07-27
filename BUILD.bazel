@@ -42,3 +42,23 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
+test_suite(
+    name = "host",
+    tests = [
+        "//main:host",
+    ],
+)
+
+test_suite(
+    name = "android",
+    tests = [
+        "//main:android",
+    ],
+)
+
+test_suite(
+    name = "ios",
+    tests = [
+        "//main:ios",
+    ],
+)
