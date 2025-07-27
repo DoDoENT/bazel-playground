@@ -1,11 +1,29 @@
+# Cache options
+
 # common --remote_cache=grpc://pablo.microblink.com:9092 --remote_cache_compression=true
 common --disk_cache=~/.bazel-cache/build --repository_cache=~/.bazel-cache/repo --experimental_disk_cache_gc_max_size=50G
+
+# Build flags
+common --cxxopt=-std=c++23 --copt=-g --strip=never
+
+# Build features
+common --features=asan --features=ubsan
+common --test_tag_filters=host
 common --android_platforms=//:arm64-v8a,//:armeabi-v7a
-common --cxxopt=-std=c++23
+
+common:release --features=-asan --features=-ubsan --compilation_mode=opt --features=thin_lto
+common:debug --compilation_mode=dbg
+
+common:mobile --features=-asan --features=-ubsan
+
+common:android --config=mobile --test_tag_filters=android
+
+common:ios-device --config=mobile --ios_multi_cpus=arm64 --test_tag_filters=ios
+common:ios-simulator --config=mobile --test_tag_filters=ios
 
 # MacOS Debuggable Configuration needs disabled cache dir and disabled remote cache in order for the debugger to work properly
-build:mac_debuggable --copt="-g" --strip=never --spawn_strategy=local --disk_cache= --remote_cache=
+build:mac_debuggable --spawn_strategy=local --disk_cache= --remote_cache=
 
-build:ios-device --ios_multi_cpus=arm64
+build:rules_xcodeproj --config=mobile
 
 import xcode.bazelrc

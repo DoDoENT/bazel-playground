@@ -1,17 +1,12 @@
-bazel_dep(name = "platforms", version = "1.0.0")
-
-# register_toolchains(
-#     "//toolchain:cc_toolchain_for_mac_arm64"
-# )
-
-
 # Note: This needs to be beofre rules_cc in order to correctly configure the C++ toolchain.
 bazel_dep(name = "apple_support", version = "1.22.1")
-bazel_dep(name = "rules_apple", version = "4.1.1")
-bazel_dep(name = "rules_swift", version = "3.1.1")
-bazel_dep(name = "rules_xcodeproj", version = "3.1.0")
 bazel_dep(name = "rules_cc", version = "0.1.2")
 
+bazel_dep(name = "rules_swift", version = "3.1.1")
+bazel_dep(name = "rules_xcodeproj", version = "3.1.0")
+bazel_dep(name = "platforms", version = "1.0.0")
+
+bazel_dep(name = "rules_apple", version = "4.1.1")
 # Fix for running tests on iOS devices with Xcode 16.3+
 git_override(
     module_name = "rules_apple",
@@ -39,25 +34,10 @@ git_override(
     remote = "https://github.com/bazelbuild/rules_android.git",
 )
 
-# remote_android_extensions = use_extension(
-#     "@rules_android//bzlmod_extensions:android_extensions.bzl",
-#     "remote_android_tools_extensions")
-#
-# use_repo(remote_android_extensions, "android_tools")
-
 android_sdk_repository_extension = use_extension("@rules_android//rules/android_sdk_repository:rule.bzl", "android_sdk_repository_extension")
 use_repo(android_sdk_repository_extension, "androidsdk")
 
 register_toolchains("@androidsdk//:sdk-toolchain", "@androidsdk//:all")
-
-bazel_dep(name = "rules_kotlin", version = "2.1.8")
-
-# rules_kotlin_extensions = use_extension("@rules_kotlin//src/main/starlark/core/repositories:bzlmod_setup.bzl", "rules_kotlin_extensions")
-# rules_kotlin_extensions.kotlinc_version(
-#     version = "2.2.0",
-#     sha256 = "1adb6f1a5845ba0aa5a59e412e44c8e405236b957de1a9683619f1dca3b16932"
-# )
-# use_repo(rules_kotlin_extensions)
 
 bazel_dep(name = "rules_jvm_external", version = "6.8")
 

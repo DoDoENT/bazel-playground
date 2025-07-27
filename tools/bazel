@@ -12,6 +12,7 @@ if [[ $OSTYPE == darwin* ]]; then
     bazelrc_lines+=("build --xcode_version=$xcode_version")
     bazelrc_lines+=("build --repo_env=XCODE_VERSION=$xcode_version")
     bazelrc_lines+=("build --repo_env=DEVELOPER_DIR=$xcode_path")
+    bazelrc_lines+=("common --features=oso_prefix_is_pwd --features=relative_ast_path --noworker_sandboxing --define=apple.experimental.tree_artifact_outputs=1")
 fi
 
 printf '%s\n' "${bazelrc_lines[@]}" > xcode.bazelrc
