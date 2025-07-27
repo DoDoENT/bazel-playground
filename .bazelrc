@@ -18,8 +18,8 @@ common:mobile --features=-asan --features=-ubsan
 
 common:android --config=mobile --test_tag_filters=android
 
-common:ios-device --config=mobile --ios_multi_cpus=arm64 --test_tag_filters=ios
-common:ios-simulator --config=mobile --test_tag_filters=ios
+common:ios_device --config=mobile --ios_multi_cpus=arm64 --test_tag_filters=ios
+common:ios_simulator --config=mobile --test_tag_filters=ios
 
 # MacOS Debuggable Configuration needs disabled cache dir and disabled remote cache in order for the debugger to work properly
 build:mac_debuggable --spawn_strategy=local --disk_cache= --remote_cache=

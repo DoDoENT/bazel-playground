@@ -13,18 +13,18 @@ bazel query //...
 ## Run all tests on host machine
 
 ```
-bazel test //... --test_tag_filters=host
+bazel test //:host 
 ```
 
 ## Run all tests on attached iOS device
 
 ```
-bazel test //... --test_tag_filters=ios --test_arg=--destination=platform=ios_device,id=<device_id> --ios_multi_cpus=arm64
+bazel test //:ios --test_arg=--destination=platform=ios_device,id=<device_id> --config=ios_device
 ```
 
-## Run all tests on iOS Simulator
+## Run all tests on attached Android device
 
 ```
-bazel test //... --test_tag_filters=ios 
+bazel test //:android --test_arg=--destination=--device_id=<device_id> --config=android
 ```
 
