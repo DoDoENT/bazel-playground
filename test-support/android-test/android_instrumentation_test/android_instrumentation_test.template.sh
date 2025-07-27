@@ -25,10 +25,12 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
+# test_host_apk is not mandatory - we also want to support running tests that are entirely in the instrumentation APK
+have_test_host_apk=true
 if [[ ! -f "$test_host_apk" ]]; then
-    echo "Error: $test_host_apk does not exist."
-    exit 1
+    have_test_host_apk=false
 fi
+
 if [[ ! -f "$instrumentation_apk" ]]; then
     echo "Error: $instrumentation_apk does not exist."
     exit 1
@@ -49,11 +51,17 @@ fi
 
 device="-s $device_id"
 
-test_host_app_id=$($aapt2 dump packagename "$test_host_apk")
+if [[ "$have_test_host_apk" = true ]]; then
+    test_host_app_id=$($aapt2 dump packagename "$test_host_apk")
+fi
 instrumentation_app_id=$($aapt2 dump packagename "$instrumentation_apk")
 
 # install both APKs
-"$adb" $device install-multi-package "$test_host_apk" "$instrumentation_apk"
+if [[ "$have_test_host_apk" = true ]]; then
+    "$adb" $device install-multi-package "$test_host_apk" "$instrumentation_apk"
+else
+    "$adb" $device install "$instrumentation_apk"
+fi
 
 # clear the logcat
 "$adb" $device logcat -c
@@ -64,7 +72,9 @@ output=$("$adb" $device shell am instrument -r -w $instrumentation_app_id/androi
 log_output=$($adb $device logcat -d)
 
 # uninstall the APKs
-"$adb" $device uninstall "$test_host_app_id"
+if [[ "$have_test_host_apk" = true ]]; then
+    "$adb" $device uninstall "$test_host_app_id"
+fi
 "$adb" $device uninstall "$instrumentation_app_id"
 
 # check if outputs contains errors

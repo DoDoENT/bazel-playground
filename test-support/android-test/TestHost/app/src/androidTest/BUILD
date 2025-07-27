@@ -11,9 +11,9 @@ android_binary(
         "applicationId": "com.example.app.test",
         "minSdkVersion": "21",
         "targetSdkVersion": "31",
-        "targetPackage": "com.example.app",
+        "targetPackage": "com.example.app.test",
     },
-    instruments = "//test-support/android-test/TestHost/app/src/main:app",
+    # instruments = "//test-support/android-test/TestHost/app/src/main:app",
     deps = [
         "//test-support/android-test/TestHost/app/src/main:native-lib",
         "@maven//:junit_junit",
