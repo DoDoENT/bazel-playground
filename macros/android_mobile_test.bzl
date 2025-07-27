@@ -86,6 +86,7 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, d
         ],
         linkopts = [
             "-landroid",
+            "-llog",
         ],
         tags = ["manual"],
     )
