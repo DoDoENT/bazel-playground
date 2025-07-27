@@ -37,7 +37,7 @@ def _android_instrumentation_test_impl(ctx):
     if test_app:
         substitutions["%(test_host_apk)s"] = test_app.signed_apk.short_path
 
-    instrumentation_script = ctx.actions.declare_file("android_instrumentation_test.sh")
+    instrumentation_script = ctx.actions.declare_file(ctx.label.name + "_android_instrumentation_test.sh")
     ctx.actions.expand_template(
         output = instrumentation_script,
         template = ctx.file._instrumentation_test_template,

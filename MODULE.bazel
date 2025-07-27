@@ -89,13 +89,20 @@ git_override(
 
 # refresh with bazel run @hedron_compile_commands//:refresh_all
 bazel_dep(name = "hedron_compile_commands", dev_dependency = True)
+
+# https://github.com/hedronvision/bazel-compile-commands-extractor/pull/219#issuecomment-2607795958
 git_override(
     module_name = "hedron_compile_commands",
-    remote = "https://github.com/hedronvision/bazel-compile-commands-extractor.git",
-    branch = "main",
-    # Replace the commit hash (above) with the latest (https://github.com/hedronvision/bazel-compile-commands-extractor/commits/main).
-    # Even better, set up Renovate and let it do the work for you (see "Suggestion: Updates" in the README).
+    remote = "https://github.com/mikael-s-persson/bazel-compile-commands-extractor",
+    commit = "f5fbd4cee671d8d908f37c83abaf70fba5928fc7"
 )
+# git_override(
+#     module_name = "hedron_compile_commands",
+#     remote = "https://github.com/hedronvision/bazel-compile-commands-extractor.git",
+#     branch = "main",
+#     # Replace the commit hash (above) with the latest (https://github.com/hedronvision/bazel-compile-commands-extractor/commits/main).
+#     # Even better, set up Renovate and let it do the work for you (see "Suggestion: Updates" in the README).
+# )
 
 # DEPENDENCIES
 

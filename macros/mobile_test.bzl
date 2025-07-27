@@ -1,4 +1,5 @@
 load("//macros:ios_mobile_test.bzl", "ios_mobile_test")
+load("//macros:android_mobile_test.bzl", "android_mobile_test")
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
 
 def _mobile_test_impl(name, visibility, **kwargs):
@@ -49,6 +50,16 @@ def _mobile_test_impl(name, visibility, **kwargs):
     )
     ios_mobile_test(
         name = name + "-ios",
+        visibility = visibility,
+        srcs = srcs,
+        copts = copts,
+        deps = deps,
+        tags = tags,
+        args = args,
+        data = data,
+    )
+    android_mobile_test(
+        name = name + "-android",
         visibility = visibility,
         srcs = srcs,
         copts = copts,
