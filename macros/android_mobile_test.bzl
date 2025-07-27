@@ -7,8 +7,51 @@ def _sanitize_name(name):
     """Sanitize the test name to ensure it is valid for Android."""
     return name.replace("-", "_").replace(".", "_")
 
+def _sanitize_for_jni(sanitized_name):
+    """Sanitize name further for purpose of JNI naming"""
+    return sanitized_name.replace("_", "_1")
+
+def _package_to_path(pkgName):
+    """Convert java package name to path"""
+    return pkgName.replace(".", "/")
+
+def _generate_test_java_impl(ctx):
+    pkg_name = ctx.attr.package
+    output_file = ctx.actions.declare_file(_package_to_path(pkg_name) + "/GoogleTestLauncher.java")
+
+    substitutions = {
+        "%(package)s": pkg_name,
+        "%(testArgs)s": 'new String[]{' + ",".join(['"' + x + '"' for x in ctx.attr.test_args]) + '}',
+        "%(nativeLibrary)s": ctx.attr.native_lib,
+    }
+
+    ctx.actions.expand_template(
+        output = output_file,
+        template = ctx.file._src_template,
+        substitutions = substitutions,
+    )
+
+    return [
+        DefaultInfo(files = depset([output_file])),
+    ]
+
+_generate_test_java = rule(
+    implementation = _generate_test_java_impl,
+    # output_to_genfiles = True,
+    attrs = {
+        "package": attr.string(mandatory = True, doc = "package for generated class"),
+        "test_args": attr.string_list(mandatory = True, doc = "test arguments"),
+        "native_lib": attr.string(mandatory = True, doc = "native lib name"),
+        "_src_template": attr.label(
+            allow_single_file = True,
+            default = "//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherJavaTemplateSources",
+        )
+    },
+)
 
 def _android_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, data):
+    sanitized_name = _sanitize_name(name)
+
     mobile_library(
         name = name + "-android-srcs",
         srcs = srcs + [
@@ -16,15 +59,27 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, d
         ],
         deps = deps,
         testonly = True,
-        linkstatic = False
+        alwayslink = True,
+        linkstatic = False,
+        local_defines = [
+            "JNI_PREFIX=com_example_" + _sanitize_for_jni(sanitized_name) + "_test_GoogleTestLauncher",
+        ],
+        tags = ["manual"],
     )
 
-    sanitized_name = _sanitize_name(name)
+
+    _generate_test_java(
+        name = name + "-java-srcs",
+        package = "com.example." + sanitized_name + ".test",
+        test_args = args,
+        native_lib = name + "-test-app",
+        tags = ["manual"],
+    )
 
     android_binary(
         name = name + "-test-app",
         srcs = [
-            "//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherJavaSources",
+            ":" + name + "-java-srcs",
         ],
         manifest = "//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherManifest",
         manifest_values = {
@@ -41,6 +96,7 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, d
         ],
         testonly = True,
         assets = data,
+        tags = ["manual"],
     )
 
     # to run the test, use --test_arg=--device_id=device-id

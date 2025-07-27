@@ -1,4 +1,4 @@
-package com.example.app;
+package %(package)s;
 
 import android.content.Context;
 
@@ -19,15 +19,12 @@ import static org.junit.Assert.*;
 public class GoogleTestLauncher {
     @Test
     public void invokeGoogleTest() {
-        assertEquals(0, invokeGoogleTest(GoogleTestLauncher.ARGS));
+        assertEquals(0, invokeGoogleTest(%(testArgs)s));
     }
 
     static {
-        System.loadLibrary("test");
+        System.loadLibrary("%(nativeLibrary)s");
     }
 
     private static native int invokeGoogleTest(String[] arguments);
-
-    private static String[] ARGS = {};
-    private static String   NATIVE_LIB_NAME = "test";
 }

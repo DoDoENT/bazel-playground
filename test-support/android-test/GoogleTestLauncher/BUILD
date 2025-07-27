@@ -38,9 +38,9 @@ filegroup(
 
 
 filegroup(
-    name = "GoogleTestLauncherJavaSources",
+    name = "GoogleTestLauncherJavaTemplateSources",
     srcs = [
-        "java/com/example/app/GoogleTestLauncher.java",
+        "java/GoogleTestLauncher.template.java",
     ],
     visibility = ["//visibility:public"],
 )
