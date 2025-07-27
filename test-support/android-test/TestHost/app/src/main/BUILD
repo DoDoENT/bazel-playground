@@ -9,28 +9,15 @@ mobile_library(
     tags = ["manual"],
 )
 
-android_library(
-    name = "lib",
-    srcs = ["java/com/example/app/MainActivity.java"],
-    custom_package = "com.example.app",
-    manifest = "AndroidManifest.xml",
-    resource_files = glob(["res/**/*"]),
-    deps = [
-        ":native-lib",
-        # "@maven//:androidx-core-ktx",
-        # "@maven//:androidx-appcompat",
-        # "@maven//:material",
-        # "@maven//:androidx-constraintlayout",
-    ],
-    visibility = ["//visibility:public"],
-)
-
 android_binary(
     name = "app",
+    srcs = ["java/com/example/app/MainActivity.java"],
     manifest = "AndroidManifest.xml",
+    custom_package = "com.example.app",
+    resource_files = glob(["res/**/*"]),
     manifest_values = {"applicationId": "com.example.app"},
     deps = [
-        ":lib",
+        ":native-lib",
     ],
     visibility = ["//visibility:public"],
 )
