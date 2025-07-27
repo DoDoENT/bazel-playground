@@ -5,6 +5,8 @@
 
 #include <jni.h>
 
+#include <android/asset_manager_jni.h>
+
 #ifndef JNI_PREFIX
 #error "Please define JNI_PREFIX"
 #endif
@@ -19,9 +21,25 @@
 #define JNI_METHOD( name ) JNI_METHOD_HELPER( JNI_PREFIX, name )
 
 
-extern "C" JNIEXPORT jint JNICALL
-JNI_METHOD( invokeGoogleTest ) ( JNIEnv * env, jclass , jobjectArray args )
+namespace GoogleTest
 {
+
+namespace
+{
+    AAssetManager * activeAssetManager{ nullptr };
+}
+
+AAssetManager * currentAssetManager()
+{
+    return activeAssetManager;
+}
+
+}
+
+extern "C" JNIEXPORT jint JNICALL JNI_METHOD( invokeGoogleTest )( JNIEnv * env, jclass , jobjectArray args, jobject javaAssetManager )
+{
+    GoogleTest::activeAssetManager = AAssetManager_fromJava( env, javaAssetManager );
+
     jsize argCount = env->GetArrayLength( args );
     auto argv{ std::make_unique< char *[] >( argCount + 1 ) };
 
@@ -46,6 +64,8 @@ JNI_METHOD( invokeGoogleTest ) ( JNIEnv * env, jclass , jobjectArray args )
         env->ReleaseStringUTFChars( localRefs[ i ], argv[ i + 1 ] );
         env->DeleteLocalRef( localRefs[ i ] );
     }
+
+    GoogleTest::activeAssetManager = nullptr;
 
     return result;
 }

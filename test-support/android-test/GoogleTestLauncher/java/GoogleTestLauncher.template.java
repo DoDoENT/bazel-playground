@@ -1,6 +1,7 @@
 package %(package)s;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -19,12 +20,13 @@ import static org.junit.Assert.*;
 public class GoogleTestLauncher {
     @Test
     public void invokeGoogleTest() {
-        assertEquals(0, invokeGoogleTest(%(testArgs)s));
+        AssetManager assetManager = InstrumentationRegistry.getInstrumentation().getContext().getAssets();
+        assertEquals(0, invokeGoogleTest(%(testArgs)s, assetManager));
     }
 
     static {
         System.loadLibrary("%(nativeLibrary)s");
     }
 
-    private static native int invokeGoogleTest(String[] arguments);
+    private static native int invokeGoogleTest(String[] arguments, AssetManager assetManager);
 }

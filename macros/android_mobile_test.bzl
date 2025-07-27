@@ -84,9 +84,11 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, d
         local_defines = [
             "JNI_PREFIX=com_example_" + _sanitize_for_jni(sanitized_name) + "_test_GoogleTestLauncher",
         ],
+        linkopts = [
+            "-landroid",
+        ],
         tags = ["manual"],
     )
-
 
     _generate_test_java(
         name = name + "-java-srcs",

@@ -2,15 +2,10 @@
 
 #include <gtest/gtest.h>
 
-#include <iostream>
-#include <fstream>
-
 TEST(HelloGreetTest, ReadFile)
 {
     auto path{ resolveTestDataPath( "subfolder/hello.txt" ) };
     std::cout << "Loading file: " << path << std::endl;
-    std::ifstream file{ path };
-    std::string contents;
-    std::getline( file, contents );
-    EXPECT_STREQ( contents.c_str(), "Hello, Bazel!" );
+    auto buffer{ readFileToBuffer( path ) };
+    EXPECT_STREQ( reinterpret_cast< char const * >( buffer.data.get() ), "Hello, Bazel!\n" );
 }
