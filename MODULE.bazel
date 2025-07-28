@@ -24,7 +24,9 @@ android_ndk_repository_extension.configure(
 )
 use_repo(android_ndk_repository_extension, "androidndk")
 
-register_toolchains("@androidndk//:all")
+# Do not register toolchain here, as it requires Android NDK to be installed.
+# Simply use --extra_toolchains=@androidndk//:all when building.
+# register_toolchains("@androidndk//:all")
 
 bazel_dep(name = "rules_android")
 
@@ -37,7 +39,7 @@ git_override(
 android_sdk_repository_extension = use_extension("@rules_android//rules/android_sdk_repository:rule.bzl", "android_sdk_repository_extension")
 use_repo(android_sdk_repository_extension, "androidsdk")
 
-register_toolchains("@androidsdk//:sdk-toolchain", "@androidsdk//:all")
+# register_toolchains("@androidsdk//:sdk-toolchain", "@androidsdk//:all")
 
 bazel_dep(name = "rules_jvm_external", version = "6.8")
 
