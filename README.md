@@ -25,6 +25,6 @@ bazel test //:ios --test_arg=--destination=platform=ios_device,id=<device_id> --
 ## Run all tests on attached Android device
 
 ```
-bazel test //:android --test_arg=--destination=--device_id=<device_id> --config=android
+bazel test //:android --test_arg=--device_id=<device_id> --config=android
 ```
 
