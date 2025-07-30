@@ -34,7 +34,8 @@ def _mobile_test_impl(name, visibility, **kwargs):
             "@platforms//os:linux": [
                 "-Wl,-rpath,/usr/local/lib",
                 "-Wl,-rpath,/usr/local/lib/aarch64-unknown-linux-gnu",
-                "-Wl,-rpath,/usr/local/lib/x86_64-unknown-linux-gnu"
+                "-Wl,-rpath,/usr/local/lib/x86_64-unknown-linux-gnu",
+                "-lclang_rt.ubsan_standalone_cxx",
             ],
             "//conditions:default": [],
         }),
