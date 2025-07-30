@@ -14,6 +14,7 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, data)
         deps = deps + [
             "//test-support/ios-test/swift-bridge:googletest-ios-swift-bridge",
         ],
+        copts = copts,
         testonly = True, 
         alwayslink = True,
     )

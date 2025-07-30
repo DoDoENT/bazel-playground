@@ -7,7 +7,6 @@ mobile_library(
     name = "hello-greet",
     srcs = ["hello-greet.cc"],
     hdrs = ["hello-greet.h"],
-    linkstatic = True,
     visibility = ["//visibility:public"],
     strip_include_prefix = "",
 )

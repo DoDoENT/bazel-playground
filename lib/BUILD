@@ -6,8 +6,4 @@ cc_library(
     hdrs = ["hello-time.h"],
     visibility = ["//main:__pkg__"],
     linkstatic = True,
-    copts = select({
-        "//conditions:default": [],
-        "//:release": ["-O3", "-flto"],
-    }),
 )

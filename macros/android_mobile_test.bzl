@@ -78,6 +78,7 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, d
             "//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherCppSources",
         ],
         deps = deps,
+        copts = copts,
         testonly = True,
         alwayslink = True,
         linkstatic = False,

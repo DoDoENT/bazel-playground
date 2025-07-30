@@ -30,10 +30,6 @@ def _mobile_test_impl(name, visibility, **kwargs):
         name = name,
         srcs = srcs,
         visibility = visibility,
-        copts = copts + select({
-            "//conditions:default": [],
-            "//:release": ["-O3", "-flto"],
-        }),
         linkopts = linkopts + select({
             "@platforms//os:linux": [
                 "-Wl,-rpath,/usr/local/lib",
