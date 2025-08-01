@@ -2,6 +2,7 @@
 load("@rules_android//android:rules.bzl", "android_binary")
 load("//test-support/android-test/android_instrumentation_test:android_instrumentation_test.bzl", "android_instrumentation_test")
 load("//macros:mobile_library.bzl", "mobile_library")
+load(":test_utils.bzl", "prepare_assets")
 
 def _sanitize_name(name):
     """Sanitize the test name to ensure it is valid for Android."""
@@ -49,26 +50,6 @@ _generate_test_java = rule(
     },
 )
 
-def _prepare_assets_impl(ctx):
-    output_dir = ctx.label.name
-    outputs = []
-    for dep in ctx.attr.data:
-        for file in dep.files.to_list():
-            output = ctx.actions.declare_file("%s/%s" % (output_dir, file.path))
-            ctx.actions.symlink(
-                output = output,
-                target_file = file,
-            )
-            outputs.append(output)
-    return [DefaultInfo(files = depset(outputs))]
-
-_prepare_assets = rule(
-    implementation = _prepare_assets_impl,
-    attrs = {
-        "data": attr.label_list(allow_files = True),
-    }
-)
-
 def _android_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, data):
     sanitized_name = _sanitize_name(name)
 
@@ -100,7 +81,7 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, d
         tags = ["manual"],
     )
 
-    _prepare_assets(
+    prepare_assets(
         name = name + "-assets",
         data = data
     )

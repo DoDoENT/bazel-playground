@@ -1,26 +1,7 @@
 load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 load("@emsdk//emscripten_toolchain:wasm_rules.bzl", "wasm_cc_binary")
 load("@aspect_rules_js//js:defs.bzl", "js_test")
-
-def _prepare_assets_impl(ctx):
-    output_dir = ctx.label.name
-    outputs = []
-    for dep in ctx.attr.data:
-        for file in dep.files.to_list():
-            output = ctx.actions.declare_file("%s/%s" % (output_dir, file.path))
-            ctx.actions.symlink(
-                output = output,
-                target_file = file,
-            )
-            outputs.append(output)
-    return [DefaultInfo(files = depset(outputs))]
-
-_prepare_assets = rule(
-    implementation = _prepare_assets_impl,
-    attrs = {
-        "data": attr.label_list(allow_files = True),
-    }
-)
+load(":test_utils.bzl", "prepare_assets")
 
 def _wasm_test_impl(name, visibility, srcs, copts, deps, threads, simd, args, tags, data):
 
@@ -28,7 +9,7 @@ def _wasm_test_impl(name, visibility, srcs, copts, deps, threads, simd, args, ta
     additional_linker_inputs = []
 
     if data:
-        _prepare_assets(
+        prepare_assets(
             name = name + "-assets",
             data = data
         )
