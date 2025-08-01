@@ -77,6 +77,16 @@ emscripten_deps.config(
 )
 
 bazel_dep(name = "aspect_rules_js", version = "2.4.2")
+bazel_dep(name = "rules_nodejs", version = "6.5.0")
+git_override(
+    module_name = "rules_nodejs",
+    remote = "https://github.com/bazel-contrib/rules_nodejs.git",
+    commit = "356c5ff7e8804164bf9d13c3e9536579704b3b0f",
+)
+
+node = use_extension("@rules_nodejs//nodejs:extensions.bzl", "node", dev_dependency = True)
+node.toolchain(node_version = "22.18.0")
+
 
 # CLANGD COMPILE COMMANDS
 

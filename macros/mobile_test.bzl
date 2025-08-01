@@ -64,9 +64,11 @@ def _mobile_test_impl(name, visibility, **kwargs):
         data = data,
     )
     wasm_test(
-        name = name + "-wasm",
-        cc_host_test = name,
+        name = name + "-wasm-basic",
         visibility = visibility,
+        srcs = srcs,
+        copts = copts,
+        deps = deps,
         threads = False,
         simd = False,
         args = args,

@@ -73,3 +73,8 @@ test_suite(
     name = "ios",
     tags = ["ios"],
 )
+
+test_suite(
+    name = "wasm-basic",
+    tags = ["wasm-basic"],
+)

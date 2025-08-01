@@ -62,3 +62,10 @@ test_suite(
         "//main:ios",
     ],
 )
+
+test_suite(
+    name = "wasm-basic",
+    tests = [
+        "//main:wasm-basic",
+    ],
+)
