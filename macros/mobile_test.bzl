@@ -1,5 +1,6 @@
 load("//macros:ios_mobile_test.bzl", "ios_mobile_test")
 load("//macros:android_mobile_test.bzl", "android_mobile_test")
+load("//macros:wasm_test.bzl", "wasm_test")
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
 
 def _mobile_test_impl(name, visibility, **kwargs):
@@ -60,6 +61,16 @@ def _mobile_test_impl(name, visibility, **kwargs):
         deps = deps,
         tags = tags,
         args = args,
+        data = data,
+    )
+    wasm_test(
+        name = name + "-wasm",
+        cc_host_test = name,
+        visibility = visibility,
+        threads = False,
+        simd = False,
+        args = args,
+        tags = tags + ["wasm-basic"],
         data = data,
     )
 
