@@ -64,8 +64,8 @@ test_suite(
 )
 
 test_suite(
-    name = "wasm-basic",
+    name = "wasm",
     tests = [
-        "//main:wasm-basic",
+        "//main:wasm",
     ],
 )
