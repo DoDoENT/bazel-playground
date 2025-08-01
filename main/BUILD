@@ -88,12 +88,3 @@ test_suite(
     name = "wasm-advanced-threads",
     tags = ["wasm-advanced-threads"],
 )
-
-test_suite(
-    name = "wasm",
-    tests =[
-        ":wasm-basic",
-        ":wasm-advanced",
-        ":wasm-advanced-threads",
-    ],
-)

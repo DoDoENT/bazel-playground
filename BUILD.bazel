@@ -64,8 +64,31 @@ test_suite(
 )
 
 test_suite(
-    name = "wasm",
+    name = "wasm-basic",
     tests = [
-        "//main:wasm",
+        "//main:wasm-basic",
+    ],
+)
+
+test_suite(
+    name = "wasm-advanced",
+    tests = [
+        "//main:wasm-advanced",
+    ],
+)
+
+test_suite(
+    name = "wasm-advanced-threads",
+    tests = [
+        "//main:wasm-advanced-threads",
+    ],
+)
+
+test_suite(
+    name = "wasm-all",
+    tests =[
+        ":wasm-basic",
+        ":wasm-advanced",
+        ":wasm-advanced-threads",
     ],
 )

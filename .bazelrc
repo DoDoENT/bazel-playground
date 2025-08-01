@@ -23,9 +23,7 @@ common:android --config=mobile --test_tag_filters=android --extra_toolchains=@an
 common:ios_device --config=mobile --ios_multi_cpus=arm64 --test_tag_filters=ios
 common:ios_simulator --config=mobile --test_tag_filters=ios
 
-common:wasm_basic --config=mobile --test_tag_filters=wasm-basic
-common:wasm_advanced --config=mobile --test_tag_filters=wasm-advanced
-common:wasm_advanced_threads --config=mobile --test_tag_filters=wasm-advanced-threads
+common:wasm --config=mobile --test_tag_filters=wasm-basic,wasm-advanced,wasm-advanced-threads
 
 # MacOS Debuggable Configuration needs disabled cache dir and disabled remote cache in order for the debugger to work properly
 build:mac_debuggable --spawn_strategy=local --disk_cache= --remote_cache=

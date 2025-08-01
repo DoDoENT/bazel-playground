@@ -30,20 +30,6 @@ bazel test //:android --test_arg=--device_id=<device_id> --config=android
 
 ## Run all WebAssembly tests on Node.JS
 
-### Basic WASM (no SIMD, no threads)
-
 ```
-bazel test //:wasm --config=wasm_basic
+bazel test //:wasm-all --config=wasm
 ```
-
-### Advanced WASM (SIMD, no threads)
-
-```
-bazel test //:wasm --config=wasm_advanced
-``` 
-
-### Advanced-Threads WASM (SIMD, threads)
-
-```
-bazel test //:wasm --config=wasm_advanced_threads
-``` 
