@@ -1,6 +1,8 @@
+# Note: documentation for all flags can be founr at: https://registry.build/flag/bazel@8.3.1
+
 # Cache options
 
-# common --remote_cache=grpc://pablo.microblink.com:9092 --remote_cache_compression=true
+common --remote_cache=grpc://pablo.microblink.com:9092 --remote_cache_compression=true --remote_local_fallback=true
 common --disk_cache=~/.bazel-cache/build --repository_cache=~/.bazel-cache/repo --experimental_disk_cache_gc_max_size=50G
 
 # Build flags
@@ -25,5 +27,9 @@ common:ios_simulator --config=mobile --test_tag_filters=ios
 build:mac_debuggable --spawn_strategy=local --disk_cache= --remote_cache=
 
 build:rules_xcodeproj --config=mobile
+
+# Special flags for CI
+
+common:ci --show_progress_rate_limit=10 --show_progress=true --test_output=errors --show_timestamps=true --test_timeout=300
 
 import xcode.bazelrc
