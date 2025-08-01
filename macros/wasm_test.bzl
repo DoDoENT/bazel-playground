@@ -8,7 +8,7 @@ def _wasm_test_impl(name, visibility, srcs, copts, deps, threads, simd, args, ta
     preload_linkopts = []
     additional_linker_inputs = []
 
-    if data:
+    if len(data) > 0:
         prepare_assets(
             name = name + "-assets",
             data = data
@@ -89,6 +89,7 @@ wasm_test = macro(
             allow_files = True,
             default = [],
             doc = "Test data files",
+            configurable = False,
         ),
     },
 )

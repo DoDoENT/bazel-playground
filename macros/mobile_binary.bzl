@@ -29,25 +29,25 @@ def _mobile_binary_impl(name, visibility, **kwargs):
         ],
     )
     wasm_cc_binary(
-        name = name + "-wasm-simd",
+        name = name + "-wasm-advanced",
         cc_target = name,
         visibility = visibility,
         simd = True,
         threads = "off",
         outputs = [
-            name + "-wasm-simd/" + name + ".wasm",
-            name + "-wasm-simd/" + name + ".js",
+            name + "-wasm-advanced/" + name + ".wasm",
+            name + "-wasm-advanced/" + name + ".js",
         ],
     )
     wasm_cc_binary(
-        name = name + "-wasm-threads",
+        name = name + "-wasm-advanced-threads",
         cc_target = name,
         visibility = visibility,
         simd = True,
         threads = "emscripten",
         outputs = [
-            name + "-wasm-threads/" + name + ".wasm",
-            name + "-wasm-threads/" + name + ".js",
+            name + "-wasm-advanced-threads/" + name + ".wasm",
+            name + "-wasm-advanced-threads/" + name + ".js",
         ],
     )
 

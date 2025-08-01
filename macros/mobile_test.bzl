@@ -18,9 +18,7 @@ def _mobile_test_impl(name, visibility, **kwargs):
     })
     tags = kwargs.pop("tags") or []
     args = kwargs.pop("args") or []
-    data = kwargs.pop("data") or select({
-        "//conditions:default": []
-    })
+    data = kwargs.pop("data") or []
     deps = deps + select({
         "//conditions:default": [
             "//test-support/paths:test-paths",
@@ -75,6 +73,30 @@ def _mobile_test_impl(name, visibility, **kwargs):
         tags = tags + ["wasm-basic"],
         data = data,
     )
+    wasm_test(
+        name = name + "-wasm-advanced",
+        visibility = visibility,
+        srcs = srcs,
+        copts = copts,
+        deps = deps,
+        threads = False,
+        simd = True,
+        args = args,
+        tags = tags + ["wasm-advanced"],
+        data = data,
+    )
+    wasm_test(
+        name = name + "-wasm-advanced-threads",
+        visibility = visibility,
+        srcs = srcs,
+        copts = copts,
+        deps = deps,
+        threads = True,
+        simd = True,
+        args = args,
+        tags = tags + ["wasm-advanced-threads"],
+        data = data,
+    )
 
 
 mobile_test = macro(
@@ -84,6 +106,12 @@ mobile_test = macro(
         "args": attr.string_list(
             default = [],
             doc = "Arguments for the iOS mobile test.",
+            configurable = False,
+        ),
+        "data": attr.label_list(
+            allow_files = True,
+            default = [],
+            doc = "Test data files",
             configurable = False,
         ),
     }
