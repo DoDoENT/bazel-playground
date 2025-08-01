@@ -21,7 +21,7 @@ bazel_dep(name = "rules_android_ndk", version = "0.1.3")
 git_override(
     module_name = "rules_android_ndk",
     remote = "https://github.com/DoDoENT/rules_android_ndk.git",
-    branch = "feature/download",
+    commit = "82b934b0ca9c545db700debd7744f73845a9a478",
 )
 
 android_ndk_repository_extension = use_extension("@rules_android_ndk//:extension.bzl", "android_ndk_repository_extension")
@@ -31,22 +31,20 @@ android_ndk_repository_extension.configure(
 )
 use_repo(android_ndk_repository_extension, "androidndk")
 
-# Do not register toolchain here, as it requires Android NDK to be installed.
-# Simply use --extra_toolchains=@androidndk//:all when building.
-# register_toolchains("@androidndk//:all")
 
 bazel_dep(name = "rules_android")
 
 git_override(
     module_name = "rules_android",
-    branch = "main",
     remote = "https://github.com/bazelbuild/rules_android.git",
+    commit = "675d3720ce85141d93f445db7f88a9e2e0c62f82"
 )
 
 android_sdk_repository_extension = use_extension("@rules_android//rules/android_sdk_repository:rule.bzl", "android_sdk_repository_extension")
 use_repo(android_sdk_repository_extension, "androidsdk")
 
-# register_toolchains("@androidsdk//:sdk-toolchain", "@androidsdk//:all")
+# Do not register toolchain here, to prevent downloading and setting up the Android SDK and NDK automatically when not building for Android.
+# Simply use --extra_toolchains=@androidndk//:all --extra_toolchains=@androidsdk/::all when building (this is added to android config in bazelrc)
 
 bazel_dep(name = "rules_jvm_external", version = "6.8")
 
@@ -65,14 +63,20 @@ maven.install(
 use_repo(maven, "maven")
 
 # EMSCRIPTEN
-emsdk_version = "4.0.11"
-bazel_dep(name = "emsdk", version = emsdk_version)
+bazel_dep(name = "emsdk")
 git_override(
     module_name = "emsdk",
     remote = "https://github.com/emscripten-core/emsdk.git",
     strip_prefix = "bazel",
-    tag = emsdk_version,
+    commit = "e062c54f436e58ee102d2d37901cdaa052af249a",
 )
+
+emscripten_deps = use_extension("@emsdk//:emscripten_deps.bzl", "emscripten_deps")
+emscripten_deps.config(
+    version = "4.0.11",
+)
+
+bazel_dep(name = "aspect_rules_js", version = "2.4.2")
 
 # CLANGD COMPILE COMMANDS
 
