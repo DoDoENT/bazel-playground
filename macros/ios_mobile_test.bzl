@@ -6,6 +6,7 @@ load("@rules_xcodeproj//xcodeproj:xcodeproj.bzl", "xcodeproj")
 load("@rules_xcodeproj//xcodeproj:xcschemes.bzl", "xcschemes")
 
 load("//macros:mobile_library.bzl", "mobile_library")
+load(":constants.bzl", "TAG_IOS")
 
 def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, data):
     mobile_library(
@@ -39,7 +40,7 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, data)
         minimum_os_version = "15.0",
         provisioning_profile = "//test-support/ios-test:xcode_profile",
         test_host = "//test-support/ios-test/GoogleTestHost:GoogleTestHost",
-        tags = tags + ["ios", "exclusive"], # need to be exclusive to prevent parallel invocation on the same device
+        tags = tags + [TAG_IOS, "exclusive"], # need to be exclusive to prevent parallel invocation on the same device
         resources = [name + "-resources"],
         runner = "//test-support/ios-test:test_runner",
         target_compatible_with = [

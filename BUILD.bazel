@@ -1,39 +1,4 @@
-config_setting(
-    name = "release",
-    values = {
-        "compilation_mode": "opt",
-    },
-)
-
-config_setting(
-    name = "devRelease",
-    values = {
-        "compilation_mode": "fastbuild",
-    },
-)
-
-config_setting(
-    name = "debug",
-    values = {
-        "compilation_mode": "dbg",
-    },
-)
-
-platform(
-    name = "arm64-v8a",
-    constraint_values = [
-        "@platforms//cpu:arm64",
-        "@platforms//os:android",
-    ],
-)
-
-platform(
-    name = "armeabi-v7a",
-    constraint_values = [
-        "@platforms//cpu:armv7",
-        "@platforms//os:android",
-    ],
-)
+load("//macros:test_suite.bzl", "define_subpackage_test_suites")
 
 filegroup(
     name = "test-data",
@@ -42,53 +7,9 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
-test_suite(
-    name = "host",
-    tests = [
-        "//main:host",
-    ],
-)
-
-test_suite(
-    name = "android",
-    tests = [
-        "//main:android",
-    ],
-)
-
-test_suite(
-    name = "ios",
-    tests = [
-        "//main:ios",
-    ],
-)
-
-test_suite(
-    name = "wasm-basic",
-    tests = [
-        "//main:wasm-basic",
-    ],
-)
-
-test_suite(
-    name = "wasm-advanced",
-    tests = [
-        "//main:wasm-advanced",
-    ],
-)
-
-test_suite(
-    name = "wasm-advanced-threads",
-    tests = [
-        "//main:wasm-advanced-threads",
-    ],
-)
-
-test_suite(
-    name = "wasm-all",
-    tests =[
-        ":wasm-basic",
-        ":wasm-advanced",
-        ":wasm-advanced-threads",
+define_subpackage_test_suites(
+    name = "all-test-suites",
+    subpackages = [
+        "main",
     ],
 )

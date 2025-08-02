@@ -2,6 +2,7 @@ load("//macros:ios_mobile_test.bzl", "ios_mobile_test")
 load("//macros:android_mobile_test.bzl", "android_mobile_test")
 load("//macros:wasm_test.bzl", "wasm_test")
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
+load(":constants.bzl", "TAG_WASM_BASIC", "TAG_WASM_ADVANCED", "TAG_WASM_ADVANCED_THREADS")
 
 def _mobile_test_impl(name, visibility, **kwargs):
     copts = kwargs.pop("copts") or select({
@@ -70,7 +71,7 @@ def _mobile_test_impl(name, visibility, **kwargs):
         threads = False,
         simd = False,
         args = args,
-        tags = tags + ["wasm-basic"],
+        tags = tags + [TAG_WASM_BASIC],
         data = data,
     )
     wasm_test(
@@ -82,7 +83,7 @@ def _mobile_test_impl(name, visibility, **kwargs):
         threads = False,
         simd = True,
         args = args,
-        tags = tags + ["wasm-advanced"],
+        tags = tags + [TAG_WASM_ADVANCED],
         data = data,
     )
     wasm_test(
@@ -94,7 +95,7 @@ def _mobile_test_impl(name, visibility, **kwargs):
         threads = True,
         simd = True,
         args = args,
-        tags = tags + ["wasm-advanced-threads"],
+        tags = tags + [TAG_WASM_ADVANCED_THREADS],
         data = data,
     )
 

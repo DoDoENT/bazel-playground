@@ -1,6 +1,7 @@
 load("//macros:mobile_binary.bzl", "mobile_binary" )
 load("//macros:mobile_library.bzl", "mobile_library" )
 load("//macros:mobile_test.bzl", "mobile_test" )
+load("//macros:test_suite.bzl", "define_test_suites" )
 
 
 mobile_library(
@@ -59,32 +60,6 @@ mobile_test(
     ],
 )
 
-test_suite(
-    name = "host",
-    tags = ["host"],
-)
-
-test_suite(
-    name = "android",
-    tags = ["android"],
-)
-
-test_suite(
-    name = "ios",
-    tags = ["ios"],
-)
-
-test_suite(
-    name = "wasm-basic",
-    tags = ["wasm-basic"],
-)
-
-test_suite(
-    name = "wasm-advanced",
-    tags = ["wasm-advanced"],
-)
-
-test_suite(
-    name = "wasm-advanced-threads",
-    tags = ["wasm-advanced-threads"],
+define_test_suites(
+    name = "test-suites",
 )

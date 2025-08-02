@@ -3,6 +3,7 @@ load("@rules_android//android:rules.bzl", "android_binary")
 load("//test-support/android-test/android_instrumentation_test:android_instrumentation_test.bzl", "android_instrumentation_test")
 load("//macros:mobile_library.bzl", "mobile_library")
 load(":test_utils.bzl", "prepare_assets")
+load(":constants.bzl", "TAG_ANDROID")
 
 def _sanitize_name(name):
     """Sanitize the test name to ensure it is valid for Android."""
@@ -116,7 +117,7 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, d
     android_instrumentation_test(
         name = name,
         test_app = ":" + name + "-test-app",
-        tags = tags + ["android", "exclusive"],  # need to be exclusive to prevent parallel invocation on the same device
+        tags = tags + [TAG_ANDROID, "exclusive"],  # need to be exclusive to prevent parallel invocation on the same device
     )
 
 

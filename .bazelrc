@@ -11,7 +11,7 @@ common --cxxopt=-std=c++23 --copt=-g --strip=never
 # Build features
 common --features=asan --features=ubsan
 common --test_tag_filters=host
-common --android_platforms=//:arm64-v8a,//:armeabi-v7a
+common --android_platforms=//platforms:arm64-v8a,//platforms:armeabi-v7a
 
 common:release --features=-asan --features=-ubsan --compilation_mode=opt --features=thin_lto
 common:debug --compilation_mode=dbg

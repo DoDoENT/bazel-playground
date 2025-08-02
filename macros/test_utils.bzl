@@ -17,5 +17,3 @@ prepare_assets = rule(
         "data": attr.label_list(allow_files = True),
     }
 )
-
-
