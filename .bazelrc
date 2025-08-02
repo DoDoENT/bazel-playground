@@ -6,14 +6,14 @@
 common --disk_cache=~/.bazel-cache/build --repository_cache=~/.bazel-cache/repo --experimental_disk_cache_gc_max_size=50G
 
 # Build flags
-common --cxxopt=-std=c++23 --copt=-g --strip=never
+common --copt=-g --strip=never
 
 # Build features
-common --features=asan --features=ubsan --features=-exceptions
+common --features=asan --features=ubsan 
 common --test_tag_filters=host
 common --android_platforms=//platforms:arm64-v8a,//platforms:armeabi-v7a
 
-common:release --features=-asan --features=-ubsan --features=-rtti --compilation_mode=opt --features=thin_lto
+common:release --features=-asan --features=-ubsan --compilation_mode=opt --features=thin_lto
 common:debug --compilation_mode=dbg
 
 common:mobile --features=-asan --features=-ubsan

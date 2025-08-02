@@ -18,6 +18,8 @@ int main(int argc, char** argv) {
   }
   std::cout << get_greet(who) << std::endl;
   print_localtime();
+  std::cout << "type id of who is" << typeid(who).name() << std::endl;
+  throw 5;
 #ifdef __EMSCRIPTEN__
   std::cout << "Helloworld compiled with Emscripten!" << std::endl;
 #ifdef __wasm_simd128__
