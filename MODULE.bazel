@@ -1,3 +1,5 @@
+bazel_dep(name = "bazel_skylib", version = "1.8.1")
+
 # Note: This needs to be beofre rules_cc in order to correctly configure the C++ toolchain.
 bazel_dep(name = "apple_support", version = "1.22.1")
 bazel_dep(name = "rules_cc", version = "0.1.2")

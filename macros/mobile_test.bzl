@@ -2,15 +2,20 @@ load("//macros:ios_mobile_test.bzl", "ios_mobile_test")
 load("//macros:android_mobile_test.bzl", "android_mobile_test")
 load("//macros:wasm_test.bzl", "wasm_test")
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
-load(":constants.bzl", "TAG_WASM_BASIC", "TAG_WASM_ADVANCED", "TAG_WASM_ADVANCED_THREADS")
+load("//macros/flags:flags.bzl", "COMMON_LINKOPTS")
+load(
+    ":constants.bzl",
+    "TAG_WASM_BASIC",
+    "TAG_WASM_ADVANCED",
+    "TAG_WASM_ADVANCED_THREADS",
+    "TAG_HOST",
+)
 
 def _mobile_test_impl(name, visibility, **kwargs):
     copts = kwargs.pop("copts") or select({
         "//conditions:default": [],
     })
-    linkopts = kwargs.pop("linkopts") or select({
-        "//conditions:default": [],
-    })
+    linkopts = kwargs.pop("linkopts")
     deps = kwargs.pop("deps") or select({
         "//conditions:default": [],
     })
@@ -30,14 +35,9 @@ def _mobile_test_impl(name, visibility, **kwargs):
         name = name,
         srcs = srcs,
         visibility = visibility,
-        linkopts = linkopts + select({
-            "@platforms//os:linux": [
-                "-lclang_rt.ubsan_standalone_cxx",
-            ],
-            "//conditions:default": [],
-        }),
+        linkopts = COMMON_LINKOPTS + linkopts if linkopts else COMMON_LINKOPTS,
         deps = deps,
-        tags = tags + ["host"],
+        tags = tags + [TAG_HOST],
         args = args,
         data = data,
         **kwargs,
