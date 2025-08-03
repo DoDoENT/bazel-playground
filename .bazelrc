@@ -3,7 +3,7 @@
 # Cache options
 
 # common --remote_cache=grpc://pablo.microblink.com:9092 --remote_cache_compression=true
-common --disk_cache=~/.bazel-cache/build --repository_cache=~/.bazel-cache/repo --experimental_disk_cache_gc_max_size=50G
+common --disk_cache=~/.bazel-cache/build --experimental_disk_cache_gc_max_size=50G
 
 # Build flags
 common --copt=-g --strip=never
