@@ -1,43 +1,43 @@
 load(":gcc_compatible_flags.bzl", "gcc_compat_flags")
 
 def _calculate_clang_flags():
-    clang_flags = dict(**gcc_compat_flags)
-    clang_flags["compiler_lto"] = [
+    _local_clang_flags = dict(**gcc_compat_flags)
+    _local_clang_flags["compiler_lto"] = [
         "-flto=thin",
         "-fwhole-program-vtables",
     ]
-    clang_flags["linker_lto"] = [
+    _local_clang_flags["linker_lto"] = [
         "-flto=thin",
     ]
-    clang_flags["compiler_optimize_for_speed"].extend([
+    _local_clang_flags["compiler_optimize_for_speed"] = _local_clang_flags["compiler_optimize_for_speed"] + [
         "-fvectorize",
         "-fslp-vectorize",
-    ])
-    clang_flags["compiler_report_optimization"].extend([
+    ]
+    _local_clang_flags["compiler_report_optimization"] =  _local_clang_flags["compiler_report_optimization"] + [
         "-Rpass=loop-.*",
-    ])
-    clang_flags["compiler_default_warnings"].extend([
+    ]
+    _local_clang_flags["compiler_default_warnings"] = _local_clang_flags["compiler_default_warnings"] + [
         "-Wdocumentation",
         "-Wheader-guard",
-    ])
-    clang_flags["compiler_common_flags"].extend([
+    ]
+    _local_clang_flags["compiler_common_flags"] = _local_clang_flags["compiler_common_flags"] + [
         "-fenable-matrix",
-    ])
-    clang_flags["compiler_runtime_checks"] = [
+    ]
+    _local_clang_flags["compiler_runtime_checks"] = [
         "-fsanitize=address",
         "-fsanitize=undefined",
         "-fsanitize=signed-integer-overflow",
         "-fsanitize=integer-divide-by-zero",
     ]
-    clang_flags["linker_runtime_checks"] = clang_flags["compiler_runtime_checks"]
-    clang_flags["compiler_coverage"].extend([
+    _local_clang_flags["linker_runtime_checks"] = _local_clang_flags["compiler_runtime_checks"]
+    _local_clang_flags["compiler_coverage"] = _local_clang_flags["compiler_coverage"] + [
         "-fprofile-instr-generate",
         "-fcoverage-mapping",
-    ])
-    clang_flags["linker_coverage"] = [
+    ]
+    _local_clang_flags["linker_coverage"] = [
         "-fprofile-instr-generate",
     ]
 
-    return clang_flags
+    return _local_clang_flags
 
 clang_flags = _calculate_clang_flags()

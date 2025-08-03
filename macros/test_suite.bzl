@@ -41,6 +41,7 @@ def _define_test_suites_impl(name, visibility):
 
 define_test_suites = macro(
     implementation = _define_test_suites_impl,
+    finalizer = True,
 )
 
 def _define_subpackage_test_suites_impl(name, visibility, subpackages):
@@ -103,5 +104,6 @@ define_subpackage_test_suites = macro(
             configurable = False,
         ),
     },
+    finalizer = True,
 )
 

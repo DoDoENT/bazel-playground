@@ -1,13 +1,15 @@
 load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 load("@emsdk//emscripten_toolchain:wasm_rules.bzl", "wasm_cc_binary")
-load("//macros/flags:flags.bzl", "COMMON_LINKOPTS")
+load("//macros/flags:flags.bzl", "resolved_flags")
 
 def _mobile_binary_impl(name, visibility, **kwargs):
-    linkopts = kwargs.pop("linkopts")
+    linkopts = kwargs.pop("linkopts") or select({
+        "//conditions:default": [],
+    })
     cc_binary(
         name = name,
         visibility = visibility,
-        linkopts = COMMON_LINKOPTS + linkopts if linkopts else COMMON_LINKOPTS,
+        # linkopts = resolved_flags["linkopts"] + linkopts if linkopts else resolved_flags["linkopts"],
         **kwargs,
     )
     wasm_cc_binary(

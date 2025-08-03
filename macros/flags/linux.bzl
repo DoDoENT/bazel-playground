@@ -10,9 +10,9 @@ def _calculate_linux_flags(starting_flags):
 
 def _calculate_linux_clang_flags():
     linux_clang_flags = _calculate_linux_flags(clang_flags)
-    linux_clang_flags["linuxlinker_runtime_checks"].extend([
+    linux_clang_flags["linker_runtime_checks"] = linux_clang_flags["linker_runtime_checks"] + [
         "-lclang_rt.ubsan_standalone_cxx",
-    ])
+    ]
 
     return linux_clang_flags
 
