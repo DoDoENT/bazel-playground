@@ -5,6 +5,8 @@ load(":apple.bzl", "apple_flags")
 load(":linux.bzl", "linux_clang_flags")
 load(":emscripten.bzl", "emscripten_flags")
 
+load(":flatten.bzl", "create_config_setting_groups", "flatten_select_dicts")
+
 def _transform_to_select_dict(key):
     return {
         "@platforms//os:android": android_flags.get(key, default = []),
@@ -55,8 +57,8 @@ flags_dicts = {
 }
 
 resolved_flags = {
-    # "linkopts": flags_dicts["linker_common_flags"] + selects.with_or({
+    # "linkopts": flags_dicts["linker_common_flags"] + {
     #     (":debug", ":devRelease"): flags_dicts["linker_runtime_checks"],
     #     ":release": flags_dicts["linker_release_flags"],
-    # })
+    # }
 }
