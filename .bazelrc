@@ -11,14 +11,14 @@ common --copt=-g --strip=never
 # Build features
 common --features=asan --features=ubsan 
 common --test_tag_filters=host
-common --android_platforms=//platforms:arm64-v8a,//platforms:armeabi-v7a
+common --android_platforms=//platforms:arm64-v8a,//platforms:armeabi-v7a --java_runtime_version=remotejdk_17 
 
 common:release --features=-asan --features=-ubsan --compilation_mode=opt --features=thin_lto
 common:debug --compilation_mode=dbg
 
 common:mobile --features=-asan --features=-ubsan
 
-common:android --config=mobile --java_runtime_version=remotejdk_17 --test_tag_filters=android --extra_toolchains=@androidndk//:all --extra_toolchains=@androidsdk//:all
+common:android --config=mobile --test_tag_filters=android 
 
 common:ios_device --config=mobile --ios_multi_cpus=arm64 --test_tag_filters=ios
 common:ios_simulator --config=mobile --test_tag_filters=ios

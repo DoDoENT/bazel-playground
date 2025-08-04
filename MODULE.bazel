@@ -45,8 +45,10 @@ git_override(
 android_sdk_repository_extension = use_extension("@rules_android//rules/android_sdk_repository:rule.bzl", "android_sdk_repository_extension")
 use_repo(android_sdk_repository_extension, "androidsdk")
 
-# Do not register toolchain here, to prevent downloading and setting up the Android SDK and NDK automatically when not building for Android.
-# Simply use --extra_toolchains=@androidndk//:all --extra_toolchains=@androidsdk/::all when building (this is added to android config in bazelrc)
+register_toolchains(
+    "@androidndk//:all",
+    "@androidsdk//:all",
+)
 
 bazel_dep(name = "rules_jvm_external", version = "6.8")
 
