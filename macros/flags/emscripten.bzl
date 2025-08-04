@@ -35,7 +35,7 @@ def _calculate_emscripten_flags():
     ]
     emscripten_flags["linker_common_flags"] = [
         "-s MALLOC=emmalloc",
-        "-flto=thin",
+        "-flto=thin", # needed because bazel can handle only single emscripten cache
         "-Wno-limited-postlink-optimizations",
         # "-s STRICT=1",
     ]
