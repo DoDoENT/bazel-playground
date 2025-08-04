@@ -16,8 +16,8 @@ std::string currentBundlePath()
 int executeGoogleTests( ArgVector const & args )
 {
     int argc = static_cast< int >( args.size() );
-    auto argv{ std::make_unique< char *[] >( argc ) };
-    for ( auto i{ 0 }; auto const & arg : args )
+    auto argv{ std::make_unique< char *[] >( static_cast< std::size_t >( argc ) ) };
+    for ( auto i{ 0U }; auto const & arg : args )
     {
         argv[ i++ ] = const_cast< char * >( arg.c_str() );
     }

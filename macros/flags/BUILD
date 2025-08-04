@@ -1,4 +1,5 @@
 load("@bazel_skylib//lib:selects.bzl", "selects")
+load(":flags.bzl", "create_resolved_flags_conditions")
 
 config_setting(
     name = "release",
@@ -53,3 +54,4 @@ selects.config_setting_group(
     match_all = [":using_clang", "@platforms//os:linux"]
 )
 
+create_resolved_flags_conditions()

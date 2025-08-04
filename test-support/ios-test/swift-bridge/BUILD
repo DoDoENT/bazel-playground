@@ -1,4 +1,5 @@
 load("@rules_swift//mixed_language:mixed_language_library.bzl", "mixed_language_library")
+load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 
 mixed_language_library(
     name = "googletest-ios-swift-bridge",
@@ -9,6 +10,8 @@ mixed_language_library(
     clang_srcs = [
         "GoogleTestInvoker.cpp",
     ],
+    clang_copts = select(resolved_flags_select_dicts["copts"].flat_select_dict) + select(resolved_flags_select_dicts["cxxopts"].flat_select_dict),
+    linkopts = select(resolved_flags_select_dicts["linkopts"].flat_select_dict),
     hdrs = [
         "GoogleTestInvoker.hpp",
     ],

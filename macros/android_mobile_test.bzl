@@ -51,7 +51,7 @@ _generate_test_java = rule(
     },
 )
 
-def _android_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, data):
+def _android_mobile_test_impl(name, visibility, srcs, copts, cxxopts, linkopts, deps, args, tags, data):
     sanitized_name = _sanitize_name(name)
 
     mobile_library(
@@ -61,15 +61,16 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, deps, args, tags, d
         ],
         deps = deps,
         copts = copts,
+        cxxopts = cxxopts,
+        linkopts = linkopts + [
+            "-landroid",
+            "-llog",
+        ],
         testonly = True,
         alwayslink = True,
         linkstatic = False,
         local_defines = [
             "JNI_PREFIX=com_example_" + _sanitize_for_jni(sanitized_name) + "_test_GoogleTestLauncher",
-        ],
-        linkopts = [
-            "-landroid",
-            "-llog",
         ],
         tags = ["manual"],
     )
@@ -132,6 +133,14 @@ android_mobile_test = macro(
         "copts": attr.string_list(
             default = [],
             doc = "Compiler options for the Android mobile test.",
+        ),
+        "cxxopts": attr.string_list(
+            default = [],
+            doc = "C++ compiler options for the Android mobile test.",
+        ),
+        "linkopts": attr.string_list(
+            default = [],
+            doc = "Linker options for the Android mobile test.",
         ),
         "deps": attr.label_list(
             allow_files = True,

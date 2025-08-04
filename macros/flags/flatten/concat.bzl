@@ -45,7 +45,7 @@ def concat_flattened(name, package, first_flattened, second_flattened):
         input_flattened = unsanitized_result,
     )
 
-def concat_dicts(name, package, *args):
+def concat_select_dicts(name, package, *args):
     """Concatenates multiple select dicts into one, generating a new
     flattened structure that represents the concatenation of lists across
     all possible branches.
@@ -146,7 +146,7 @@ def _concatenate_test_impl(ctx):
 
 concatenate_flattened_test = unittest.make(_concatenate_test_impl)
 
-def _concat_dicts_impl(ctx):
+def _concat_select_dicts_impl(ctx):
     env = unittest.begin(ctx)
 
     linker_common_flags = {
@@ -201,7 +201,7 @@ def _concat_dicts_impl(ctx):
         ],
     }
 
-    linker_flags = concat_dicts(
+    linker_flags = concat_select_dicts(
         "linker_flags_conditions",
         "//macros/flags",
         linker_common_flags,
@@ -258,13 +258,13 @@ def _concat_dicts_impl(ctx):
 
     return unittest.end(env)
 
-concat_dicts_test = unittest.make(_concat_dicts_impl)
+concat_select_dicts_test = unittest.make(_concat_select_dicts_impl)
 
 def _concat_flatten_test_suite_impl(name, visibility):
     unittest.suite(
         name,
         partial.make(concatenate_flattened_test, tags = [TAG_STARLARK]),
-        partial.make(concat_dicts_test, tags = [TAG_STARLARK]),
+        partial.make(concat_select_dicts_test, tags = [TAG_STARLARK]),
     )
 
 concat_test_suite = macro(

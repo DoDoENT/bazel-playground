@@ -1,15 +1,16 @@
 load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 load("@emsdk//emscripten_toolchain:wasm_rules.bzl", "wasm_cc_binary")
-load("//macros/flags:flags.bzl", "resolved_flags")
+load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 
 def _mobile_binary_impl(name, visibility, **kwargs):
     linkopts = kwargs.pop("linkopts") or select({
         "//conditions:default": [],
     })
+    default_linkopts = select(resolved_flags_select_dicts["linkopts"].flat_select_dict)
     cc_binary(
         name = name,
         visibility = visibility,
-        # linkopts = resolved_flags["linkopts"] + linkopts if linkopts else resolved_flags["linkopts"],
+        linkopts = default_linkopts + linkopts if linkopts else default_linkopts,
         **kwargs,
     )
     wasm_cc_binary(

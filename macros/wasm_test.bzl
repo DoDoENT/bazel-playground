@@ -2,8 +2,9 @@ load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 load("@emsdk//emscripten_toolchain:wasm_rules.bzl", "wasm_cc_binary")
 load("@aspect_rules_js//js:defs.bzl", "js_test")
 load(":test_utils.bzl", "prepare_assets")
+load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 
-def _wasm_test_impl(name, visibility, srcs, copts, deps, threads, simd, args, tags, data):
+def _wasm_test_impl(name, visibility, srcs, copts, cxxopts, linkopts, deps, threads, simd, args, tags, data):
 
     preload_linkopts = []
     additional_linker_inputs = []
@@ -17,13 +18,18 @@ def _wasm_test_impl(name, visibility, srcs, copts, deps, threads, simd, args, ta
         preload_linkopts.append("--preload-file")
         preload_linkopts.append("$(BINDIR)/" + native.package_name() + "/" + name + "-assets@/")
 
+    default_copts = select(resolved_flags_select_dicts["copts"].flat_select_dict)
+    default_cxxopts = select(resolved_flags_select_dicts["cxxopts"].flat_select_dict)
+    default_linkopts = select(resolved_flags_select_dicts["linkopts"].flat_select_dict)
+
     cc_binary(
         name = name + "-cc",
         srcs = srcs,
-        copts = copts,
+        copts = default_copts + copts,
+        cxxopts = default_cxxopts + cxxopts,
+        linkopts = default_linkopts + linkopts + preload_linkopts,
         deps = deps,
         additional_linker_inputs = additional_linker_inputs,
-        linkopts = preload_linkopts,
         testonly = True,
     )
     outputs = [
@@ -60,16 +66,24 @@ wasm_test = macro(
         "srcs": attr.label_list(
             allow_files = True,
             mandatory = True,
-            doc = "Source files for the Android mobile test.",
+            doc = "Source files for the WebAssembly mobile test.",
         ),
         "copts": attr.string_list(
             default = [],
-            doc = "Compiler options for the Android mobile test.",
+            doc = "Compiler options for the WebAssembly mobile test.",
+        ),
+        "cxxopts": attr.string_list(
+            default = [],
+            doc = "C++ compiler options for the WebAssembly mobile test.",
+        ),
+        "linkopts": attr.string_list(
+            default = [],
+            doc = "Linker options for the WebAssembly mobile test.",
         ),
         "deps": attr.label_list(
             allow_files = True,
             default = [],
-            doc = "Dependencies for the Android mobile test.",
+            doc = "Dependencies for the WebAssembly mobile test.",
         ),
         "threads": attr.bool(
             default = False,

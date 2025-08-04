@@ -2,7 +2,7 @@ load("//macros:ios_mobile_test.bzl", "ios_mobile_test")
 load("//macros:android_mobile_test.bzl", "android_mobile_test")
 load("//macros:wasm_test.bzl", "wasm_test")
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
-load("//macros/flags:flags.bzl", "resolved_flags")
+load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 load(
     ":constants.bzl",
     "TAG_WASM_BASIC",
@@ -12,16 +12,10 @@ load(
 )
 
 def _mobile_test_impl(name, visibility, **kwargs):
-    copts = kwargs.pop("copts") or select({
-        "//conditions:default": [],
-    })
     deps = kwargs.pop("deps") or select({
         "//conditions:default": [],
     })
     srcs = kwargs.pop("srcs") or select({
-        "//conditions:default": [],
-    })
-    linkopts = kwargs.pop("linkopts") or select({
         "//conditions:default": [],
     })
     tags = kwargs.pop("tags") or []
@@ -33,22 +27,39 @@ def _mobile_test_impl(name, visibility, **kwargs):
             "@googletest//:gtest_main",
         ]
     })
+    default_copts = select(resolved_flags_select_dicts["copts"].flat_select_dict)
+    default_cxxopts = select(resolved_flags_select_dicts["cxxopts"].flat_select_dict)
+    default_linkopts = select(resolved_flags_select_dicts["linkopts"].flat_select_dict)
+    copts = kwargs.pop("copts") or select({
+        "//conditions:default": [],
+    })
+    cxxopts = kwargs.pop("cxxopts") or select({
+        "//conditions:default": [],
+    })
+    linkopts = kwargs.pop("linkopts") or select({
+        "//conditions:default": [],
+    })
     cc_test(
         name = name,
         srcs = srcs,
         visibility = visibility,
-        # linkopts = resolved_flags["linkopts"] + linkopts if linkopts else resolved_flags["linkopts"],
+        linkopts = default_linkopts + linkopts,
+        copts = default_copts + copts,
+        cxxopts = default_cxxopts + cxxopts,
         deps = deps,
         tags = tags + [TAG_HOST],
         args = args,
         data = data,
         **kwargs,
     )
+    # Note: iOS, Android, and Wasm will internally add default copts, cxxopts, and linkopts
     ios_mobile_test(
         name = name + "-ios",
         visibility = visibility,
         srcs = srcs,
         copts = copts,
+        cxxopts = cxxopts,
+        linkopts = linkopts,
         deps = deps,
         tags = tags,
         args = args,
@@ -59,6 +70,8 @@ def _mobile_test_impl(name, visibility, **kwargs):
         visibility = visibility,
         srcs = srcs,
         copts = copts,
+        cxxopts = cxxopts,
+        linkopts = linkopts,
         deps = deps,
         tags = tags,
         args = args,
@@ -69,6 +82,8 @@ def _mobile_test_impl(name, visibility, **kwargs):
         visibility = visibility,
         srcs = srcs,
         copts = copts,
+        cxxopts = cxxopts,
+        linkopts = linkopts,
         deps = deps,
         threads = False,
         simd = False,
@@ -81,6 +96,8 @@ def _mobile_test_impl(name, visibility, **kwargs):
         visibility = visibility,
         srcs = srcs,
         copts = copts,
+        cxxopts = cxxopts,
+        linkopts = linkopts,
         deps = deps,
         threads = False,
         simd = True,
@@ -93,6 +110,8 @@ def _mobile_test_impl(name, visibility, **kwargs):
         visibility = visibility,
         srcs = srcs,
         copts = copts,
+        cxxopts = cxxopts,
+        linkopts = linkopts,
         deps = deps,
         threads = True,
         simd = True,

@@ -8,6 +8,7 @@ load(":macos.bzl", "macos_flags")
 
 load("//macros/flags/flatten:flatten.bzl", "flatten_select_dict")
 load("//macros/flags/flatten:flat_config_groups.bzl", "create_config_setting_groups")
+load("//macros/flags/flatten:concat.bzl", "concat_select_dicts")
 
 def _transform_to_select_dict(key):
     return {
@@ -16,7 +17,6 @@ def _transform_to_select_dict(key):
         "@platforms//os:macos": macos_flags.get(key, default = []),
         ":clang_linux": linux_clang_flags.get(key, default = []),
         "@platforms//os:emscripten": emscripten_flags.get(key, default = []),
-        "//conditions:default": [],
     }
 
 """ Resolves flags for different platforms and compilers.
@@ -59,9 +59,59 @@ flags_dicts = {
     "linker_release_flags": _transform_to_select_dict("linker_release_flags"),
 }
 
-resolved_flags = {
-    # "linkopts": flags_dicts["linker_common_flags"] + {
-    #     (":debug", ":devRelease"): flags_dicts["linker_runtime_checks"],
-    #     ":release": flags_dicts["linker_release_flags"],
-    # }
+resolved_flags_select_dicts = {
+    "linkopts": concat_select_dicts(
+        "linkopts_conditions",
+        "//macros/flags",
+        flags_dicts["linker_common_flags"],
+        flags_dicts["linker_exceptions_off"],
+        selects.with_or_dict({
+            (":debug", ":devRelease"): flags_dicts["linker_runtime_checks"],
+            ":release": flags_dicts["linker_release_flags"],
+        }),
+        {
+            ":release": flags_dicts["linker_lto"],
+            "//conditions:default": [],
+        },
+    ),
+    "copts": concat_select_dicts(
+        "copts_conditions",
+        "//macros/flags",
+        flags_dicts["compiler_common_flags"],
+        flags_dicts["c_compiler_standard"],
+        flags_dicts["compiler_default_warnings"],
+        flags_dicts["compiler_warnings_as_errors"],
+        flags_dicts["compiler_debug_symbols"],
+        {
+            ":debug": flags_dicts["compiler_debug_flags"],
+            ":devRelease": flags_dicts["compiler_debug_flags"],
+            ":release": flags_dicts["compiler_release_flags"],
+        },
+        {
+            ":release": flags_dicts["compiler_lto"],
+            "//conditions:default": [],
+        },
+        {
+            ":release": flags_dicts["compiler_optimize_for_size"],
+            "//conditions:default": [],
+        },
+    ),
+    "cxxopts": concat_select_dicts(
+        "cxxopts_conditions",
+        "//macros/flags",
+        flags_dicts["cxx_compiler_common_flags"],
+        flags_dicts["cxx_compiler_standard"],
+        flags_dicts["cxx_compiler_no_thread_safe_init"],
+        flags_dicts["cxx_compiler_exceptions_off"],
+        selects.with_or_dict({
+            (":debug", ":devRelease"): flags_dicts["cxx_compiler_rtti_on"],
+            ":release": flags_dicts["cxx_compiler_rtti_off"],
+        }),
+    ),
 }
+
+def create_resolved_flags_conditions():
+    for value in resolved_flags_select_dicts.values():
+        create_config_setting_groups(
+            config_setting_groups = value.config_setting_groups,
+        )

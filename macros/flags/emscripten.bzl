@@ -35,11 +35,11 @@ def _calculate_emscripten_flags():
     ]
     emscripten_flags["linker_common_flags"] = [
         "-s MALLOC=emmalloc",
-        "-s STRICT=1",
+        # "-s STRICT=1",
     ]
     emscripten_flags["compiler_common_flags"] = emscripten_flags["compiler_common_flags"] + [
         "-fno-PIC",
-        "-s STRICT=1",
+        # "-s STRICT=1",
     ]
 
     return emscripten_flags
