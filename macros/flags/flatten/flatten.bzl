@@ -6,7 +6,7 @@ load(":sanitize.bzl", "sanitize_flattened")
 
 # NOTE: starlark doesn't support recursive functions (https://bazel.build/rules/language),
 #       so we need to  manually unroll the recursion up to the desired depth (3 levels in this case).
-def _flatten_select_dicts_final(input_dict):
+def _flatten_select_dict_final(input_dict):
     config_setting_groups = dict()
     flat_select_dict = dict()
 
@@ -21,7 +21,7 @@ def _flatten_select_dicts_final(input_dict):
         flat_select_dict = flat_select_dict
     )
 
-def _flatten_select_dicts_4(input_dict):
+def _flatten_select_dict_4(input_dict):
     config_setting_groups = dict()
     flat_select_dict = dict()
 
@@ -30,7 +30,7 @@ def _flatten_select_dicts_4(input_dict):
 
     for (key, value) in input_dict.items():
         if type(value) == type({}):
-            flattened_value = _flatten_select_dicts_final(input_dict = value)
+            flattened_value = _flatten_select_dict_final(input_dict = value)
             for (sub_key, sub_value) in flattened_value.flat_select_dict.items():
                 counter = counter + 1
                 config_group_name = config_group_name_prefix + str(counter)
@@ -45,7 +45,7 @@ def _flatten_select_dicts_4(input_dict):
         flat_select_dict = flat_select_dict
     )
 
-def _flatten_select_dicts_3(input_dict):
+def _flatten_select_dict_3(input_dict):
     config_setting_groups = dict()
     flat_select_dict = dict()
 
@@ -54,7 +54,7 @@ def _flatten_select_dicts_3(input_dict):
 
     for (key, value) in input_dict.items():
         if type(value) == type({}):
-            flattened_value = _flatten_select_dicts_4(input_dict = value)
+            flattened_value = _flatten_select_dict_4(input_dict = value)
             for (sub_key, sub_value) in flattened_value.flat_select_dict.items():
                 counter = counter + 1
                 config_group_name = config_group_name_prefix + str(counter)
@@ -69,7 +69,7 @@ def _flatten_select_dicts_3(input_dict):
         flat_select_dict = flat_select_dict
     )
 
-def _flatten_select_dicts_2(input_dict):
+def _flatten_select_dict_2(input_dict):
     config_setting_groups = dict()
     flat_select_dict = dict()
 
@@ -78,7 +78,7 @@ def _flatten_select_dicts_2(input_dict):
 
     for (key, value) in input_dict.items():
         if type(value) == type({}):
-            flattened_value = _flatten_select_dicts_3(input_dict = value)
+            flattened_value = _flatten_select_dict_3(input_dict = value)
             for (sub_key, sub_value) in flattened_value.flat_select_dict.items():
                 counter = counter + 1
                 config_group_name = config_group_name_prefix + str(counter)
@@ -93,7 +93,7 @@ def _flatten_select_dicts_2(input_dict):
         flat_select_dict = flat_select_dict
     )
 
-def flatten_select_dicts(name, package, input_dict):
+def flatten_select_dict(name, package, input_dict):
     """Flatten the nested select dicts into a single flat
        select dict that can be used with regular select()
        function.
@@ -122,7 +122,7 @@ def flatten_select_dicts(name, package, input_dict):
 
     for (key, value) in input_dict.items():
         if type(value) == type({}):
-            flattened_value = _flatten_select_dicts_2(input_dict = value)
+            flattened_value = _flatten_select_dict_2(input_dict = value)
             for (sub_key, sub_value) in flattened_value.flat_select_dict.items():
                 counter = counter + 1
                 config_group_name = config_group_name_prefix + str(counter)
@@ -141,7 +141,7 @@ def flatten_select_dicts(name, package, input_dict):
         )
     )
 
-def _unit_test_impl(ctx):
+def _flatten_select_dict_test_impl(ctx):
     env = unittest.begin(ctx)
 
     input_dict = {
@@ -177,18 +177,18 @@ def _unit_test_impl(ctx):
     asserts.equals(
         env = env,
         expected = expected,
-        actual = flatten_select_dicts(name = "N", package = "P", input_dict = input_dict),
+        actual = flatten_select_dict(name = "N", package = "P", input_dict = input_dict),
         msg = "Flattening select dicts failed",
     )
 
     return unittest.end(env)
 
-flatten_select_dicts_test = unittest.make(_unit_test_impl)
+flatten_select_dict_test = unittest.make(_flatten_select_dict_test_impl)
 
 def _flatten_test_suite_impl(name, visibility):
     unittest.suite(
         name,
-        partial.make(flatten_select_dicts_test, tags = [TAG_STARLARK])
+        partial.make(flatten_select_dict_test, tags = [TAG_STARLARK])
     )
     
 flatten_test_suite = macro(

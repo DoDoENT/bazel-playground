@@ -1,17 +1,19 @@
 load("@bazel_skylib//lib:selects.bzl", "selects")
 
 load(":android.bzl", "android_flags")
-load(":apple.bzl", "apple_flags")
-load(":linux.bzl", "linux_clang_flags")
 load(":emscripten.bzl", "emscripten_flags")
+load(":ios.bzl", "ios_flags")
+load(":linux.bzl", "linux_clang_flags")
+load(":macos.bzl", "macos_flags")
 
-load("//macros/flags/flatten:flatten.bzl", "flatten_select_dicts")
+load("//macros/flags/flatten:flatten.bzl", "flatten_select_dict")
 load("//macros/flags/flatten:flat_config_groups.bzl", "create_config_setting_groups")
 
 def _transform_to_select_dict(key):
     return {
         "@platforms//os:android": android_flags.get(key, default = []),
-        ":apple_platform": apple_flags.get(key, default = []),
+        "@platforms//os:ios": ios_flags.get(key, default = []),
+        "@platforms//os:macos": macos_flags.get(key, default = []),
         ":clang_linux": linux_clang_flags.get(key, default = []),
         "@platforms//os:emscripten": emscripten_flags.get(key, default = []),
         "//conditions:default": [],

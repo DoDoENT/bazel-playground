@@ -21,7 +21,7 @@ def _calculate_emscripten_flags():
     emscripten_flags["linker_exceptions_on"] = [
         "-s DISABLE_EXCEPTION_CATCHING=0"
     ]
-    emscripten_flags["linker_runtime_checks"] = emscripten_flags["linker_runtime_checks"] + [
+    emscripten_flags["linker_runtime_checks"] = [
         "-s ASSERTIONS=2",
         "-s STACK_OVERFLOW_CHECK=2",
         "-s GL_ASSERTIONS=1",

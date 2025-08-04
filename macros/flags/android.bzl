@@ -10,7 +10,8 @@ def _calculate_android_flags():
         "-Wl,--gc-sections",
         "-Wl,--icf=all",
     ]
-
+    android_flags["compiler_runtime_checks"] = []
+    android_flags["linker_runtime_checks"] = []
     return android_flags
 
 android_flags = _calculate_android_flags()

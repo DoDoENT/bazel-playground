@@ -53,22 +53,3 @@ selects.config_setting_group(
     match_all = [":using_clang", "@platforms//os:linux"]
 )
 
-selects.config_setting_group(
-    name = "clang_linux_sanitizer_build",
-    match_all = [":sanitizer_build", ":clang_linux"]
-)
-
-selects.config_setting_group(
-    name = "clang_apple_release_build",
-    match_all = [":release", ":using_clang", ":apple_platform"]
-)
-
-selects.config_setting_group(
-    name = "clang_linux_release_build",
-    match_all = [":release", ":using_clang", "@platforms//os:linux"]
-)
-
-selects.config_setting_group(
-    name = "clang_android_release_build",
-    match_all = [":release", ":using_clang", "@platforms//os:android"]
-)

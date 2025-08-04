@@ -3,7 +3,7 @@ load("@bazel_skylib//lib:partial.bzl", "partial")
 
 load("//macros:constants.bzl", "TAG_STARLARK")
 
-def sanitize_flattened(name, package, input_flattened):
+def sanitize_flattened(name, package, input_flattened, unique_prefixes = ["@platforms//os", "@platforms//cpu"]):
     """Sanitizes the flattened structure by reordering entries in a way
        that those with more conditions are before those with less conditions.
        Thus, more specialized conditions are always preferred to more general
@@ -25,13 +25,24 @@ def sanitize_flattened(name, package, input_flattened):
 
     # first remove all duplicate conditions in config_setting_groups
     for key in input_flattened.config_setting_groups.keys():
-        unique_settings = list(set(input_flattened.config_setting_groups[key]))
+        unique_settings = set(input_flattened.config_setting_groups[key])
+        if len(unique_settings) > 1:
+            unique_settings.discard("//conditions:default")
+        impossible_combination = False
+        for prefix in unique_prefixes:
+            count = 0
+            for setting in unique_settings:
+                if setting.startswith(prefix):
+                    count += 1
+                    if count > 1:
+                        impossible_combination = True
+                        break
         stringified = " ".join(sorted(unique_settings))
-        if stringified in seen:
+        if stringified in seen or impossible_combination:
             removed_keys.add(key)
         else:
             seen.add(stringified)
-            unified_setting_groups[key] = unique_settings
+            unified_setting_groups[key] = list(unique_settings)
 
     setting_group_keys = sorted(
         unified_setting_groups.keys(),
