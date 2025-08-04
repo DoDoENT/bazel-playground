@@ -80,6 +80,43 @@ emscripten_deps.config(
     version = "4.0.11",
 )
 
+emscripten_cache = use_extension(
+    "@emsdk//:emscripten_cache.bzl",
+    "emscripten_cache",
+)
+emscripten_cache.configuration(flags = ["--lto=thin"])
+emscripten_cache.targets(targets = [
+    "crtbegin",
+    "libal",
+    "libc-mt",
+    "libc",
+    "libc++-mt-noexcept",
+    "libc++-noexcept",
+    "libc++abi-mt-noexcept",
+    "libc++abi-noexcept",
+    "libcompiler_rt-mt",
+    "libcompiler_rt",
+    "libembind-rtti",
+    "libemmalloc-mt",
+    "libemmalloc",
+    "libfetch-mt",
+    "libfetch",
+    "libGL-getprocaddr",
+    "libGL-mt-getprocaddr",
+    "libhtml5",
+    "libnoexit",
+    "libsockets-mt",
+    "libsockets",
+    "libprintf_long_double-mt",
+    "libprintf_long_double-mt-debug",
+    "libprintf_long_double-debug",
+    "libstubs",
+    "libstubs-debug",
+    "libc-debug",
+    "libdlmalloc",
+    "libc++abi-debug-noexcept",
+])
+
 bazel_dep(name = "aspect_rules_js", version = "2.4.2")
 bazel_dep(name = "rules_nodejs", version = "6.5.0")
 git_override(
