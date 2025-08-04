@@ -1,7 +1,7 @@
 load("@bazel_skylib//lib:unittest.bzl", "asserts", "unittest")
 load("@bazel_skylib//lib:partial.bzl", "partial")
 
-load("//macros:constants.bzl", "TAG_HOST")
+load("//macros:constants.bzl", "TAG_STARLARK")
 
 # NOTE: starlark doesn't support recursive functions (https://bazel.build/rules/language),
 #       so we need to  manually unroll the recursion up to the desired depth (3 levels in this case).
@@ -183,7 +183,7 @@ flatten_select_dicts_test = unittest.make(_unit_test_impl)
 def _flatten_test_suite_impl(name, visibility):
     unittest.suite(
         name,
-        partial.make(flatten_select_dicts_test, tags = [TAG_HOST])
+        partial.make(flatten_select_dicts_test, tags = [TAG_STARLARK])
     )
     
 flatten_test_suite = macro(
