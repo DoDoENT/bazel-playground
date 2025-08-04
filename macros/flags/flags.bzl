@@ -5,7 +5,8 @@ load(":apple.bzl", "apple_flags")
 load(":linux.bzl", "linux_clang_flags")
 load(":emscripten.bzl", "emscripten_flags")
 
-load(":flatten.bzl", "create_config_setting_groups", "flatten_select_dicts")
+load("//macros/flags/flatten:flatten.bzl", "flatten_select_dicts")
+load("//macros/flags/flatten:flat_config_groups.bzl", "create_config_setting_groups")
 
 def _transform_to_select_dict(key):
     return {

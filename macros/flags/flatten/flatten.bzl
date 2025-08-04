@@ -1,4 +1,7 @@
-load("@bazel_skylib//lib:selects.bzl", "selects")
+load("@bazel_skylib//lib:unittest.bzl", "asserts", "unittest")
+load("@bazel_skylib//lib:partial.bzl", "partial")
+
+load("//macros:constants.bzl", "TAG_HOST")
 
 # NOTE: starlark doesn't support recursive functions (https://bazel.build/rules/language),
 #       so we need to  manually unroll the recursion up to the desired depth (3 levels in this case).
@@ -133,26 +136,56 @@ def flatten_select_dicts(name, package, input_dict):
         flat_select_dict = flat_select_dict
     )
 
-def _create_config_setting_groups(name, visibility, config_setting_groups):
-    """Create config setting groups in the `BUILD` file associated with
-       provided `package` parameter.
-       The `input_dict` is a dictionary of config groups that need to be created.
-       The keys in the dict refer to either original labels, in
-       case when no flattening was needed, or to resolved merged
-       config groups that need to be created in a `BUILD` file associated
-       with provided `package`.
-    """
-    for (group_name, conditions) in config_setting_groups.items():
-        selects.config_setting_group(
-            name = group_name,
-            match_all = conditions,
-        )
+def _unit_test_impl(ctx):
+    env = unittest.begin(ctx)
 
-create_config_setting_groups = macro(
-    implementation = _create_config_setting_groups,
-    attrs = {
-        "config_setting_groups": attr.string_list_dict(
-            mandatory = True,
-        ),
-    },
+    input_dict = {
+        "condition1": {
+            "A": ["-bla", "-bla2"],
+            "B": {
+                "C": ["-l1", "-l2"],
+                "D": {
+                    "E": ["bla"],
+                    "F": ["bar"],
+                },
+            },
+        },
+        "condition2": ["default"],
+    }
+
+    expected = struct(
+        config_setting_groups = {
+            "P:N_1": ["condition1", "A"],
+            "P:N_2": ["condition1", "B", "C"],
+            "P:N_3": ["condition1", "B", "D", "E"],
+            "P:N_4": ["condition1", "B", "D", "F"],
+        },
+        flat_select_dict = {
+            "P:N_1": ["-bla", "-bla2"],
+            "P:N_2": ["-l1", "-l2"],
+            "P:N_3": ["bla"],
+            "P:N_4": ["bar"],
+            "condition2": ["default"],
+        },
+    )
+
+    asserts.equals(
+        env = env,
+        expected = expected,
+        actual = flatten_select_dicts(name = "N", package = "P", input_dict = input_dict),
+        msg = "Flattening select dicts failed",
+    )
+
+    return unittest.end(env)
+
+flatten_select_dicts_test = unittest.make(_unit_test_impl)
+
+def _flatten_test_suite_impl(name, visibility):
+    unittest.suite(
+        name,
+        partial.make(flatten_select_dicts_test, tags = [TAG_HOST])
+    )
+    
+flatten_test_suite = macro(
+    implementation = _flatten_test_suite_impl,
 )
