@@ -2,6 +2,7 @@ load("@bazel_skylib//lib:unittest.bzl", "asserts", "unittest")
 load("@bazel_skylib//lib:partial.bzl", "partial")
 
 load("//macros:constants.bzl", "TAG_STARLARK")
+load(":sanitize.bzl", "sanitize_flattened")
 
 # NOTE: starlark doesn't support recursive functions (https://bazel.build/rules/language),
 #       so we need to  manually unroll the recursion up to the desired depth (3 levels in this case).
@@ -131,9 +132,13 @@ def flatten_select_dicts(name, package, input_dict):
         else: # no flattening needed
             flat_select_dict[key] = value
 
-    return struct(
-        config_setting_groups = config_setting_groups,
-        flat_select_dict = flat_select_dict
+    return sanitize_flattened(
+        name = name,
+        package = package,
+        input_flattened = struct(
+            config_setting_groups = config_setting_groups,
+            flat_select_dict = flat_select_dict
+        )
     )
 
 def _unit_test_impl(ctx):
@@ -155,16 +160,16 @@ def _unit_test_impl(ctx):
 
     expected = struct(
         config_setting_groups = {
-            "P:N_1": ["condition1", "A"],
-            "P:N_2": ["condition1", "B", "C"],
-            "P:N_3": ["condition1", "B", "D", "E"],
-            "P:N_4": ["condition1", "B", "D", "F"],
+            "P:N_1": ["condition1", "B", "D", "E"],
+            "P:N_2": ["condition1", "B", "D", "F"],
+            "P:N_3": ["condition1", "B", "C"],
+            "P:N_4": ["condition1", "A"],
         },
         flat_select_dict = {
-            "P:N_1": ["-bla", "-bla2"],
-            "P:N_2": ["-l1", "-l2"],
-            "P:N_3": ["bla"],
-            "P:N_4": ["bar"],
+            "P:N_1": ["bla"],
+            "P:N_2": ["bar"],
+            "P:N_3": ["-l1", "-l2"],
+            "P:N_4": ["-bla", "-bla2"],
             "condition2": ["default"],
         },
     )
