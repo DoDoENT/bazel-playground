@@ -4,7 +4,7 @@ load("@aspect_rules_js//js:defs.bzl", "js_test")
 load(":test_utils.bzl", "prepare_assets")
 load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 
-def _wasm_test_impl(name, visibility, srcs, copts, cxxopts, linkopts, deps, threads, simd, args, tags, data):
+def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, threads, simd, args, tags, data):
 
     preload_linkopts = []
     additional_linker_inputs = []
@@ -19,6 +19,7 @@ def _wasm_test_impl(name, visibility, srcs, copts, cxxopts, linkopts, deps, thre
         preload_linkopts.append("$(BINDIR)/" + native.package_name() + "/" + name + "-assets@/")
 
     default_copts = select(resolved_flags_select_dicts["copts"].flat_select_dict)
+    default_conlyopts = select(resolved_flags_select_dicts["conlyopts"].flat_select_dict)
     default_cxxopts = select(resolved_flags_select_dicts["cxxopts"].flat_select_dict)
     default_linkopts = select(resolved_flags_select_dicts["linkopts"].flat_select_dict)
 
@@ -26,6 +27,7 @@ def _wasm_test_impl(name, visibility, srcs, copts, cxxopts, linkopts, deps, thre
         name = name + "-cc",
         srcs = srcs,
         copts = default_copts + copts,
+        conlyopts = default_conlyopts + conlyopts,
         cxxopts = default_cxxopts + cxxopts,
         linkopts = default_linkopts + linkopts + preload_linkopts,
         deps = deps,
@@ -71,6 +73,10 @@ wasm_test = macro(
         "copts": attr.string_list(
             default = [],
             doc = "Compiler options for the WebAssembly mobile test.",
+        ),
+        "conlyopts": attr.string_list(
+            default = [],
+            doc = "C compiler options for the WebAssembly mobile test.",
         ),
         "cxxopts": attr.string_list(
             default = [],

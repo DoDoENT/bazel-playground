@@ -51,7 +51,7 @@ _generate_test_java = rule(
     },
 )
 
-def _android_mobile_test_impl(name, visibility, srcs, copts, cxxopts, linkopts, deps, args, tags, data):
+def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data):
     sanitized_name = _sanitize_name(name)
 
     mobile_library(
@@ -61,6 +61,7 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, cxxopts, linkopts, 
         ],
         deps = deps,
         copts = copts,
+        conlyopts = conlyopts,
         cxxopts = cxxopts,
         linkopts = linkopts + [
             "-landroid",
@@ -133,6 +134,10 @@ android_mobile_test = macro(
         "copts": attr.string_list(
             default = [],
             doc = "Compiler options for the Android mobile test.",
+        ),
+        "conlyopts": attr.string_list(
+            default = [],
+            doc = "C compiler options for the Android mobile test.",
         ),
         "cxxopts": attr.string_list(
             default = [],

@@ -8,7 +8,7 @@ load("@rules_xcodeproj//xcodeproj:xcschemes.bzl", "xcschemes")
 load("//macros:mobile_library.bzl", "mobile_library")
 load(":constants.bzl", "TAG_IOS")
 
-def _ios_mobile_test_impl(name, visibility, srcs, copts, cxxopts, linkopts, deps, args, tags, data):
+def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data):
     mobile_library(
         name = name + "-ios-srcs",
         srcs = srcs,
@@ -16,6 +16,7 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, cxxopts, linkopts, deps
             "//test-support/ios-test/swift-bridge:googletest-ios-swift-bridge",
         ],
         copts = copts,
+        conlyopts = conlyopts,
         cxxopts = cxxopts,
         linkopts = linkopts,
         testonly = True, 
@@ -91,6 +92,10 @@ ios_mobile_test = macro(
         "copts": attr.string_list(
             default = [],
             doc = "Compiler options for the iOS mobile test.",
+        ),
+        "conlyopts": attr.string_list(
+            default = [],
+            doc = "C compiler options for the iOS mobile test.",
         ),
         "cxxopts": attr.string_list(
             default = [],

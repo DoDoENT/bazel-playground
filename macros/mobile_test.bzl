@@ -27,9 +27,13 @@ def _mobile_test_impl(name, visibility, **kwargs):
             "@googletest//:gtest_main",
         ]
     })
+    default_conlyopts = select(resolved_flags_select_dicts["conlyopts"].flat_select_dict)
     default_copts = select(resolved_flags_select_dicts["copts"].flat_select_dict)
     default_cxxopts = select(resolved_flags_select_dicts["cxxopts"].flat_select_dict)
     default_linkopts = select(resolved_flags_select_dicts["linkopts"].flat_select_dict)
+    conlyopts = kwargs.pop("conlyopts") or select({
+        "//conditions:default": []
+    })
     copts = kwargs.pop("copts") or select({
         "//conditions:default": [],
     })
@@ -46,6 +50,7 @@ def _mobile_test_impl(name, visibility, **kwargs):
         linkopts = default_linkopts + linkopts,
         copts = default_copts + copts,
         cxxopts = default_cxxopts + cxxopts,
+        conlyopts = default_conlyopts + conlyopts,
         deps = deps,
         tags = tags + [TAG_HOST],
         args = args,
@@ -58,6 +63,7 @@ def _mobile_test_impl(name, visibility, **kwargs):
         visibility = visibility,
         srcs = srcs,
         copts = copts,
+        conlyopts = conlyopts,
         cxxopts = cxxopts,
         linkopts = linkopts,
         deps = deps,
@@ -70,6 +76,7 @@ def _mobile_test_impl(name, visibility, **kwargs):
         visibility = visibility,
         srcs = srcs,
         copts = copts,
+        conlyopts = conlyopts,
         cxxopts = cxxopts,
         linkopts = linkopts,
         deps = deps,
@@ -82,6 +89,7 @@ def _mobile_test_impl(name, visibility, **kwargs):
         visibility = visibility,
         srcs = srcs,
         copts = copts,
+        conlyopts = conlyopts,
         cxxopts = cxxopts,
         linkopts = linkopts,
         deps = deps,
@@ -96,6 +104,7 @@ def _mobile_test_impl(name, visibility, **kwargs):
         visibility = visibility,
         srcs = srcs,
         copts = copts,
+        conlyopts = conlyopts,
         cxxopts = cxxopts,
         linkopts = linkopts,
         deps = deps,
@@ -110,6 +119,7 @@ def _mobile_test_impl(name, visibility, **kwargs):
         visibility = visibility,
         srcs = srcs,
         copts = copts,
+        conlyopts = conlyopts,
         cxxopts = cxxopts,
         linkopts = linkopts,
         deps = deps,

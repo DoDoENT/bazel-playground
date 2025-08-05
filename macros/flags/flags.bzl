@@ -3,7 +3,7 @@ load("@bazel_skylib//lib:selects.bzl", "selects")
 load(":android.bzl", "android_flags")
 load(":emscripten.bzl", "emscripten_flags")
 load(":ios.bzl", "ios_flags")
-load(":linux.bzl", "linux_clang_flags")
+load(":linux.bzl", "linux_clang_flags", "linux_gcc_flags")
 load(":macos.bzl", "macos_flags")
 
 load("//macros/flags/flatten:flatten.bzl", "flatten_select_dict")
@@ -15,7 +15,8 @@ def _transform_to_select_dict(key):
         "@platforms//os:android": android_flags.get(key, default = []),
         "@platforms//os:ios": ios_flags.get(key, default = []),
         "@platforms//os:macos": macos_flags.get(key, default = []),
-        ":clang_linux": linux_clang_flags.get(key, default = []),
+        "//macros/flags:clang_linux": linux_clang_flags.get(key, default = []),
+        "//macros/flags:gcc_linux": linux_gcc_flags.get(key, default = []),
         "@platforms//os:emscripten": emscripten_flags.get(key, default = []),
     }
 
@@ -74,11 +75,15 @@ resolved_flags_select_dicts = {
             "//conditions:default": [],
         },
     ),
+    "conlyopts": concat_select_dicts(
+        "conlyopts_conditions",
+        "//macros/flags",
+        flags_dicts["c_compiler_standard"],
+    ),
     "copts": concat_select_dicts(
         "copts_conditions",
         "//macros/flags",
         flags_dicts["compiler_common_flags"],
-        flags_dicts["c_compiler_standard"],
         flags_dicts["compiler_default_warnings"],
         flags_dicts["compiler_warnings_as_errors"],
         flags_dicts["compiler_debug_symbols"],

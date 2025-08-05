@@ -54,4 +54,9 @@ selects.config_setting_group(
     match_all = [":using_clang", "@platforms//os:linux"]
 )
 
+selects.config_setting_group(
+    name = "gcc_linux",
+    match_all = [":using_gcc", "@platforms//os:linux"]
+)
+
 create_resolved_flags_conditions()
