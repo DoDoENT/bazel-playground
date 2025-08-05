@@ -97,6 +97,11 @@ def flatten_select_dict(name, package, input_dict):
     """Flatten the nested select dicts into a single flat
        select dict that can be used with regular select()
        function.
+       This function works around the missing support for
+       nested selects in Bazel by flattening the nested select dicts
+       into a single flat select dict that can be used with the `select()`.
+       Relevant PR: https://github.com/bazelbuild/bazel/issues/1623
+
        The output is a struct with fields:
             config_setting_groups: a dictionary of config groups.
                 The key in this dictionary represents a config group name,
