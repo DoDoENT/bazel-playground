@@ -10,10 +10,7 @@ def create_config_setting_groups(config_setting_groups):
        with provided `package`.
     """
     for (group_name, conditions) in config_setting_groups.items():
-        # extract name from the group name
-        if ":" in group_name:
-            group_name = group_name.split(":")[-1]
         selects.config_setting_group(
-            name = group_name,
+            name = group_name.name,
             match_all = conditions,
         )

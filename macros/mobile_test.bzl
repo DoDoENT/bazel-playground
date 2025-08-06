@@ -1,8 +1,8 @@
-load("@playground//macros:ios_mobile_test.bzl", "ios_mobile_test")
-load("@playground//macros:android_mobile_test.bzl", "android_mobile_test")
-load("@playground//macros:wasm_test.bzl", "wasm_test")
+load("//macros:ios_mobile_test.bzl", "ios_mobile_test")
+load("//macros:android_mobile_test.bzl", "android_mobile_test")
+load("//macros:wasm_test.bzl", "wasm_test")
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
-load("@playground//macros/flags:flags.bzl", "resolved_flags_select_dicts")
+load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 load(
     ":constants.bzl",
     "TAG_WASM_BASIC",
@@ -13,18 +13,18 @@ load(
 
 def _mobile_test_impl(name, visibility, **kwargs):
     deps = kwargs.pop("deps") or select({
-        "//conditions:default": [],
+        Label("//conditions:default"): [],
     })
     srcs = kwargs.pop("srcs") or select({
-        "//conditions:default": [],
+        Label("//conditions:default"): [],
     })
     tags = kwargs.pop("tags") or []
     args = kwargs.pop("args") or []
     data = kwargs.pop("data") or []
     deps = deps + select({
-        "//conditions:default": [
-            "@playground//test-support/paths:test-paths",
-            "@googletest//:gtest_main",
+        Label("//conditions:default"): [
+            Label("//test-support/paths:test-paths"),
+            Label("@googletest//:gtest_main"),
         ]
     })
     default_conlyopts = select(resolved_flags_select_dicts["conlyopts"].flat_select_dict)
@@ -32,16 +32,16 @@ def _mobile_test_impl(name, visibility, **kwargs):
     default_cxxopts = select(resolved_flags_select_dicts["cxxopts"].flat_select_dict)
     default_linkopts = select(resolved_flags_select_dicts["linkopts"].flat_select_dict)
     conlyopts = kwargs.pop("conlyopts") or select({
-        "//conditions:default": []
+        Label("//conditions:default"): []
     })
     copts = kwargs.pop("copts") or select({
-        "//conditions:default": [],
+        Label("//conditions:default"): [],
     })
     cxxopts = kwargs.pop("cxxopts") or select({
-        "//conditions:default": [],
+        Label("//conditions:default"): [],
     })
     linkopts = kwargs.pop("linkopts") or select({
-        "//conditions:default": [],
+        Label("//conditions:default"): [],
     })
     cc_test(
         name = name,

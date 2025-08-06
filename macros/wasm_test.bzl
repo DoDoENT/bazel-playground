@@ -2,7 +2,7 @@ load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 load("@emsdk//emscripten_toolchain:wasm_rules.bzl", "wasm_cc_binary")
 load("@aspect_rules_js//js:defs.bzl", "js_test")
 load(":test_utils.bzl", "prepare_assets")
-load("@playground//macros/flags:flags.bzl", "resolved_flags_select_dicts")
+load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 
 def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, threads, simd, args, tags, data):
 
@@ -14,7 +14,7 @@ def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts,
             name = name + "-assets",
             data = data
         )
-        additional_linker_inputs.append(name + "-assets")
+        additional_linker_inputs.append(native.package_relative_label(":" + name + "-assets"))
         preload_linkopts.append("--preload-file")
         preload_linkopts.append("$(BINDIR)/" + native.package_name() + "/" + name + "-assets@/")
 
@@ -43,7 +43,7 @@ def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts,
 
     wasm_cc_binary(
         name = name + "-bin",
-        cc_target = name + "-cc",
+        cc_target = native.package_relative_label(":" + name + "-cc"),
         simd = simd,
         threads = "off" if not threads else "emscripten",
         outputs = outputs,

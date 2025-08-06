@@ -33,7 +33,7 @@ def _flatten_select_dict_4(input_dict):
             flattened_value = _flatten_select_dict_final(input_dict = value)
             for (sub_key, sub_value) in flattened_value.flat_select_dict.items():
                 counter = counter + 1
-                config_group_name = config_group_name_prefix + str(counter)
+                config_group_name = Label(config_group_name_prefix + str(counter))
 
                 config_setting_groups[config_group_name] = [key] + flattened_value.config_setting_groups.get(sub_key, default = [sub_key])
                 flat_select_dict[config_group_name] = sub_value
@@ -57,7 +57,7 @@ def _flatten_select_dict_3(input_dict):
             flattened_value = _flatten_select_dict_4(input_dict = value)
             for (sub_key, sub_value) in flattened_value.flat_select_dict.items():
                 counter = counter + 1
-                config_group_name = config_group_name_prefix + str(counter)
+                config_group_name = Label(config_group_name_prefix + str(counter))
 
                 config_setting_groups[config_group_name] = [key] + flattened_value.config_setting_groups.get(sub_key, default = [sub_key])
                 flat_select_dict[config_group_name] = sub_value
@@ -81,7 +81,7 @@ def _flatten_select_dict_2(input_dict):
             flattened_value = _flatten_select_dict_3(input_dict = value)
             for (sub_key, sub_value) in flattened_value.flat_select_dict.items():
                 counter = counter + 1
-                config_group_name = config_group_name_prefix + str(counter)
+                config_group_name = Label(config_group_name_prefix + str(counter))
 
                 config_setting_groups[config_group_name] = [key] + flattened_value.config_setting_groups.get(sub_key, default = [sub_key])
                 flat_select_dict[config_group_name] = sub_value
@@ -130,7 +130,7 @@ def flatten_select_dict(name, package, input_dict):
             flattened_value = _flatten_select_dict_2(input_dict = value)
             for (sub_key, sub_value) in flattened_value.flat_select_dict.items():
                 counter = counter + 1
-                config_group_name = config_group_name_prefix + str(counter)
+                config_group_name = Label(config_group_name_prefix + str(counter))
 
                 config_setting_groups[config_group_name] = [key] + flattened_value.config_setting_groups.get(sub_key, default = [sub_key])
                 flat_select_dict[config_group_name] = sub_value
@@ -150,39 +150,39 @@ def _flatten_select_dict_test_impl(ctx):
     env = unittest.begin(ctx)
 
     input_dict = {
-        "condition1": {
-            "A": ["-bla", "-bla2"],
-            "B": {
-                "C": ["-l1", "-l2"],
-                "D": {
-                    "E": ["bla"],
-                    "F": ["bar"],
+        Label(":condition1"): {
+            Label(":A"): ["-bla", "-bla2"],
+            Label(":B"): {
+                Label(":C"): ["-l1", "-l2"],
+                Label(":D"): {
+                    Label(":E"): ["bla"],
+                    Label(":F"): ["bar"],
                 },
             },
         },
-        "condition2": ["default"],
+        Label(":condition2"): ["default"],
     }
 
     expected = struct(
         config_setting_groups = {
-            "P:N_1": ["condition1", "B", "D", "E"],
-            "P:N_2": ["condition1", "B", "D", "F"],
-            "P:N_3": ["condition1", "B", "C"],
-            "P:N_4": ["condition1", "A"],
+            Label("//P:N_1"): [Label(":condition1"), Label(":B"), Label(":D"), Label(":E")],
+            Label("//P:N_2"): [Label(":condition1"), Label(":B"), Label(":D"), Label(":F")],
+            Label("//P:N_3"): [Label(":condition1"), Label(":B"), Label(":C")],
+            Label("//P:N_4"): [Label(":condition1"), Label(":A")],
         },
         flat_select_dict = {
-            "P:N_1": ["bla"],
-            "P:N_2": ["bar"],
-            "P:N_3": ["-l1", "-l2"],
-            "P:N_4": ["-bla", "-bla2"],
-            "condition2": ["default"],
+            Label("//P:N_1"): ["bla"],
+            Label("//P:N_2"): ["bar"],
+            Label("//P:N_3"): ["-l1", "-l2"],
+            Label("//P:N_4"): ["-bla", "-bla2"],
+            Label(":condition2"): ["default"],
         },
     )
 
     asserts.equals(
         env = env,
         expected = expected,
-        actual = flatten_select_dict(name = "N", package = "P", input_dict = input_dict),
+        actual = flatten_select_dict(name = "N", package = "//P", input_dict = input_dict),
         msg = "Flattening select dicts failed",
     )
 

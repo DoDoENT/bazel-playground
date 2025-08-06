@@ -1,14 +1,14 @@
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
-load("@playground//macros/flags:flags.bzl", "resolved_flags_select_dicts")
+load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 
 def _mobile_library_impl(name, visibility, **kwargs):
     default_copts = select(resolved_flags_select_dicts["copts"].flat_select_dict)
     default_cxxopts = select(resolved_flags_select_dicts["cxxopts"].flat_select_dict)
     copts = kwargs.pop("copts") or select({
-        "//conditions:default": [],
+        Label("//conditions:default"): [],
     })
     cxxopts = kwargs.pop("cxxopts") or select({
-        "//conditions:default": [],
+        Label("//conditions:default"): [],
     })
     cc_library(
         name = name,

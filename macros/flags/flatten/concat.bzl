@@ -19,7 +19,7 @@ def concat_flattened(name, package, first_flattened, second_flattened):
     for key1 in first_flattened.flat_select_dict.keys():
         for key2 in second_flattened.flat_select_dict.keys():
             counter += 1
-            config_group_name = config_group_name_prefix + str(counter)
+            config_group_name = Label(config_group_name_prefix + str(counter))
 
             # Combine the config setting groups
             combined_settings = (
@@ -87,58 +87,58 @@ def _concatenate_test_impl(ctx):
 
     input1 = struct(
         config_setting_groups = {
-            "P:N_1": ["A", "C"],
-            "P:N_2": ["B", "C"],
+            Label("//P:N_1"): [Label(":A"), Label(":C")],
+            Label("//P:N_2"): [Label(":B"), Label(":C")],
         },
         flat_select_dict = {
-            "P:N_1": ["a3", "b4"],
-            "P:N_2": ["bla2"],
-            "A": ["a", "a2"],
+            Label("//P:N_1"): ["a3", "b4"],
+            Label("//P:N_2"): ["bla2"],
+            Label(":A"): ["a", "a2"],
         },
     )
     input2 = struct(
         config_setting_groups = {
-            "P:N_1": ["B", "D", "E"],
-            "P:N_2": ["B", "D", "F"],
-            "P:N_3": ["B", "C"],
+            Label("//P:N_1"): [Label(":B"), Label(":D"), Label(":E")],
+            Label("//P:N_2"): [Label(":B"), Label(":D"), Label(":F")],
+            Label("//P:N_3"): [Label(":B"), Label(":C")],
         },
         flat_select_dict = {
-            "P:N_1": ["bla"],
-            "P:N_2": ["bar"],
-            "P:N_3": ["-l1", "-l2"],
-            "B": ["samob"],
+            Label("//P:N_1"): ["bla"],
+            Label("//P:N_2"): ["bar"],
+            Label("//P:N_3"): ["-l1", "-l2"],
+            Label(":B"): ["samob"],
         },
     )
 
     expected = struct(
         config_setting_groups = {
-            "P:N_1": ["A", "C", "B", "D", "E"],
-            "P:N_2": ["A", "C", "B", "D", "F"],
-            "P:N_3": ["B", "C", "D", "E"],
-            "P:N_4": ["B", "C", "D", "F"],
-            "P:N_5": ["A", "B", "D", "E"],
-            "P:N_6": ["A", "B", "D", "F"],
-            "P:N_7": ["A", "C", "B"],
-            "P:N_8": ["B", "C"],
-            "P:N_9": ["A", "B"],
+            Label("//P:N_1"): [Label(":A"), Label(":C"), Label(":B"), Label(":D"), Label(":E")],
+            Label("//P:N_2"): [Label(":A"), Label(":C"), Label(":B"), Label(":D"), Label(":F")],
+            Label("//P:N_3"): [Label(":B"), Label(":C"), Label(":D"), Label(":E")],
+            Label("//P:N_4"): [Label(":B"), Label(":C"), Label(":D"), Label(":F")],
+            Label("//P:N_5"): [Label(":A"), Label(":B"), Label(":D"), Label(":E")],
+            Label("//P:N_6"): [Label(":A"), Label(":B"), Label(":D"), Label(":F")],
+            Label("//P:N_7"): [Label(":A"), Label(":C"), Label(":B")],
+            Label("//P:N_8"): [Label(":B"), Label(":C")],
+            Label("//P:N_9"): [Label(":A"), Label(":B")],
         },
         flat_select_dict = {
-            "P:N_1": ["a3", "b4", "bla"],
-            "P:N_2": ["a3", "b4", "bar"],
-            "P:N_3": ["bla2", "bla"],
-            "P:N_4": ["bla2", "bar"],
-            "P:N_5": ["a", "a2", "bla"],
-            "P:N_6": ["a", "a2", "bar"],
-            "P:N_7": ["a3", "b4", "-l1", "-l2"],
-            "P:N_8": ["bla2", "-l1", "-l2"],
-            "P:N_9": ["a", "a2", "samob"],
+            Label("//P:N_1"): ["a3", "b4", "bla"],
+            Label("//P:N_2"): ["a3", "b4", "bar"],
+            Label("//P:N_3"): ["bla2", "bla"],
+            Label("//P:N_4"): ["bla2", "bar"],
+            Label("//P:N_5"): ["a", "a2", "bla"],
+            Label("//P:N_6"): ["a", "a2", "bar"],
+            Label("//P:N_7"): ["a3", "b4", "-l1", "-l2"],
+            Label("//P:N_8"): ["bla2", "-l1", "-l2"],
+            Label("//P:N_9"): ["a", "a2", "samob"],
         },
     )
 
     asserts.equals(
         env = env,
         expected = expected,
-        actual = concat_flattened(name = "N", package = "P", first_flattened = input1, second_flattened = input2),
+        actual = concat_flattened(name = "N", package = "//P", first_flattened = input1, second_flattened = input2),
         msg = "Concatenating select dicts failed",
     )
 
@@ -150,33 +150,33 @@ def _concat_select_dicts_impl(ctx):
     env = unittest.begin(ctx)
 
     linker_common_flags = {
-        "@platforms//os:emscripten": [
+        Label("@platforms//os:emscripten"): [
             "-s MALLOC=emmalloc",
             "-s STRICT=1",
         ],
-        "//conditions:default": [],
+        Label("//conditions:default"): [],
     }
     linker_runtime_checks = {
-        "@platforms//os:emscripten": [
+        Label("@platforms//os:emscripten"): [
             "-s ASSERTIONS=2",
             "-s STACK_OVERFLOW_CHECK=2",
             "-s GL_ASSERTIONS=1",
             "-s SAFE_HEAP=1",
         ],
-        "@platforms//os:android": [],
-        "@platforms//os:ios": [],
-        "@platforms//os:macos": [
+        Label("@platforms//os:android"): [],
+        Label("@platforms//os:ios"): [],
+        Label("@platforms//os:macos"): [
             "-fsanitize=address",
             "-fsanitize=undefined",
         ],
-        "@platforms//os:linux": [
+        Label("@platforms//os:linux"): [
             "-fsanitize=address",
             "-fsanitize=undefined",
             "-lclang_rt.ubsan_standalone_cxx",
         ],
     }
     linker_release_flags = {
-        "@platforms//os:android": [
+        Label("@platforms//os:android"): [
             "-Wl,--no-undefined",
             "-Wl,-z,relro",
             "-Wl,-z,now",
@@ -184,19 +184,19 @@ def _concat_select_dicts_impl(ctx):
             "-Wl,--gc-sections",
             "-Wl,--icf=all",
         ],
-        "@platforms//os:emscripten": [
+        Label("@platforms//os:emscripten"): [
             "-s ASSERTIONS=0",
             "-s STACK_OVERFLOW_CHECK=0",
             "--closure 1",
             "-s IGNORE_CLOSURE_COMPILER_ERRORS=1",
         ],
-        "@platforms//os:ios": [
+        Label("@platforms//os:ios"): [
             "-Wl,-dead_strip",
         ],
-        "@platforms//os:macos": [
+        Label("@platforms//os:macos"): [
             "-Wl,-dead_strip",
         ],
-        "@platforms//os:linux": [
+        Label("@platforms//os:linux"): [
             "-Wl,--gc-sections",
         ],
     }
@@ -206,46 +206,46 @@ def _concat_select_dicts_impl(ctx):
         "//macros/flags",
         linker_common_flags,
         {
-            ":debug": linker_runtime_checks,
-            ":devRelease": linker_runtime_checks,
-            ":release": linker_release_flags,
+            Label(":debug"): linker_runtime_checks,
+            Label(":devRelease"): linker_runtime_checks,
+            Label(":release"): linker_release_flags,
         }
     )
 
     expected = struct(
         config_setting_groups = {
-            "//macros/flags:linker_flags_conditions_1": ["@platforms//os:emscripten", ":debug"],
-            "//macros/flags:linker_flags_conditions_2": ["@platforms//os:emscripten", ":devRelease"],
-            "//macros/flags:linker_flags_conditions_3": ["@platforms//os:emscripten", ":release"],
-            "//macros/flags:linker_flags_conditions_4": [":debug", "@platforms//os:android"],
-            "//macros/flags:linker_flags_conditions_5": [":debug", "@platforms//os:ios"],
-            "//macros/flags:linker_flags_conditions_6": [":debug", "@platforms//os:macos"],
-            "//macros/flags:linker_flags_conditions_7": [":debug", "@platforms//os:linux"],
-            "//macros/flags:linker_flags_conditions_8": [":devRelease", "@platforms//os:android"],
-            "//macros/flags:linker_flags_conditions_9": [":devRelease", "@platforms//os:ios"],
-            "//macros/flags:linker_flags_conditions_10": [":devRelease", "@platforms//os:macos"],
-            "//macros/flags:linker_flags_conditions_11": [":devRelease", "@platforms//os:linux"],
-            "//macros/flags:linker_flags_conditions_12": [":release", "@platforms//os:android"],
-            "//macros/flags:linker_flags_conditions_13": [":release", "@platforms//os:ios"],
-            "//macros/flags:linker_flags_conditions_14": [":release", "@platforms//os:macos"],
-            "//macros/flags:linker_flags_conditions_15": [":release", "@platforms//os:linux"]
+            Label("//macros/flags:linker_flags_conditions_1"): [Label("@platforms//os:emscripten"), Label(":debug")],
+            Label("//macros/flags:linker_flags_conditions_2"): [Label("@platforms//os:emscripten"), Label(":devRelease")],
+            Label("//macros/flags:linker_flags_conditions_3"): [Label("@platforms//os:emscripten"), Label(":release")],
+            Label("//macros/flags:linker_flags_conditions_4"): [Label(":debug"), Label("@platforms//os:android")],
+            Label("//macros/flags:linker_flags_conditions_5"): [Label(":debug"), Label("@platforms//os:ios")],
+            Label("//macros/flags:linker_flags_conditions_6"): [Label(":debug"), Label("@platforms//os:macos")],
+            Label("//macros/flags:linker_flags_conditions_7"): [Label(":debug"), Label("@platforms//os:linux")],
+            Label("//macros/flags:linker_flags_conditions_8"): [Label(":devRelease"), Label("@platforms//os:android")],
+            Label("//macros/flags:linker_flags_conditions_9"): [Label(":devRelease"), Label("@platforms//os:ios")],
+            Label("//macros/flags:linker_flags_conditions_10"): [Label(":devRelease"), Label("@platforms//os:macos")],
+            Label("//macros/flags:linker_flags_conditions_11"): [Label(":devRelease"), Label("@platforms//os:linux")],
+            Label("//macros/flags:linker_flags_conditions_12"): [Label(":release"), Label("@platforms//os:android")],
+            Label("//macros/flags:linker_flags_conditions_13"): [Label(":release"), Label("@platforms//os:ios")],
+            Label("//macros/flags:linker_flags_conditions_14"): [Label(":release"), Label("@platforms//os:macos")],
+            Label("//macros/flags:linker_flags_conditions_15"): [Label(":release"), Label("@platforms//os:linux")]
         },
         flat_select_dict = {
-            "//macros/flags:linker_flags_conditions_1": ["-s MALLOC=emmalloc", "-s STRICT=1", "-s ASSERTIONS=2", "-s STACK_OVERFLOW_CHECK=2", "-s GL_ASSERTIONS=1", "-s SAFE_HEAP=1"],
-            "//macros/flags:linker_flags_conditions_2": ["-s MALLOC=emmalloc", "-s STRICT=1", "-s ASSERTIONS=2", "-s STACK_OVERFLOW_CHECK=2", "-s GL_ASSERTIONS=1", "-s SAFE_HEAP=1"],
-            "//macros/flags:linker_flags_conditions_3": ["-s MALLOC=emmalloc", "-s STRICT=1", "-s ASSERTIONS=0", "-s STACK_OVERFLOW_CHECK=0", "--closure 1", "-s IGNORE_CLOSURE_COMPILER_ERRORS=1"],
-            "//macros/flags:linker_flags_conditions_4": [],
-            "//macros/flags:linker_flags_conditions_5": [],
-            "//macros/flags:linker_flags_conditions_6": ["-fsanitize=address", "-fsanitize=undefined"],
-            "//macros/flags:linker_flags_conditions_7": ["-fsanitize=address", "-fsanitize=undefined", "-lclang_rt.ubsan_standalone_cxx"],
-            "//macros/flags:linker_flags_conditions_8": [],
-            "//macros/flags:linker_flags_conditions_9": [],
-            "//macros/flags:linker_flags_conditions_10": ["-fsanitize=address", "-fsanitize=undefined"],
-            "//macros/flags:linker_flags_conditions_11": ["-fsanitize=address", "-fsanitize=undefined", "-lclang_rt.ubsan_standalone_cxx"],
-            "//macros/flags:linker_flags_conditions_12": ["-Wl,--no-undefined", "-Wl,-z,relro", "-Wl,-z,now", "-Wl,-z,nocopyreloc", "-Wl,--gc-sections", "-Wl,--icf=all"],
-            "//macros/flags:linker_flags_conditions_13": ["-Wl,-dead_strip"],
-            "//macros/flags:linker_flags_conditions_14": ["-Wl,-dead_strip"],
-            "//macros/flags:linker_flags_conditions_15": ["-Wl,--gc-sections"]
+            Label("//macros/flags:linker_flags_conditions_1"): ["-s MALLOC=emmalloc", "-s STRICT=1", "-s ASSERTIONS=2", "-s STACK_OVERFLOW_CHECK=2", "-s GL_ASSERTIONS=1", "-s SAFE_HEAP=1"],
+            Label("//macros/flags:linker_flags_conditions_2"): ["-s MALLOC=emmalloc", "-s STRICT=1", "-s ASSERTIONS=2", "-s STACK_OVERFLOW_CHECK=2", "-s GL_ASSERTIONS=1", "-s SAFE_HEAP=1"],
+            Label("//macros/flags:linker_flags_conditions_3"): ["-s MALLOC=emmalloc", "-s STRICT=1", "-s ASSERTIONS=0", "-s STACK_OVERFLOW_CHECK=0", "--closure 1", "-s IGNORE_CLOSURE_COMPILER_ERRORS=1"],
+            Label("//macros/flags:linker_flags_conditions_4"): [],
+            Label("//macros/flags:linker_flags_conditions_5"): [],
+            Label("//macros/flags:linker_flags_conditions_6"): ["-fsanitize=address", "-fsanitize=undefined"],
+            Label("//macros/flags:linker_flags_conditions_7"): ["-fsanitize=address", "-fsanitize=undefined", "-lclang_rt.ubsan_standalone_cxx"],
+            Label("//macros/flags:linker_flags_conditions_8"): [],
+            Label("//macros/flags:linker_flags_conditions_9"): [],
+            Label("//macros/flags:linker_flags_conditions_10"): ["-fsanitize=address", "-fsanitize=undefined"],
+            Label("//macros/flags:linker_flags_conditions_11"): ["-fsanitize=address", "-fsanitize=undefined", "-lclang_rt.ubsan_standalone_cxx"],
+            Label("//macros/flags:linker_flags_conditions_12"): ["-Wl,--no-undefined", "-Wl,-z,relro", "-Wl,-z,now", "-Wl,-z,nocopyreloc", "-Wl,--gc-sections", "-Wl,--icf=all"],
+            Label("//macros/flags:linker_flags_conditions_13"): ["-Wl,-dead_strip"],
+            Label("//macros/flags:linker_flags_conditions_14"): ["-Wl,-dead_strip"],
+            Label("//macros/flags:linker_flags_conditions_15"): ["-Wl,--gc-sections"]
         }
     )
 

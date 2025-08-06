@@ -87,9 +87,9 @@ def _define_subpackage_test_suites_impl(name, visibility, subpackages):
     native.test_suite(
         name = "wasm-all",
         tests =[
-            ":" + TAG_WASM_BASIC,
-            ":" + TAG_WASM_ADVANCED,
-            ":" + TAG_WASM_ADVANCED_THREADS,
+            native.package_relative_label(":" + TAG_WASM_BASIC),
+            native.package_relative_label(":" + TAG_WASM_ADVANCED),
+            native.package_relative_label(":" + TAG_WASM_ADVANCED_THREADS),
         ],
     )
 

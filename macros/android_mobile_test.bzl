@@ -1,7 +1,7 @@
 
 load("@rules_android//android:rules.bzl", "android_binary")
-load("@playground//test-support/android-test/android_instrumentation_test:android_instrumentation_test.bzl", "android_instrumentation_test")
-load("@playground//macros:mobile_library.bzl", "mobile_library")
+load("//test-support/android-test/android_instrumentation_test:android_instrumentation_test.bzl", "android_instrumentation_test")
+load("//macros:mobile_library.bzl", "mobile_library")
 load(":test_utils.bzl", "prepare_assets")
 load(":constants.bzl", "TAG_ANDROID")
 
@@ -46,7 +46,7 @@ _generate_test_java = rule(
         "native_lib": attr.string(mandatory = True, doc = "native lib name"),
         "_src_template": attr.label(
             allow_single_file = True,
-            default = "//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherJavaTemplateSources",
+            default = Label("//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherJavaTemplateSources"),
         )
     },
 )
@@ -57,7 +57,7 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
     mobile_library(
         name = name + "-android-srcs",
         srcs = srcs + [
-            "//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherCppSources",
+            Label("//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherCppSources"),
         ],
         deps = deps,
         copts = copts,
@@ -92,9 +92,9 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
     android_binary(
         name = name + "-test-app",
         srcs = [
-            ":" + name + "-java-srcs",
+            native.package_relative_label(":" + name + "-java-srcs"),
         ],
-        manifest = "//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherManifest",
+        manifest = Label("//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherManifest"),
         manifest_values = {
             "applicationId": "com.example." + sanitized_name + ".test",
             "minSdkVersion": "21",
@@ -102,14 +102,14 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
             "targetPackage": "com.example." + sanitized_name + ".test",
         },
         deps = [
-            name + "-android-srcs",
-            "@maven//:junit_junit",
-            "@maven//:androidx_test_rules",
-            "@maven//:androidx_test_ext_junit",
+            native.package_relative_label(":" + name + "-android-srcs"),
+            Label("@maven//:junit_junit"),
+            Label("@maven//:androidx_test_rules"),
+            Label("@maven//:androidx_test_ext_junit"),
         ],
         testonly = True,
         assets = [
-            ":" + name + "-assets",
+            native.package_relative_label(":" + name + "-assets"),
         ],
         assets_dir = name + "-assets",
         tags = ["manual"],
@@ -118,7 +118,7 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
     # to run the test, use --test_arg=--device_id=device-id
     android_instrumentation_test(
         name = name,
-        test_app = ":" + name + "-test-app",
+        test_app = native.package_relative_label(":" + name + "-test-app"),
         tags = tags + [TAG_ANDROID, "exclusive"],  # need to be exclusive to prevent parallel invocation on the same device
     )
 
