@@ -1,8 +1,8 @@
-load("//macros:ios_mobile_test.bzl", "ios_mobile_test")
-load("//macros:android_mobile_test.bzl", "android_mobile_test")
-load("//macros:wasm_test.bzl", "wasm_test")
+load("@playground//macros:ios_mobile_test.bzl", "ios_mobile_test")
+load("@playground//macros:android_mobile_test.bzl", "android_mobile_test")
+load("@playground//macros:wasm_test.bzl", "wasm_test")
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
-load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
+load("@playground//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 load(
     ":constants.bzl",
     "TAG_WASM_BASIC",
@@ -23,7 +23,7 @@ def _mobile_test_impl(name, visibility, **kwargs):
     data = kwargs.pop("data") or []
     deps = deps + select({
         "//conditions:default": [
-            "//test-support/paths:test-paths",
+            "@playground//test-support/paths:test-paths",
             "@googletest//:gtest_main",
         ]
     })

@@ -6,17 +6,17 @@ load(":ios.bzl", "ios_flags")
 load(":linux.bzl", "linux_clang_flags", "linux_gcc_flags")
 load(":macos.bzl", "macos_flags")
 
-load("//macros/flags/flatten:flatten.bzl", "flatten_select_dict")
-load("//macros/flags/flatten:flat_config_groups.bzl", "create_config_setting_groups")
-load("//macros/flags/flatten:concat.bzl", "concat_select_dicts")
+load("@playground//macros/flags/flatten:flatten.bzl", "flatten_select_dict")
+load("@playground//macros/flags/flatten:flat_config_groups.bzl", "create_config_setting_groups")
+load("@playground//macros/flags/flatten:concat.bzl", "concat_select_dicts")
 
 def _transform_to_select_dict(key):
     return {
         "@platforms//os:android": android_flags.get(key, default = []),
         "@platforms//os:ios": ios_flags.get(key, default = []),
         "@platforms//os:macos": macos_flags.get(key, default = []),
-        "//macros/flags:clang_linux": linux_clang_flags.get(key, default = []),
-        "//macros/flags:gcc_linux": linux_gcc_flags.get(key, default = []),
+        "@playground//macros/flags:clang_linux": linux_clang_flags.get(key, default = []),
+        "@playground//macros/flags:gcc_linux": linux_gcc_flags.get(key, default = []),
         "@platforms//os:emscripten": emscripten_flags.get(key, default = []),
     }
 
@@ -63,7 +63,7 @@ flags_dicts = {
 resolved_flags_select_dicts = {
     "linkopts": concat_select_dicts(
         "linkopts_conditions",
-        "//macros/flags",
+        "@playground//macros/flags",
         flags_dicts["linker_common_flags"],
         flags_dicts["linker_exceptions_off"],
         selects.with_or_dict({
@@ -77,12 +77,12 @@ resolved_flags_select_dicts = {
     ),
     "conlyopts": concat_select_dicts(
         "conlyopts_conditions",
-        "//macros/flags",
+        "@playground//macros/flags",
         flags_dicts["c_compiler_standard"],
     ),
     "copts": concat_select_dicts(
         "copts_conditions",
-        "//macros/flags",
+        "@playground//macros/flags",
         flags_dicts["compiler_common_flags"],
         flags_dicts["compiler_default_warnings"],
         flags_dicts["compiler_warnings_as_errors"],
@@ -103,7 +103,7 @@ resolved_flags_select_dicts = {
     ),
     "cxxopts": concat_select_dicts(
         "cxxopts_conditions",
-        "//macros/flags",
+        "@playground//macros/flags",
         flags_dicts["cxx_compiler_common_flags"],
         flags_dicts["cxx_compiler_standard"],
         flags_dicts["cxx_compiler_no_thread_safe_init"],

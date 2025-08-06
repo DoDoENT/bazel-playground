@@ -2,7 +2,7 @@ load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 load("@emsdk//emscripten_toolchain:wasm_rules.bzl", "wasm_cc_binary")
 load("@aspect_rules_js//js:defs.bzl", "js_test")
 load(":test_utils.bzl", "prepare_assets")
-load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
+load("@playground//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 
 def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, threads, simd, args, tags, data):
 

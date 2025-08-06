@@ -1,7 +1,7 @@
 
 load("@rules_android//android:rules.bzl", "android_binary")
-load("//test-support/android-test/android_instrumentation_test:android_instrumentation_test.bzl", "android_instrumentation_test")
-load("//macros:mobile_library.bzl", "mobile_library")
+load("@playground//test-support/android-test/android_instrumentation_test:android_instrumentation_test.bzl", "android_instrumentation_test")
+load("@playground//macros:mobile_library.bzl", "mobile_library")
 load(":test_utils.bzl", "prepare_assets")
 load(":constants.bzl", "TAG_ANDROID")
 

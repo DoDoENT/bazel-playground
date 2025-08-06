@@ -1,5 +1,5 @@
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
-load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
+load("@playground//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 
 def _mobile_library_impl(name, visibility, **kwargs):
     default_copts = select(resolved_flags_select_dicts["copts"].flat_select_dict)

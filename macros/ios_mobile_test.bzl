@@ -5,7 +5,7 @@ load("@rules_xcodeproj//xcodeproj:top_level_target.bzl", "top_level_target")
 load("@rules_xcodeproj//xcodeproj:xcodeproj.bzl", "xcodeproj")
 load("@rules_xcodeproj//xcodeproj:xcschemes.bzl", "xcschemes")
 
-load("//macros:mobile_library.bzl", "mobile_library")
+load("@playground//macros:mobile_library.bzl", "mobile_library")
 load(":constants.bzl", "TAG_IOS")
 
 def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data):
@@ -13,7 +13,7 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, lin
         name = name + "-ios-srcs",
         srcs = srcs,
         deps = deps + [
-            "//test-support/ios-test/swift-bridge:googletest-ios-swift-bridge",
+            "@playground//test-support/ios-test/swift-bridge:googletest-ios-swift-bridge",
         ],
         copts = copts,
         conlyopts = conlyopts,
@@ -41,11 +41,11 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, lin
             "TEST_ARGC": str(len(args)),
         },
         minimum_os_version = "15.0",
-        provisioning_profile = "//test-support/ios-test:xcode_profile",
-        test_host = "//test-support/ios-test/GoogleTestHost:GoogleTestHost",
+        provisioning_profile = "@playground//test-support/ios-test:xcode_profile",
+        test_host = "@playground//test-support/ios-test/GoogleTestHost:GoogleTestHost",
         tags = tags + [TAG_IOS, "exclusive"], # need to be exclusive to prevent parallel invocation on the same device
         resources = [name + "-resources"],
-        runner = "//test-support/ios-test:test_runner",
+        runner = "@playground//test-support/ios-test:test_runner",
         target_compatible_with = [
             # note: this target needs to run on macOS and introduces transition to iOS
             "@platforms//os:macos",
@@ -57,7 +57,7 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, lin
         tags = ["manual"],
         top_level_targets = [
             top_level_target(name, target_environments = ["device", "simulator"]),
-            "//test-support/ios-test/GoogleTestHost:GoogleTestHost"
+            "@playground//test-support/ios-test/GoogleTestHost:GoogleTestHost"
         ],
         xcschemes = [
             xcschemes.scheme(
@@ -66,11 +66,11 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, lin
                     args = args,
                     test_targets = [name],
                     build_targets = [
-                        "//test-support/ios-test/GoogleTestHost:GoogleTestHost"
+                        "@playground//test-support/ios-test/GoogleTestHost:GoogleTestHost"
                     ]
                 ),
                 run = xcschemes.run(
-                    launch_target = "//test-support/ios-test/GoogleTestHost:GoogleTestHost",
+                    launch_target = "@playground//test-support/ios-test/GoogleTestHost:GoogleTestHost",
                 )
             )
         ],
