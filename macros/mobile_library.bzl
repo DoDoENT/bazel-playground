@@ -10,12 +10,15 @@ def _mobile_library_impl(name, visibility, **kwargs):
     cxxopts = kwargs.pop("cxxopts") or select({
         Label("//conditions:default"): [],
     })
+    linkstatic = kwargs.pop("linkstatic")
+    if linkstatic == None:
+        linkstatic = True  # Default to static linking if not specified
     cc_library(
         name = name,
         visibility = visibility,
         copts = default_copts + copts,
         cxxopts = default_cxxopts + cxxopts,
-        linkstatic = kwargs.pop("linkstatic", True),
+        linkstatic = linkstatic,
         strip_include_prefix = kwargs.pop("strip_include_prefix") or "Include",
         **kwargs,
     )

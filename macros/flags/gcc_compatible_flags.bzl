@@ -83,10 +83,10 @@ gcc_compat_flags = {
     "compiler_common_flags": [
         "-fstrict-aliasing",
         "-fvisibility=hidden",
+        "-fPIC",
     ],
     "cxx_compiler_common_flags": [
         "-fstrict-enums",
         "-fvisibility-inlines-hidden",
-        "-fPIC",
     ],
 }
