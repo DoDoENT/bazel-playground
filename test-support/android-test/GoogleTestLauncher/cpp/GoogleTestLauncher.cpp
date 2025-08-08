@@ -85,7 +85,7 @@ extern "C" JNIEXPORT jint JNICALL JNI_METHOD( invokeGoogleTest )( JNIEnv * env, 
 
     GoogleTest::activeAssetManager = AAssetManager_fromJava( env, javaAssetManager );
 
-    jsize argCount = env->GetArrayLength( args );
+    jsize argCount = 1 + env->GetArrayLength( args );
     auto argv{ std::make_unique< char *[] >( static_cast< std::size_t >( argCount + 1 ) ) };
 
     std::vector< jstring > localRefs;
@@ -93,18 +93,18 @@ extern "C" JNIEXPORT jint JNICALL JNI_METHOD( invokeGoogleTest )( JNIEnv * env, 
 
     argv[ 0 ] = const_cast< char * >( "GoogleTestLauncher" );
 
-    for ( jsize i{ 0 }; i < argCount; ++i )
+    for ( jsize i{ 0 }; i < argCount - 1; ++i )
     {
         jstring arg = static_cast< jstring >( env->GetObjectArrayElement( args, i ) );
         argv[ static_cast< std::size_t >( i + 1 ) ] = const_cast< char * >( env->GetStringUTFChars( arg, nullptr ) );
-        localRefs.push_back( arg ); 
+        localRefs.push_back( arg );
     }
 
     ::testing::InitGoogleTest( &argCount, argv.get() );
     auto result{ RUN_ALL_TESTS() };
 
     // cleanup memory
-    for ( jsize i{ 0 }; i < argCount; ++i )
+    for ( jsize i{ 0 }; i < argCount - 1; ++i )
     {
         env->ReleaseStringUTFChars( localRefs[ static_cast< std::size_t >( i ) ], argv[ static_cast< std::size_t >( i + 1 ) ] );
         env->DeleteLocalRef( localRefs[ static_cast< std::size_t >( i ) ] );
