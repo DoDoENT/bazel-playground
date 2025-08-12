@@ -58,9 +58,9 @@ instrumentation_app_id=$($aapt2 dump packagename "$instrumentation_apk")
 
 # install both APKs
 if [[ "$have_test_host_apk" = true ]]; then
-    "$adb" $device install-multi-package "$test_host_apk" "$instrumentation_apk"
+    "$adb" $device install-multi-package -r -t -g "$test_host_apk" "$instrumentation_apk"
 else
-    "$adb" $device install "$instrumentation_apk"
+    "$adb" $device install -r -t -g "$instrumentation_apk"
 fi
 
 # clear the logcat
@@ -75,7 +75,7 @@ log_output=$($adb $device logcat -d)
 if [[ "$have_test_host_apk" = true ]]; then
     "$adb" $device uninstall "$test_host_app_id"
 fi
-"$adb" $device uninstall "$instrumentation_app_id"
+"$adb" $device uninstall "$instrumentation_app_id" || true # Ignore if uninstall fails, as some devices immediately remove the app after the test run
 
 # check if outputs contains errors
 if echo "$output" | grep -q "FAILURES"; then
