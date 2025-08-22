@@ -1,5 +1,7 @@
 module(name = "playground")
 
+bazel_dep(name = "bazelrc-preset.bzl", version = "1.1.0")
+
 bazel_dep(name = "bazel_skylib", version = "1.8.1")
 
 # Note: This needs to be beofre rules_cc in order to correctly configure the C++ toolchain.
@@ -36,13 +38,7 @@ android_ndk_repository_extension.configure(
 use_repo(android_ndk_repository_extension, "androidndk")
 
 
-bazel_dep(name = "rules_android")
-
-git_override(
-    module_name = "rules_android",
-    remote = "https://github.com/bazelbuild/rules_android.git",
-    commit = "675d3720ce85141d93f445db7f88a9e2e0c62f82"
-)
+bazel_dep(name = "rules_android", version = "0.6.6")
 
 android_sdk_repository_extension = use_extension("@rules_android//rules/android_sdk_repository:rule.bzl", "android_sdk_repository_extension")
 use_repo(android_sdk_repository_extension, "androidsdk")

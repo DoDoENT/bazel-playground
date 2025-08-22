@@ -8,6 +8,6 @@ MODULE.bazel.lock
 derived-data
 
 *.xcodeproj
-xcode.bazelrc
+automatic.bazelrc
 
 .vimspector.json

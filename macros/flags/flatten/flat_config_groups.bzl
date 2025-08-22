@@ -13,4 +13,5 @@ def create_config_setting_groups(config_setting_groups):
         selects.config_setting_group(
             name = group_name.name,
             match_all = conditions,
+            visibility = ["//visibility:public"],
         )

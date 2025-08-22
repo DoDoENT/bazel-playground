@@ -6,6 +6,7 @@ config_setting(
     values = {
         "compilation_mode": "opt",
     },
+    visibility = ["//visibility:public"],
 )
 
 config_setting(
@@ -13,6 +14,7 @@ config_setting(
     values = {
         "compilation_mode": "fastbuild",
     },
+    visibility = ["//visibility:public"],
 )
 
 config_setting(
@@ -20,6 +22,7 @@ config_setting(
     values = {
         "compilation_mode": "dbg",
     },
+    visibility = ["//visibility:public"],
 )
 
 config_setting(
@@ -27,6 +30,7 @@ config_setting(
     flag_values = {
         "@bazel_tools//tools/cpp:compiler": "clang",
     },
+    visibility = ["//visibility:public"],
 )
 
 config_setting(
@@ -34,6 +38,7 @@ config_setting(
     flag_values = {
         "@bazel_tools//tools/cpp:compiler": "gcc",
     },
+    visibility = ["//visibility:public"],
 )
 
 selects.config_setting_group(
@@ -42,21 +47,25 @@ selects.config_setting_group(
         "@platforms//os:macos",
         "@platforms//os:ios",
     ],
+    visibility = ["//visibility:public"],
 )
 
 selects.config_setting_group(
     name = "sanitizer_build",
-    match_any = [":debug", ":devRelease"]
+    match_any = [":debug", ":devRelease"],
+    visibility = ["//visibility:public"],
 )
 
 selects.config_setting_group(
     name = "clang_linux",
-    match_all = [":using_clang", "@platforms//os:linux"]
+    match_all = [":using_clang", "@platforms//os:linux"],
+    visibility = ["//visibility:public"],
 )
 
 selects.config_setting_group(
     name = "gcc_linux",
-    match_all = [":using_gcc", "@platforms//os:linux"]
+    match_all = [":using_gcc", "@platforms//os:linux"],
+    visibility = ["//visibility:public"],
 )
 
 create_resolved_flags_conditions()

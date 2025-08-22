@@ -1,29 +1,41 @@
 # Note: documentation for all flags can be founr at: https://registry.build/flag/bazel@8.3.1
 
+import %workspace%/tools/preset.bazelrc
+
+# Hedron compile commands extractor is not yet updated to using rules_python, so we need to autoload it
+# Also, without preloading rules_android, bazel complains about missing aar_import and similar rules
+# in rules_jvm_external.
+common --incompatible_autoload_externally="+@rules_python,+@rules_android"
+# Apple and Android rules not yet compatible with automatic exec groups
+common --noincompatible_auto_exec_groups
 # Cache options
 
-common:remote --remote_cache=grpc://pablo.microblink.com:9092 --remote_cache_compression=true
-common --disk_cache=~/.bazel-cache/build --experimental_disk_cache_gc_max_size=50G
+common:remote --remote_cache=grpc://pablo.microblink.com:9092 --remote_cache_compression=true --guard_against_concurrent_changes=full
+common --disk_cache=~/.bazel-cache/build --experimental_disk_cache_gc_max_size=100G
 
 # Build flags
 common --copt=-g --strip=never
 
 # Build features
-common --features=asan --features=ubsan 
+common --features=asan --features=ubsan
 common --test_tag_filters=host,starlark
-common --android_platforms=//platforms:arm64-v8a,//platforms:armeabi-v7a --java_runtime_version=remotejdk_17 
 
 common:release --features=-asan --features=-ubsan --compilation_mode=opt --features=thin_lto
 common:debug --compilation_mode=dbg
 
 common:mobile --features=-asan --features=-ubsan
 
-common:android --config=mobile --test_tag_filters=android 
+common:android --config=mobile --test_tag_filters=android --java_runtime_version=remotejdk_17
+common:android --android_platforms=//platforms:arm64-v8a,//platforms:armeabi-v7a
+common:android --extra_toolchains=@androidndk//:all
 
 common:ios_device --config=mobile --ios_multi_cpus=arm64 --test_tag_filters=ios
 common:ios_simulator --config=mobile --test_tag_filters=ios
 
 common:wasm --config=mobile --test_tag_filters=wasm-basic,wasm-advanced,wasm-advanced-threads
+
+# TODO: This needs to be ported to toolchain rules
+common:linux_haswell --copt=-march=haswell --copt=-mtune=haswell --copt=-mavx --copt=-mavx2
 
 # MacOS Debuggable Configuration needs disabled cache dir and disabled remote cache in order for the debugger to work properly
 build:mac_debuggable --spawn_strategy=local --disk_cache= --remote_cache=
@@ -31,7 +43,12 @@ build:mac_debuggable --spawn_strategy=local --disk_cache= --remote_cache=
 build:rules_xcodeproj --config=mobile
 
 # Special flags for CI
+# note - avoid using local disk cache in CI - it's not needed. Bazel's internal cache (~/.cache/bazel) and remote cache are sufficient.
+#        Namely, using local disk cache in CI can cause the actions to sometimes not be uploaded to the remote cache.
 
-common:ci --show_progress_rate_limit=10 --show_progress=true --test_output=errors --show_timestamps=true --test_timeout=300
+common:ci --show_progress_rate_limit=10 --show_progress=true --test_output=errors --test_timeout=300 --disk_cache=
 
-import xcode.bazelrc
+# Our repo is not large enough to need terse output, so we use short output
+test:ci --test_summary="short"
+
+import automatic.bazelrc
