@@ -1,0 +1,5 @@
+---
+Checks:          '*,-cppcoreguidelines-*,-fuchsia-*,-google-*,-zircon-*,-abseil-*,-modernize-use-trailing-return-type,-llvm-*,-llvmlibc-*,-readability-named-parameter,-hicpp-avoid-c-arrays,-modernize-avoid-c-arrays,-hicpp-no-array-decay,-readability-magic-numbers,-misc-non-private-member-variables-in-classes,-hicpp-signed-bitwise,-hicpp-vararg,-readability-implicit-bool-conversion,-*-braces-around-statements,-readability-else-after-return,-altera-*,-hicpp-named-parameter,-*-uppercase-literal-suffix,-readability-function-cognitive-complexity,-readability-identifier-length,-readability-simplify-boolean-expr,-readability-qualified-auto,-readability-container-data-pointer,-misc-no-recursion,-readability-misleading-indentation,-hicpp-no-assembler'
+WarningsAsErrors: '1'
+HeaderFilterRegex: ''
+FormatStyle:     none

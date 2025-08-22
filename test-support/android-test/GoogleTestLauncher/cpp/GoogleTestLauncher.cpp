@@ -97,7 +97,7 @@ extern "C" JNIEXPORT jint JNICALL JNI_METHOD( invokeGoogleTest )( JNIEnv * env, 
     {
         jstring arg = static_cast< jstring >( env->GetObjectArrayElement( args, i ) );
         argv[ static_cast< std::size_t >( i + 1 ) ] = const_cast< char * >( env->GetStringUTFChars( arg, nullptr ) );
-        localRefs.push_back( arg );
+        localRefs.push_back( arg ); 
     }
 
     ::testing::InitGoogleTest( &argCount, argv.get() );

@@ -5,19 +5,23 @@ import %workspace%/tools/preset.bazelrc
 # Hedron compile commands extractor is not yet updated to using rules_python, so we need to autoload it
 # Also, without preloading rules_android, bazel complains about missing aar_import and similar rules
 # in rules_jvm_external.
-common --incompatible_autoload_externally="+@rules_python,+@rules_android"
+# Additionally, to run java tools like copybara, we need to preload rules_java.
+common --incompatible_autoload_externally="+@rules_python,+@rules_android,+@rules_java"
 # Apple and Android rules not yet compatible with automatic exec groups
 common --noincompatible_auto_exec_groups
 # Cache options
 
-common:remote --remote_cache=grpc://pablo.microblink.com:9092 --remote_cache_compression=true --guard_against_concurrent_changes=full
+common:remote --remote_cache=grpc://pablo.microblink.com:9092 --remote_cache_compression=true --guard_against_concurrent_changes=full 
 common --disk_cache=~/.bazel-cache/build --experimental_disk_cache_gc_max_size=100G
 
 # Build flags
 common --copt=-g --strip=never
 
+# needed for both copybara and android
+common --java_runtime_version=remotejdk_21
+
 # Build features
-common --features=asan --features=ubsan
+common --features=asan --features=ubsan 
 common --test_tag_filters=host,starlark
 
 common:release --features=-asan --features=-ubsan --compilation_mode=opt --features=thin_lto
@@ -25,7 +29,7 @@ common:debug --compilation_mode=dbg
 
 common:mobile --features=-asan --features=-ubsan
 
-common:android --config=mobile --test_tag_filters=android --java_runtime_version=remotejdk_17
+common:android --config=mobile --test_tag_filters=android
 common:android --android_platforms=//platforms:arm64-v8a,//platforms:armeabi-v7a
 common:android --extra_toolchains=@androidndk//:all
 

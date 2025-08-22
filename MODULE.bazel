@@ -6,7 +6,7 @@ bazel_dep(name = "bazel_skylib", version = "1.8.1")
 
 # Note: This needs to be beofre rules_cc in order to correctly configure the C++ toolchain.
 bazel_dep(name = "apple_support", version = "1.22.1")
-bazel_dep(name = "rules_cc", version = "0.1.2")
+bazel_dep(name = "rules_cc", version = "0.1.3")
 
 bazel_dep(name = "rules_swift", version = "3.1.1")
 bazel_dep(name = "rules_xcodeproj", version = "3.1.2")
@@ -37,16 +37,17 @@ android_ndk_repository_extension.configure(
 )
 use_repo(android_ndk_repository_extension, "androidndk")
 
+# Don't register the Android toolchain here, as it will trigger NDK download even when not needed (e.g. on Linux arm64)
+# Instead, register it with --extra_toolchains=@androidndk//:all from commandline
+# register_toolchains("@androidndk//:all")
 
 bazel_dep(name = "rules_android", version = "0.6.6")
 
+remote_android_extensions = use_extension("@rules_android//bzlmod_extensions:android_extensions.bzl", "remote_android_tools_extensions")
+use_repo(remote_android_extensions, "android_tools")
+
 android_sdk_repository_extension = use_extension("@rules_android//rules/android_sdk_repository:rule.bzl", "android_sdk_repository_extension")
 use_repo(android_sdk_repository_extension, "androidsdk")
-
-register_toolchains(
-    "@androidndk//:all",
-    "@androidsdk//:all",
-)
 
 bazel_dep(name = "rules_jvm_external", version = "6.8")
 
@@ -125,6 +126,18 @@ bazel_dep(name = "rules_nodejs", version = "6.5.0")
 node = use_extension("@rules_nodejs//nodejs:extensions.bzl", "node", dev_dependency = True)
 node.toolchain(node_version = "22.18.0")
 
+# setup copybara
+bazel_dep(name = "rules_java", version = "8.13.0")
+
+copybara_version = "v20250818"
+
+http_jar = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_jar")
+http_jar(
+    name = "com_github_google_copybara",
+    # Fill in from https://github.com/google/copybara/releases/download/[version]/copybara_deploy.jar.sha256
+    sha256 = "81e0730ec88455ecb13623aa49f33b456edbcd9e6f572250e80ca2884ac2ebfa",
+    urls = ["https://github.com/google/copybara/releases/download/{}/copybara_deploy.jar".format(copybara_version)],
+)
 
 # CLANGD COMPILE COMMANDS
 
@@ -145,7 +158,6 @@ git_override(
 #     # Even better, set up Renovate and let it do the work for you (see "Suggestion: Updates" in the README).
 # )
 
-# DEPENDENCIES
+# DEV DEPENDENCIES
 
-bazel_dep(name = "googletest", version = "1.17.0")
-# bazel_dep(name = "opencv", version = "4.11.0.bcr.1")
+bazel_dep(name = "googletest", version = "1.17.0", dev_dependency = True)

@@ -2,8 +2,6 @@ Session.vim
 .tasks.json
 
 /bazel-*
-# lock ignored during development
-MODULE.bazel.lock
 
 derived-data
 
