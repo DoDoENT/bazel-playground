@@ -34,6 +34,7 @@ def _mobile_library_impl(name, visibility, **kwargs):
             Label("//conditions:default"): [],
         })
         force_include_copts = []
+
     cc_library(
         name = name,
         visibility = visibility,

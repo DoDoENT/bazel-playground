@@ -16,9 +16,25 @@ filegroup(
 )
 
 filegroup(
+    name = "GoogleTestLauncherActivityTemplateSources",
+    srcs = [
+        "java/LaunchActivity.template.java",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
     name = "GoogleTestLauncherManifest",
     srcs = [
         "AndroidTestManifest.xml",
     ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "GoogleTestLauncherResources",
+    srcs = glob([
+        "res/**",
+    ]),
     visibility = ["//visibility:public"],
 )

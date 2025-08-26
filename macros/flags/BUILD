@@ -68,4 +68,14 @@ selects.config_setting_group(
     visibility = ["//visibility:public"],
 )
 
+selects.config_setting_group(
+    name = "host",
+    match_any = [
+        "@platforms//os:linux",
+        "@platforms//os:macos",
+        "@platforms//os:windows",
+    ],
+    visibility = ["//visibility:public"],
+)
+
 create_resolved_flags_conditions()

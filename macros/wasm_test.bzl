@@ -4,7 +4,7 @@ load("@aspect_rules_js//js:defs.bzl", "js_test")
 load(":test_utils.bzl", "prepare_assets")
 load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 
-def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, threads, simd, args, tags, data):
+def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, threads, simd, args, tags, data, defines, local_defines):
 
     preload_linkopts = []
     additional_linker_inputs = []
@@ -33,6 +33,8 @@ def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts,
         deps = deps,
         additional_linker_inputs = additional_linker_inputs,
         testonly = True,
+        local_defines = local_defines,
+        defines = defines,
     )
     outputs = [
         name + "-bin/" + name + "-cc.wasm",
@@ -110,6 +112,14 @@ wasm_test = macro(
             default = [],
             doc = "Test data files",
             configurable = False,
+        ),
+        "defines": attr.string_list(
+            default = [],
+            doc = "Preprocessor defines for the Android mobile test.",
+        ),
+        "local_defines": attr.string_list(
+            default = [],
+            doc = "Preprocessor defines for the Android mobile test that should not be propagated to dependents.",
         ),
     },
 )

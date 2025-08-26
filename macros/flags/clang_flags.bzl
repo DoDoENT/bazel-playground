@@ -19,6 +19,9 @@ def _calculate_clang_flags():
     _local_clang_flags["compiler_default_warnings"] = _local_clang_flags["compiler_default_warnings"] + [
         "-Wdocumentation",
         "-Wheader-guard",
+        "-Wno-error=#warnings",
+        "-Wno-error=unknown-attributes",
+        "-Wno-unused-command-line-argument",
     ]
     _local_clang_flags["compiler_common_flags"] = _local_clang_flags["compiler_common_flags"] + [
         "-fenable-matrix",

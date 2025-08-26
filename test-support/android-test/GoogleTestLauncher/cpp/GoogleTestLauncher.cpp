@@ -27,6 +27,47 @@ namespace GoogleTest
 namespace
 {
     AAssetManager * activeAssetManager{ nullptr };
+
+    class GTestListener : public ::testing::EmptyTestEventListener
+    {
+    public:
+        GTestListener( JNIEnv * env, jobject jGTestListener ) :
+            env_( env ),
+            jGTestListener_( jGTestListener )
+        {
+            jclass listenerClass = env_->GetObjectClass( jGTestListener_ );
+            onTestPartResult_ = env_->GetMethodID( listenerClass, "onTestPartResult", "(ZILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V" );
+        }
+
+        void OnTestPartResult( ::testing::TestPartResult const & testPartResult )
+        {
+            bool passed = testPartResult.passed();
+            int lineNumber = testPartResult.line_number();
+            char const * fileName = testPartResult.file_name();
+            char const * message = testPartResult.message();
+            char const * summary = testPartResult.summary();
+            jstring jFileName = env_->NewStringUTF( fileName );
+            jstring jMessage  = env_->NewStringUTF( message  );
+            jstring jSummary  = env_->NewStringUTF( summary  );
+            env_->CallVoidMethod
+            (
+                jGTestListener_,
+                onTestPartResult_,
+                static_cast< jboolean >( passed     ),
+                static_cast< jint     >( lineNumber ),
+                jFileName,
+                jMessage,
+                jSummary
+            );
+            env_->DeleteLocalRef( jFileName );
+            env_->DeleteLocalRef( jMessage  );
+            env_->DeleteLocalRef( jSummary  );
+        }
+    private:
+        JNIEnv * env_;
+        jobject jGTestListener_;
+        jmethodID  onTestPartResult_;
+    };
 }
 
 AAssetManager * currentAssetManager()
@@ -79,7 +120,7 @@ namespace
     }
 }
 
-extern "C" JNIEXPORT jint JNICALL JNI_METHOD( invokeGoogleTest )( JNIEnv * env, jclass , jobjectArray args, jobject javaAssetManager )
+extern "C" JNIEXPORT jint JNICALL JNI_METHOD( invokeGoogleTest )( JNIEnv * env, jclass , jobjectArray args, jobject javaAssetManager, jobject jGTestListener )
 {
     startLogger( "GoogleTestLauncher" );
 
@@ -101,6 +142,12 @@ extern "C" JNIEXPORT jint JNICALL JNI_METHOD( invokeGoogleTest )( JNIEnv * env, 
     }
 
     ::testing::InitGoogleTest( &argCount, argv.get() );
+
+    GoogleTest::GTestListener listener( env, jGTestListener );
+    testing::UnitTest * googleTest = testing::UnitTest::GetInstance();
+
+    googleTest->listeners().Append( &listener );
+
     auto result{ RUN_ALL_TESTS() };
 
     // cleanup memory

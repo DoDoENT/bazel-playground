@@ -19,7 +19,9 @@ def _package_to_path(pkgName):
 
 def _generate_test_java_impl(ctx):
     pkg_name = ctx.attr.package
-    output_file = ctx.actions.declare_file(_package_to_path(pkg_name) + "/GoogleTestLauncher.java")
+    path = _package_to_path(pkg_name)
+    output_file = ctx.actions.declare_file(path + "/GoogleTestLauncher.java")
+    output_activity_file = ctx.actions.declare_file(path + "/LaunchActivity.java")
 
     substitutions = {
         "%(package)s": pkg_name,
@@ -33,8 +35,16 @@ def _generate_test_java_impl(ctx):
         substitutions = substitutions,
     )
 
+    ctx.actions.expand_template(
+        output = output_activity_file,
+        template = ctx.file._src_launhcer_template,
+        substitutions = {
+            "%(package)s": pkg_name,
+        },
+    )
+
     return [
-        DefaultInfo(files = depset([output_file])),
+        DefaultInfo(files = depset([output_file, output_activity_file])),
     ]
 
 _generate_test_java = rule(
@@ -47,11 +57,15 @@ _generate_test_java = rule(
         "_src_template": attr.label(
             allow_single_file = True,
             default = Label("//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherJavaTemplateSources"),
-        )
+        ),
+        "_src_launhcer_template": attr.label(
+            allow_single_file = True,
+            default = Label("//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherActivityTemplateSources"),
+        ),
     },
 )
 
-def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data):
+def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, defines, local_defines):
     sanitized_name = _sanitize_name(name)
 
     mobile_library(
@@ -70,9 +84,10 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
         testonly = True,
         alwayslink = True,
         linkstatic = False,
-        local_defines = [
+        local_defines = local_defines + [
             "JNI_PREFIX=com_example_" + _sanitize_for_jni(sanitized_name) + "_test_GoogleTestLauncher",
         ],
+        defines = defines,
         tags = ["manual"],
     )
 
@@ -100,6 +115,7 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
             "minSdkVersion": "21",
             "targetSdkVersion": "31",
             "targetPackage": "com.example." + sanitized_name + ".test",
+            "package": "com.example." + sanitized_name + ".test",
         },
         deps = [
             native.package_relative_label(":" + name + "-android-srcs"),
@@ -111,6 +127,7 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
         assets = [
             native.package_relative_label(":" + name + "-assets"),
         ],
+        resource_files = [Label("//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherResources")],
         assets_dir = name + "-assets",
         tags = ["manual"],
     )
@@ -118,6 +135,7 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
     # to run the test, use --test_arg=--device_id=device-id
     android_instrumentation_test(
         name = name,
+        visibility = visibility,
         test_app = native.package_relative_label(":" + name + "-test-app"),
         tags = tags + [TAG_ANDROID, "exclusive"],  # need to be exclusive to prevent parallel invocation on the same device
     )
@@ -166,6 +184,14 @@ android_mobile_test = macro(
             allow_files = True,
             default = [],
             doc = "Test data files",
+        ),
+        "defines": attr.string_list(
+            default = [],
+            doc = "Preprocessor defines for the Android mobile test.",
+        ),
+        "local_defines": attr.string_list(
+            default = [],
+            doc = "Preprocessor defines for the Android mobile test that should not be propagated to dependents.",
         ),
     },
 )

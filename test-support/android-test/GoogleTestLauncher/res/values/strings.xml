@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">GoogleTestLauncher</string>
+    <string name="btnLaunch">Launch</string>
+</resources>
+

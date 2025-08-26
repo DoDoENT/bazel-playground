@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          package="com.example.app.test"
     android:versionCode="1"
     android:versionName="1.0">
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <instrumentation
         android:name="androidx.test.runner.AndroidJUnitRunner"
         android:targetPackage="com.example.replaceme" />
 
-    <application >
-       <!-- ... -->
+    <application
+        android:allowBackup="false"
+        android:debuggable="true"
+        android:label="@string/app_name">
+        <activity android:name=".LaunchActivity" android:screenOrientation="nosensor" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

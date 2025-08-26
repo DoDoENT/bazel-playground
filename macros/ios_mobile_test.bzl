@@ -8,7 +8,7 @@ load("@rules_xcodeproj//xcodeproj:xcschemes.bzl", "xcschemes")
 load("//macros:mobile_library.bzl", "mobile_library")
 load(":constants.bzl", "TAG_IOS")
 
-def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data):
+def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, defines, local_defines):
     mobile_library(
         name = name + "-ios-srcs",
         srcs = srcs,
@@ -21,6 +21,8 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, lin
         linkopts = linkopts,
         testonly = True, 
         alwayslink = True,
+        local_defines = local_defines,
+        defines = defines,
     )
 
     apple_resource_group(
@@ -128,6 +130,14 @@ ios_mobile_test = macro(
             allow_files = True,
             default = [],
             doc = "Test data files",
+        ),
+        "defines": attr.string_list(
+            default = [],
+            doc = "Preprocessor defines for the Android mobile test.",
+        ),
+        "local_defines": attr.string_list(
+            default = [],
+            doc = "Preprocessor defines for the Android mobile test that should not be propagated to dependents.",
         ),
     },
 )

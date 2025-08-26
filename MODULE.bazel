@@ -7,6 +7,7 @@ bazel_dep(name = "bazel_skylib", version = "1.8.1")
 # Note: This needs to be beofre rules_cc in order to correctly configure the C++ toolchain.
 bazel_dep(name = "apple_support", version = "1.22.1")
 bazel_dep(name = "rules_cc", version = "0.1.3")
+bazel_dep(name = "rules_foreign_cc", version = "0.15.0")
 
 bazel_dep(name = "rules_swift", version = "3.1.1")
 bazel_dep(name = "rules_xcodeproj", version = "3.1.2")
@@ -71,12 +72,12 @@ git_override(
     module_name = "emsdk",
     remote = "https://github.com/emscripten-core/emsdk.git",
     strip_prefix = "bazel",
-    commit = "f39e849effe1bd679aa9ef3cd1798d327c9619db",
+    commit = "833fa33421e0a1873c43328bb937dbed53597b17",
 )
 
 emscripten_deps = use_extension("@emsdk//:emscripten_deps.bzl", "emscripten_deps")
 emscripten_deps.config(
-    version = "4.0.12",
+    version = "4.0.13",
 )
 
 emscripten_cache = use_extension(
@@ -138,25 +139,6 @@ http_jar(
     sha256 = "81e0730ec88455ecb13623aa49f33b456edbcd9e6f572250e80ca2884ac2ebfa",
     urls = ["https://github.com/google/copybara/releases/download/{}/copybara_deploy.jar".format(copybara_version)],
 )
-
-# CLANGD COMPILE COMMANDS
-
-# refresh with bazel run @hedron_compile_commands//:refresh_all
-bazel_dep(name = "hedron_compile_commands", dev_dependency = True)
-
-# https://github.com/hedronvision/bazel-compile-commands-extractor/pull/219#issuecomment-2607795958
-git_override(
-    module_name = "hedron_compile_commands",
-    remote = "https://github.com/mikael-s-persson/bazel-compile-commands-extractor",
-    commit = "f5fbd4cee671d8d908f37c83abaf70fba5928fc7"
-)
-# git_override(
-#     module_name = "hedron_compile_commands",
-#     remote = "https://github.com/hedronvision/bazel-compile-commands-extractor.git",
-#     branch = "main",
-#     # Replace the commit hash (above) with the latest (https://github.com/hedronvision/bazel-compile-commands-extractor/commits/main).
-#     # Even better, set up Renovate and let it do the work for you (see "Suggestion: Updates" in the README).
-# )
 
 # DEV DEPENDENCIES
 

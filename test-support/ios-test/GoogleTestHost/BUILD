@@ -1,4 +1,3 @@
-load("@rules_cc//cc:objc_library.bzl", "objc_library")
 load("@rules_apple//apple:ios.bzl", "ios_application")
 load("@rules_apple//apple:versioning.bzl", "apple_bundle_version")
 load("@rules_swift//swift:swift.bzl", "swift_library")

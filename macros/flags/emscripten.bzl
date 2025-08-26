@@ -38,11 +38,25 @@ def _calculate_emscripten_flags():
         "-flto=thin", # needed because bazel can handle only single emscripten cache
         "-Wno-limited-postlink-optimizations",
         # "-s STRICT=1",
+        "-s ALLOW_MEMORY_GROWTH=1",
+        "--no-heap-copy",
+        "-s INITIAL_MEMORY=209715200", # 200MB
+        "-s MEMORY_GROWTH_LINEAR_STEP=2097152", # 2MB
+        "-s STACK_SIZE=262144", # 256KB
+        "-s ALLOW_UNIMPLEMENTED_SYSCALLS=0",
+        "-s SUPPORT_ERRNO=0",
+        "-s DYNAMIC_EXECUTION=0",
+        "-s EXPORTED_FUNCTIONS=['_malloc']",
     ]
     emscripten_flags["compiler_common_flags"] = emscripten_flags["compiler_common_flags"] + [
         "-fno-PIC",
         "-flto=thin", # needed because bazel can handle only single emscripten cache
         # "-s STRICT=1",
+        "-mmutable-globals",
+        "-mreference-types",
+        "-mbulk-memory",
+        "-mnontrapping-fptoint",
+        "-msign-ext",
     ]
 
     return emscripten_flags

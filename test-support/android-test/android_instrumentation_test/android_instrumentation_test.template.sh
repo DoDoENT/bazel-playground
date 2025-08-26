@@ -45,11 +45,12 @@ if [[ ! -f "$aapt2" ]]; then
 fi
 
 if [[ -z "$device_id" ]]; then
-    echo "Error: --device_id is required."
-    exit 1
+    echo "Warning: --device_id not given. Will use ADB without the '-s <device_id>' parameter, thus expecting that only single Android device is visible."
+    device=""
+else
+    device="-s $device_id"
 fi
 
-device="-s $device_id"
 
 if [[ "$have_test_host_apk" = true ]]; then
     test_host_app_id=$($aapt2 dump packagename "$test_host_apk")

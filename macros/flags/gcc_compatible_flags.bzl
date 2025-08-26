@@ -62,6 +62,7 @@ gcc_compat_flags = {
         "-Wextra",
         "-Wconversion",
         "-Wstrict-aliasing",
+        "-Wno-error=deprecated-declarations",
     ],
     "compiler_warnings_as_errors": [
         "-Werror",
