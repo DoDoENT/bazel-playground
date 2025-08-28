@@ -2,7 +2,7 @@
 
 import %workspace%/tools/preset.bazelrc
 
-# Hedron compile commands extractor is not yet updated to using rules_python, so we need to autoload it
+# Apple iOS rules expect rules_python to be preloaded.
 # Also, without preloading rules_android, bazel complains about missing aar_import and similar rules
 # in rules_jvm_external.
 # Additionally, to run java tools like copybara, we need to preload rules_java.
@@ -37,6 +37,7 @@ common:ios_device --config=mobile --ios_multi_cpus=arm64 --test_tag_filters=ios
 common:ios_simulator --config=mobile --test_tag_filters=ios
 
 common:wasm --config=mobile --test_tag_filters=wasm-basic,wasm-advanced,wasm-advanced-threads
+common:wasm --copt=-DBOOST_HAS_PTHREADS=1  # boost.container fails to build without this define, thinking that it's on windows
 
 # TODO: This needs to be ported to toolchain rules
 common:linux_haswell --copt=-march=haswell --copt=-mtune=haswell --copt=-mavx --copt=-mavx2

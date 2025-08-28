@@ -173,10 +173,34 @@ mobile_test = macro(
     }
 )
 
-def apply_to_all_generated_tests(test_name, func):
-    func(test_name, [TAG_HOST])
-    func(test_name + "-ios", [TAG_IOS, "exclusive"])
-    func(test_name + "-android", [TAG_ANDROID, "exclusive"])
-    func(test_name + "-wasm-basic", [TAG_WASM_BASIC])
-    func(test_name + "-wasm-advanced", [TAG_WASM_ADVANCED])
-    func(test_name + "-wasm-advanced-threads", [TAG_WASM_ADVANCED_THREADS])
+def create_transitioned_test_rule(transition):
+    def _impl(ctx):
+        # We need to copy the executable because starlark doesn't allow
+        # providing an executable not created by the rule
+        executable_src = ctx.executable.actual_test
+        executable_dst = ctx.actions.declare_file(ctx.label.name)
+        ctx.actions.run_shell(
+            tools = [executable_src],
+            outputs = [executable_dst],
+            command = "cp %s %s" % (executable_src.path, executable_dst.path),
+        )
+        runfiles = ctx.attr.actual_test[DefaultInfo].default_runfiles
+        return [DefaultInfo(runfiles = runfiles, executable = executable_dst)]
+
+    return rule(
+        cfg = transition,
+        implementation = _impl,
+        attrs = {
+            "actual_test": attr.label(cfg = "target", executable = True),
+        },
+        test = True,
+    )
+
+def apply_to_all_generated_tests(test_names, func):
+    for test_name in test_names:
+        func(test_name, [TAG_HOST])
+        func(test_name + "-ios", [TAG_IOS, "exclusive"])
+        func(test_name + "-android", [TAG_ANDROID, "exclusive"])
+        func(test_name + "-wasm-basic", [TAG_WASM_BASIC])
+        func(test_name + "-wasm-advanced", [TAG_WASM_ADVANCED])
+        func(test_name + "-wasm-advanced-threads", [TAG_WASM_ADVANCED_THREADS])

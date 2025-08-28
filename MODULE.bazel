@@ -1,19 +1,19 @@
 module(name = "playground")
 
 bazel_dep(name = "bazelrc-preset.bzl", version = "1.1.0")
-
 bazel_dep(name = "bazel_skylib", version = "1.8.1")
 
 # Note: This needs to be beofre rules_cc in order to correctly configure the C++ toolchain.
 bazel_dep(name = "apple_support", version = "1.22.1")
-bazel_dep(name = "rules_cc", version = "0.1.3")
+bazel_dep(name = "rules_cc", version = "0.2.1")
 bazel_dep(name = "rules_foreign_cc", version = "0.15.0")
-
+bazel_dep(name = "rules_build_error", version = "0.8.6")
 bazel_dep(name = "rules_swift", version = "3.1.1")
 bazel_dep(name = "rules_xcodeproj", version = "3.1.2")
 bazel_dep(name = "platforms", version = "1.0.0")
-
 bazel_dep(name = "rules_apple", version = "4.1.1")
+bazel_dep(name = "rules_license", version = "1.0.0")
+
 # Fix for running tests on iOS devices with Xcode 16.3+
 git_override(
     module_name = "rules_apple",
@@ -24,17 +24,16 @@ git_override(
 # ANDROID
 
 bazel_dep(name = "rules_android_ndk", version = "0.1.3")
-
 git_override(
     module_name = "rules_android_ndk",
-    remote = "https://github.com/DoDoENT/rules_android_ndk.git",
     commit = "54698284cca8091f861213569a4d35f144e9d3ec",
+    remote = "https://github.com/DoDoENT/rules_android_ndk.git",
 )
 
 android_ndk_repository_extension = use_extension("@rules_android_ndk//:extension.bzl", "android_ndk_repository_extension")
 android_ndk_repository_extension.configure(
-    version = "r28c",
     api_level = 21,
+    version = "r28c",
 )
 use_repo(android_ndk_repository_extension, "androidndk")
 
@@ -54,25 +53,26 @@ bazel_dep(name = "rules_jvm_external", version = "6.8")
 
 maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
 maven.install(
+    name = "android_test_deps",
     artifacts = [
-        'junit:junit:4.13.2',
-        'androidx.test:rules:1.6.1',
-        'androidx.test.ext:junit:1.2.1',
+        "junit:junit:4.13.2",
+        "androidx.test:rules:1.6.1",
+        "androidx.test.ext:junit:1.2.1",
     ],
     repositories = [
         "https://maven.google.com",
         "https://repo1.maven.org/maven2",
     ],
 )
-use_repo(maven, "maven")
+use_repo(maven, "android_test_deps")
 
 # EMSCRIPTEN
 bazel_dep(name = "emsdk")
 git_override(
     module_name = "emsdk",
+    commit = "833fa33421e0a1873c43328bb937dbed53597b17",
     remote = "https://github.com/emscripten-core/emsdk.git",
     strip_prefix = "bazel",
-    commit = "833fa33421e0a1873c43328bb937dbed53597b17",
 )
 
 emscripten_deps = use_extension("@emsdk//:emscripten_deps.bzl", "emscripten_deps")
@@ -94,6 +94,8 @@ emscripten_cache.targets(targets = [
     "libc++-mt-noexcept",
     "libc++-noexcept",
     "libc++-debug-mt-noexcept",
+    "libc++-debug-noexcept",
+    "libc++abi-noexcept",
     "libc++abi-mt-noexcept",
     "libc++abi-debug-mt-noexcept",
     "libc++abi-debug-noexcept",
@@ -103,6 +105,7 @@ emscripten_cache.targets(targets = [
     "libemmalloc-mt",
     "libemmalloc-mt-debug",
     "libemmalloc",
+    "libemmalloc-debug",
     "libfetch-mt",
     "libfetch",
     "libGL-getprocaddr",
@@ -113,6 +116,7 @@ emscripten_cache.targets(targets = [
     "libsockets",
     "libprintf_long_double-mt",
     "libprintf_long_double-mt-debug",
+    "libprintf_long_double",
     "libprintf_long_double-debug",
     "libstubs",
     "libstubs-debug",
@@ -133,6 +137,7 @@ bazel_dep(name = "rules_java", version = "8.13.0")
 copybara_version = "v20250818"
 
 http_jar = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_jar")
+
 http_jar(
     name = "com_github_google_copybara",
     # Fill in from https://github.com/google/copybara/releases/download/[version]/copybara_deploy.jar.sha256
@@ -140,6 +145,14 @@ http_jar(
     urls = ["https://github.com/google/copybara/releases/download/{}/copybara_deploy.jar".format(copybara_version)],
 )
 
+git_repository = use_repo_rule("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+
 # DEV DEPENDENCIES
 
-bazel_dep(name = "googletest", version = "1.17.0", dev_dependency = True)
+# Override with custom build file to correctly built gtest for emscripten without pthreads
+git_repository(
+    name = "googletest",
+    build_file = "//3rdparty:googletest.BUILD",
+    commit = "52eb8108c5bdec04579160ae17225d66034bd723",
+    remote = "https://github.com/google/googletest.git",
+)

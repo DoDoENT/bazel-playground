@@ -28,9 +28,6 @@ platform(
         "@platforms//cpu:wasm32",
         "@platforms//os:emscripten",
     ],
-    flags = [
-        "--copt=-DBOOST_HAS_PTHREADS", # needed for Boost.Container to build
-    ],
 )
 
 platform(
@@ -41,7 +38,6 @@ platform(
     ],
     flags = [
         "--features=simd",
-        "--copt=-DBOOST_HAS_PTHREADS", # needed for Boost.Container to build
     ],
 )
 

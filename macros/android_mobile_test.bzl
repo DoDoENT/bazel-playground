@@ -119,9 +119,9 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
         },
         deps = [
             native.package_relative_label(":" + name + "-android-srcs"),
-            Label("@maven//:junit_junit"),
-            Label("@maven//:androidx_test_rules"),
-            Label("@maven//:androidx_test_ext_junit"),
+            Label("@android_test_deps//:junit_junit"),
+            Label("@android_test_deps//:androidx_test_rules"),
+            Label("@android_test_deps//:androidx_test_ext_junit"),
         ],
         testonly = True,
         assets = [

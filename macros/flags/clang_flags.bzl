@@ -22,6 +22,8 @@ def _calculate_clang_flags():
         "-Wno-error=#warnings",
         "-Wno-error=unknown-attributes",
         "-Wno-unused-command-line-argument",
+        "-Wno-vla-cxx-extension",
+        "-Wno-missing-field-initializers",
     ]
     _local_clang_flags["compiler_common_flags"] = _local_clang_flags["compiler_common_flags"] + [
         "-fenable-matrix",

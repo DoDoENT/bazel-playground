@@ -46,7 +46,7 @@ def _calculate_emscripten_flags():
         "-s ALLOW_UNIMPLEMENTED_SYSCALLS=0",
         "-s SUPPORT_ERRNO=0",
         "-s DYNAMIC_EXECUTION=0",
-        "-s EXPORTED_FUNCTIONS=['_malloc']",
+        "-s EXPORTED_FUNCTIONS=['_malloc','_main']",
     ]
     emscripten_flags["compiler_common_flags"] = emscripten_flags["compiler_common_flags"] + [
         "-fno-PIC",

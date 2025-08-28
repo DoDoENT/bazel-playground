@@ -95,9 +95,11 @@ wasm_test = macro(
         ),
         "threads": attr.bool(
             default = False,
+            configurable = False,
         ),
         "simd": attr.bool(
             default = False,
+            configurable = False,
         ),
         "args": attr.string_list(
             default = [],
