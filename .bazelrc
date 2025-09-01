@@ -24,6 +24,7 @@ common --java_runtime_version=remotejdk_21
 common --features=asan --features=ubsan 
 common --test_tag_filters=host,starlark
 
+
 common:release --features=-asan --features=-ubsan --compilation_mode=opt --features=thin_lto
 common:debug --compilation_mode=dbg
 
@@ -46,6 +47,8 @@ common:linux_haswell --copt=-march=haswell --copt=-mtune=haswell --copt=-mavx --
 build:mac_debuggable --spawn_strategy=local --disk_cache= --remote_cache=
 
 build:rules_xcodeproj --config=mobile
+
+
 
 # Special flags for CI
 # note - avoid using local disk cache in CI - it's not needed. Bazel's internal cache (~/.cache/bazel) and remote cache are sufficient.

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <title>Emscripten Shell</title>
+<style>
+.loader {
+  border: 4px solid #f3f3f3; /* Light grey */
+  border-top: 4px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+</head>
+<body>
+    <h1>Emscripten Shell</h1>
+    <p>
+        Arguments: <input id="parameters" type="text" size="120"></input>
+    </p>
+    <p>
+        <button id="btnRun" onclick="run()">Run with arguments</button>
+        <button id="btnCancel" onclick="cancel()">Cancel</button>
+        <button id="btnClear" onclick="clearConsole()">Clear console</button>
+    </p>
+    <p>
+        <div id='runIndicator' hidden>Running...<div class="loader"></div> <br></div>
+        Console: <br>
+        <textarea id="shell" rows="38" cols="120"></textarea>
+    </p>
+    <script>
+        var worker = undefined;
+
+        function setupArguments() {
+            // populate parameters with query string
+            const parameters = document.getElementById( 'parameters' );
+            parameters.value = '';
+            let first = true;
+            for ( const component of window.location.search.substr( 1 ).split( '&' ) ) {
+                if ( first ) {
+                    first = false;
+                } else {
+                    parameters.value += ' ';
+                }
+                parameters.value += decodeURIComponent( component );
+            }
+        }
+
+        // setup arguments from the query string only on first load
+        setupArguments();
+
+        function displayIndicator( shouldShow ) {
+            const indicator = document.getElementById( 'runIndicator' );
+            if ( indicator ) {
+                indicator.hidden = !shouldShow;
+            }
+        }
+
+        function readArguments() {
+            const parameters = document.getElementById( 'parameters' );
+            const params = parameters.value;
+            if ( params ) {
+                let queryString = '?';
+                let first = true;
+                for ( const param of params.split( ' ' ) ) {
+                    if ( first ) {
+                        first = false;
+                    } else {
+                        queryString += '&';
+                    }
+                    queryString += encodeURIComponent( param )
+                }
+                return queryString;
+            } else {
+                return ''
+            }
+        }
+
+        function run() {
+            // Launch generated script as a Web Worker
+            const shellDiv = document.getElementById( 'shell' );
+            if ( worker ) {
+                // if some worker is already running, kill it first
+                cancel();
+            }
+            displayIndicator( true );
+            worker = new Worker( '/${MB_TARGET_NAME}.js' + readArguments() );
+            worker.onerror = function (e) {
+                if ( shellDiv ) {
+                    shellDiv.value += 'ERROR: Line ' + e.lineno + ' in ' + e.filename + ': ' + e.message + '\n';
+                    shellDiv.scrollTop = shellDiv.scrollHeight;
+                }
+            };
+            worker.onmessage = function (e) {
+                if ( e.data.startsWith( "^exit^" ) ) {
+                    displayIndicator( false );
+                    if ( shellDiv ) {
+                        shellDiv.value += "\nProgram exited with status: " + e.data.substr( 6 ) + '\n';
+                        shellDiv.scrollTop = shellDiv.scrollHeight;
+                    }
+                } else {
+                    if ( shellDiv ) {
+                        shellDiv.value += e.data + '\n';
+                        shellDiv.scrollTop = shellDiv.scrollHeight;
+                    }
+                }
+            };
+        }
+
+        function cancel() {
+            if ( worker ) {
+                worker.terminate();
+                worker = undefined;
+                displayIndicator( false );
+            }
+        }
+
+        function clearConsole() {
+            const shellDiv = document.getElementById( 'shell' );
+            if ( shellDiv ) {
+                shellDiv.value = '';
+                shellDiv.scrollTop = 0;
+            }
+        }
+
+        run();
+
+        function mb_post( msg ) {
+            const http = new XMLHttpRequest();
+            http.open( "POST", "stdio.html", false );
+            http.send( msg );
+        }
+        
+        // indicate to the server that page has been successfully loaded
+        mb_post( "^pageload^" );
+    </script>
+</body>
+</html>

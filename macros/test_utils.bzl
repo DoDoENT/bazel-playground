@@ -17,3 +17,22 @@ prepare_assets = rule(
         "data": attr.label_list(allow_files = True),
     }
 )
+
+def _collect_deps_impl(ctx):
+    collected_files = []
+    for dep in ctx.attr.deps:
+        for file in dep.files.to_list():
+            collected_files.append(file)
+
+    ctx.actions.do_nothing(
+        inputs = collected_files,
+        mnemonic = "CollectDependencies",
+    )
+    return [DefaultInfo(files = depset(collected_files))]
+
+collect_dependencies = rule(
+    implementation = _collect_deps_impl,
+    attrs = {
+        "deps": attr.label_list(allow_files = True),
+    }
+)

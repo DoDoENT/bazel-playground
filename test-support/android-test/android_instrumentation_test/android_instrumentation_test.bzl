@@ -75,6 +75,7 @@ android_instrumentation_test = rule(
             default = "@androidsdk//:aapt2",
         ),
     },
+    toolchains = ["@bazel_tools//tools/sh:toolchain_type"],
     test = True,
     doc = "Runs Android instrumentation tests using the specified test application.",
 )

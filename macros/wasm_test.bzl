@@ -1,66 +1,34 @@
 load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 load("@emsdk//emscripten_toolchain:wasm_rules.bzl", "wasm_cc_binary")
-load("@aspect_rules_js//js:defs.bzl", "js_test")
 load(":test_utils.bzl", "prepare_assets")
 load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
+load(":wasm_mobile_binary.bzl", "wasm_mobile_binary")
+load("//test-support/wasm-test/posluznik-test:posluznik_test.bzl", "posluznik_test")
 
 def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, threads, simd, args, tags, data, defines, local_defines):
-
-    preload_linkopts = []
-    additional_linker_inputs = []
-
-    if len(data) > 0:
-        prepare_assets(
-            name = name + "-assets",
-            data = data
-        )
-        additional_linker_inputs.append(native.package_relative_label(":" + name + "-assets"))
-        preload_linkopts.append("--preload-file")
-        preload_linkopts.append("$(BINDIR)/" + native.package_name() + "/" + name + "-assets@/")
-
-    default_copts = select(resolved_flags_select_dicts["copts"].flat_select_dict)
-    default_conlyopts = select(resolved_flags_select_dicts["conlyopts"].flat_select_dict)
-    default_cxxopts = select(resolved_flags_select_dicts["cxxopts"].flat_select_dict)
-    default_linkopts = select(resolved_flags_select_dicts["linkopts"].flat_select_dict)
-
-    cc_binary(
-        name = name + "-cc",
-        srcs = srcs,
-        copts = default_copts + copts,
-        conlyopts = default_conlyopts + conlyopts,
-        cxxopts = default_cxxopts + cxxopts,
-        linkopts = default_linkopts + linkopts + preload_linkopts,
-        deps = deps,
-        additional_linker_inputs = additional_linker_inputs,
-        testonly = True,
-        local_defines = local_defines,
-        defines = defines,
-    )
-    outputs = [
-        name + "-bin/" + name + "-cc.wasm",
-        name + "-bin/" + name + "-cc.js",
-    ]
-    if data:
-        outputs.append(name + "-bin/" + name + "-cc.data")
-
-    wasm_cc_binary(
+    wasm_mobile_binary(
         name = name + "-bin",
-        cc_target = native.package_relative_label(":" + name + "-cc"),
+        srcs = srcs,
+        data = data,
         simd = simd,
-        threads = "off" if not threads else "emscripten",
-        outputs = outputs,
+        threads = threads,
         tags = ["manual"],
         testonly = True,
+        copts = copts,
+        conlyopts = conlyopts,
+        cxxopts = cxxopts,
+        linkopts = linkopts,
+        deps = deps,
+        defines = defines,
+        local_defines = local_defines,
     )
 
-    js_test(
+    posluznik_test(
         name = name,
         visibility = visibility,
         tags = tags,
-        entry_point = name + "-bin/" + name + "-cc.js",
-        data = outputs,
+        wasm_mobile_binary = native.package_relative_label(":" + name + "-bin"),
         args = args,
-        chdir = native.package_name() + "/" + name + "-bin",
     )
 
 
