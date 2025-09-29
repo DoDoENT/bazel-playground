@@ -1,0 +1,18 @@
+filegroup(
+    name = "chrome",
+    srcs = select({
+        "@platforms//os:windows": [ "chrome-headless-shell.exe" ],
+        "//conditions:default": [ "chrome-headless-shell" ],
+    }),
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "chrome-data",
+    srcs = glob(
+        include = ["**"],
+        exclude = ["chrome-headless-shell*"],
+    ),
+    visibility = ["//visibility:public"],
+)
+

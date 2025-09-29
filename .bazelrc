@@ -34,11 +34,14 @@ common:android --config=mobile --test_tag_filters=android
 common:android --android_platforms=//platforms:arm64-v8a,//platforms:armeabi-v7a
 common:android --extra_toolchains=@androidndk//:all
 
+# This enables the use of mobile-install command with rules_android
+# Based on instructions from https://docs.google.com/document/d/1PAANxcHNnKMI6k5hdKIlFyx_rHaV7WkJjDi15XrZSnM/edit?tab=t.0
+mobile-install --mode=skylark --mobile_install_aspect=@rules_android//mobile_install:mi.bzl --mobile_install_supported_rules=android_binary --tool_java_runtime_version=remotejdk_21
+
 common:ios_device --config=mobile --ios_multi_cpus=arm64 --test_tag_filters=ios
 common:ios_simulator --config=mobile --test_tag_filters=ios
 
 common:wasm --config=mobile --test_tag_filters=wasm-basic,wasm-advanced,wasm-advanced-threads
-common:wasm --copt=-DBOOST_HAS_PTHREADS=1  # boost.container fails to build without this define, thinking that it's on windows
 
 # TODO: This needs to be ported to toolchain rules
 common:linux_haswell --copt=-march=haswell --copt=-mtune=haswell --copt=-mavx --copt=-mavx2
@@ -46,7 +49,7 @@ common:linux_haswell --copt=-march=haswell --copt=-mtune=haswell --copt=-mavx --
 # MacOS Debuggable Configuration needs disabled cache dir and disabled remote cache in order for the debugger to work properly
 build:mac_debuggable --spawn_strategy=local --disk_cache= --remote_cache=
 
-build:rules_xcodeproj --config=mobile
+build:rules_xcodeproj --config=mobile -s
 
 
 

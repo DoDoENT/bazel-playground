@@ -23,10 +23,14 @@ def _generate_test_java_impl(ctx):
     output_file = ctx.actions.declare_file(path + "/GoogleTestLauncher.java")
     output_activity_file = ctx.actions.declare_file(path + "/LaunchActivity.java")
 
+    package_root = ctx.label.package.split("/")[0]
+
     substitutions = {
         "%(package)s": pkg_name,
         "%(testArgs)s": 'new String[]{' + ",".join(['"' + x + '"' for x in ctx.attr.test_args]) + '}',
         "%(nativeLibrary)s": ctx.attr.native_lib,
+        "%(deployResources)b": "true" if ctx.attr.deploy_resources else "false",
+        "%(pkgroot)s": package_root,
     }
 
     ctx.actions.expand_template(
@@ -37,7 +41,7 @@ def _generate_test_java_impl(ctx):
 
     ctx.actions.expand_template(
         output = output_activity_file,
-        template = ctx.file._src_launhcer_template,
+        template = ctx.file._src_launcher_template,
         substitutions = {
             "%(package)s": pkg_name,
         },
@@ -54,18 +58,19 @@ _generate_test_java = rule(
         "package": attr.string(mandatory = True, doc = "package for generated class"),
         "test_args": attr.string_list(mandatory = True, doc = "test arguments"),
         "native_lib": attr.string(mandatory = True, doc = "native lib name"),
+        "deploy_resources": attr.bool(default = False, doc = "if true, resources from assets will be deployed to internal storage before launching the test"),
         "_src_template": attr.label(
             allow_single_file = True,
             default = Label("//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherJavaTemplateSources"),
         ),
-        "_src_launhcer_template": attr.label(
+        "_src_launcher_template": attr.label(
             allow_single_file = True,
             default = Label("//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherActivityTemplateSources"),
         ),
     },
 )
 
-def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, defines, local_defines):
+def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, defines, local_defines, deploy_resources):
     sanitized_name = _sanitize_name(name)
 
     mobile_library(
@@ -96,6 +101,7 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
         package = "com.example." + sanitized_name + ".test",
         test_args = args,
         native_lib = name + "-test-app",
+        deploy_resources = deploy_resources,
         tags = ["manual"],
     )
 
@@ -109,6 +115,7 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
         srcs = [
             native.package_relative_label(":" + name + "-java-srcs"),
         ],
+        custom_package = "com.example." + sanitized_name + ".test",
         manifest = Label("//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherManifest"),
         manifest_values = {
             "applicationId": "com.example." + sanitized_name + ".test",
@@ -192,6 +199,11 @@ android_mobile_test = macro(
         "local_defines": attr.string_list(
             default = [],
             doc = "Preprocessor defines for the Android mobile test that should not be propagated to dependents.",
+        ),
+        "deploy_resources": attr.bool(
+            default = False,
+            doc = "If true, resources from 'data' will be deployed to internal storage before launching the test.",
+            configurable = False,
         ),
     },
 )

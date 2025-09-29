@@ -1,9 +1,10 @@
 
-#include <TestPaths/TestPaths.hpp>
+#include <Paths.h>
 
 #include <cassert>
 #include <cstdio>
 #include <cstdint>
+#include <cstdlib>
 
 #include <sys/stat.h>
 
@@ -15,11 +16,16 @@
 #include <TargetConditionals.h>
 #endif
 
+#ifndef PKG_NAME
+#error "PKG_NAME not defined"
+#endif
+
 #if TARGET_OS_IPHONE
 // will be defined in the google test ios invoker library
 namespace GoogleTest
 {
     std::string currentBundlePath();
+    std::string currentOutputDirPath();
 }
 #endif
 
@@ -27,19 +33,20 @@ namespace GoogleTest
 // will be defined in the google test android invoker library
 namespace GoogleTest
 {
-    AAssetManager * currentAssetManager();
+    AAssetManager     * currentAssetManager();
+    std::string const & internalStoragePath();
 }
 
 #endif
 
-std::string resolveTestDataPath( std::string_view relativePath )
+std::string resolveTestDataPath( std::string_view relativePath ) 
 {
 #if TARGET_OS_IPHONE
-    auto prefix{ GoogleTest::currentBundlePath() + "/" };
+    auto prefix{ GoogleTest::currentBundlePath() + "/test-data/" };
 #else
-    constexpr auto prefix{ "" };
+    constexpr auto prefix{ PKG_NAME "/test-data/" };
 #endif
-    return prefix + std::string{ "test-data/" } + std::string{ relativePath };
+    return prefix + std::string{ relativePath };
 }
 
 namespace
@@ -68,7 +75,7 @@ namespace
     }
 }
 
-FileBuffer readFileToBuffer( std::string const & filePath )
+FileBuffer readFileToBuffer( std::string const & filePath ) 
 {
     FilePtr file { openFile( filePath ) };
     if ( file == nullptr )
@@ -148,4 +155,41 @@ FileBuffer readFileToBuffer( std::string const & filePath )
     {
         return {};
     }
+}
+
+namespace
+{
+    std::string getWriteableDirectoryPath() noexcept
+    {
+#if defined (__ANDROID__)
+        return GoogleTest::internalStoragePath();
+#elif TARGET_OS_IPHONE
+        return GoogleTest::currentOutputDirPath();
+#else
+        static std::string path = []()
+        {
+            auto * pTmpDir{ std::getenv( "TEST_TMPDIR" ) };
+            if ( pTmpDir != nullptr )
+            {
+                return std::string{ pTmpDir };
+            }
+            else
+            {
+                return std::string{ "/tmp" };
+            }
+        }();
+        return path;
+#endif
+    }
+}
+
+std::string resolveWriteableDirPath( std::string_view relativePath ) 
+{
+    auto prefix{ getWriteableDirectoryPath() };
+    std::string fullPath;
+    fullPath.reserve( prefix.length() + 1 + relativePath.length() );
+    fullPath += prefix;
+    fullPath += '/';
+    fullPath += relativePath;
+    return fullPath;
 }

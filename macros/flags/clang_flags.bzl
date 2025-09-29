@@ -13,6 +13,9 @@ def _calculate_clang_flags():
         "-fvectorize",
         "-fslp-vectorize",
     ]
+    _local_clang_flags["compiler_optimize_for_size"] = [
+        "-Oz",
+    ]
     _local_clang_flags["compiler_report_optimization"] =  _local_clang_flags["compiler_report_optimization"] + [
         "-Rpass=loop-.*",
     ]

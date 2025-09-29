@@ -84,3 +84,8 @@ if echo "$output" | grep -q "FAILURES"; then
     echo "$output"
     exit 1
 fi
+if echo "$log_output" | grep -q "Fatal signal"; then
+    echo "Instrumentation test failed."
+    echo "$output"
+    exit 1
+fi

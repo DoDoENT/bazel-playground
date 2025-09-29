@@ -28,6 +28,7 @@ def _calculate_emscripten_flags():
         "-s SAFE_HEAP=1",
     ]
     emscripten_flags["linker_release_flags"] = [
+        "-O3",
         "-s ASSERTIONS=0",
         "-s STACK_OVERFLOW_CHECK=0",
         "--closure 1",

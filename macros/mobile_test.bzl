@@ -1,8 +1,9 @@
-load("//macros:ios_mobile_test.bzl", "ios_mobile_test")
+load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 load("//macros:android_mobile_test.bzl", "android_mobile_test")
+load("//macros:ios_mobile_test.bzl", "ios_mobile_test")
+load("//macros:mobile_library.bzl", "mobile_library")
 load("//macros:wasm_test.bzl", "wasm_test")
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
-load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 load(
     ":constants.bzl",
     "TAG_WASM_BASIC",
@@ -13,7 +14,22 @@ load(
     "TAG_ANDROID",
 )
 
-def _mobile_test_impl(name, visibility, args, data, host_only, **kwargs):
+def _mobile_test_impl(name, visibility, args, data, host_only, android_deploy_resources, **kwargs):
+
+    mobile_library(
+        name = name + "-paths",
+        srcs = [
+            Label("//test-support/paths:test-paths-impl"),
+        ],
+        local_defines = [
+            'PKG_NAME=\\"' + native.package_name() + '\\"',
+        ],
+        deps = [
+            Label("//test-support/paths:test-paths"),
+        ],
+        testonly = True,
+    )
+
     deps = kwargs.pop("deps") or select({
         Label("//conditions:default"): [],
     })
@@ -23,7 +39,7 @@ def _mobile_test_impl(name, visibility, args, data, host_only, **kwargs):
     tags = kwargs.pop("tags") or []
     deps = deps + select({
         Label("//conditions:default"): [
-            Label("//test-support/paths:test-paths"),
+            native.package_relative_label(":" + name + "-paths"),
             Label("@googletest//:gtest_main"),
         ]
     })
@@ -49,6 +65,10 @@ def _mobile_test_impl(name, visibility, args, data, host_only, **kwargs):
     local_defines = kwargs.pop("local_defines") or select({
         Label("//conditions:default"): [],
     })
+    linkstatic = kwargs.pop("linkstatic")
+    if linkstatic == None:
+        linkstatic = True  # Default to static linking if not specified
+
     cc_test(
         name = name,
         srcs = srcs,
@@ -63,6 +83,7 @@ def _mobile_test_impl(name, visibility, args, data, host_only, **kwargs):
         data = data,
         defines = defines,
         local_defines = local_defines,
+        linkstatic = linkstatic,
         **kwargs,
     )
     if not host_only:
@@ -96,6 +117,7 @@ def _mobile_test_impl(name, visibility, args, data, host_only, **kwargs):
             data = data,
             defines = defines,
             local_defines = local_defines,
+            deploy_resources = android_deploy_resources,
         )
         wasm_test(
             name = name + "-wasm-basic",
@@ -170,6 +192,11 @@ mobile_test = macro(
             doc = "If true, only define the host version of the test.",
             configurable = False,
         ),
+        "android_deploy_resources": attr.bool(
+            default = False,
+            configurable = False,
+            doc = "If true, on Android test data files will be deployed to the internal storage prior launching the C++ code",
+        ),
     }
 )
 
@@ -196,11 +223,17 @@ def create_transitioned_test_rule(transition):
         test = True,
     )
 
-def apply_to_all_generated_tests(test_names, func):
+def apply_to_all_generated_tests(test_names, func, *, host=True, ios=True, android=True, wasm_basic=True, wasm_advanced=True, wasm_advanced_threads=True, additional_tags=[]):
     for test_name in test_names:
-        func(test_name, [TAG_HOST])
-        func(test_name + "-ios", [TAG_IOS, "exclusive"])
-        func(test_name + "-android", [TAG_ANDROID, "exclusive"])
-        func(test_name + "-wasm-basic", [TAG_WASM_BASIC])
-        func(test_name + "-wasm-advanced", [TAG_WASM_ADVANCED])
-        func(test_name + "-wasm-advanced-threads", [TAG_WASM_ADVANCED_THREADS])
+        if host:
+            func(test_name, [TAG_HOST] + additional_tags)
+        if ios:
+            func(test_name + "-ios", [TAG_IOS, "exclusive"] + additional_tags)
+        if android:
+            func(test_name + "-android", [TAG_ANDROID, "exclusive"] + additional_tags)
+        if wasm_basic:
+            func(test_name + "-wasm-basic", [TAG_WASM_BASIC] + additional_tags)
+        if wasm_advanced:
+            func(test_name + "-wasm-advanced", [TAG_WASM_ADVANCED] + additional_tags)
+        if wasm_advanced_threads:
+            func(test_name + "-wasm-advanced-threads", [TAG_WASM_ADVANCED_THREADS] + additional_tags)

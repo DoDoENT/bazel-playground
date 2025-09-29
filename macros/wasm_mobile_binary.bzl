@@ -72,7 +72,7 @@ def _wasm_mobile_binary_impl(name, visibility, data, threads, simd, html_shell, 
         )
 
     if data:
-        outputs.append(name + "-bin/" + name + "-cc.data")
+        outputs.append(name + "/" + name + "-cc.data")
 
     cc_binary(
         name = name + "-cc",

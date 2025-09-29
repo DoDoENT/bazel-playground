@@ -45,6 +45,7 @@ flags_dicts = {
     "cxx_compiler_no_thread_safe_init": _transform_to_select_dict("cxx_compiler_no_thread_safe_init"),
     "compiler_report_optimization": _transform_to_select_dict("compiler_report_optimization"),
     "compiler_release_flags": _transform_to_select_dict("compiler_release_flags"),
+    "compiler_dev_release_flags": _transform_to_select_dict("compiler_dev_release_flags"),
     "compiler_default_warnings": _transform_to_select_dict("compiler_default_warnings"),
     "compiler_warnings_as_errors": _transform_to_select_dict("compiler_warnings_as_errors"),
     "compiler_native_optimization": _transform_to_select_dict("compiler_native_optimization"),
@@ -87,17 +88,17 @@ resolved_flags_select_dicts = {
         flags_dicts["compiler_default_warnings"],
         flags_dicts["compiler_warnings_as_errors"],
         flags_dicts["compiler_debug_symbols"],
-        {
+        selects.with_or_dict({
+            (Label(":devRelease"), Label(":release")): flags_dicts["compiler_optimize_for_size"],
+            Label("//conditions:default"): [],
+        }),
+        selects.with_or_dict({
             Label(":debug"): flags_dicts["compiler_debug_flags"],
-            Label(":devRelease"): flags_dicts["compiler_debug_flags"],
-            Label(":release"): flags_dicts["compiler_release_flags"],
-        },
+            (Label(":devRelease"), Label(":release")): flags_dicts["compiler_release_flags"],
+        }),
         {
             Label(":release"): flags_dicts["compiler_lto"],
-            Label("//conditions:default"): [],
-        },
-        {
-            Label(":release"): flags_dicts["compiler_optimize_for_size"],
+            Label(":devRelease"): flags_dicts["compiler_dev_release_flags"], # override some release flags for devRelease (i.e. remove the NDEBUG define)
             Label("//conditions:default"): [],
         },
     ),

@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.File;
+
 public class LaunchActivity extends Activity {
 
     @Override
@@ -33,6 +35,9 @@ public class LaunchActivity extends Activity {
 
         AssetManager assetManager = getAssets();
 
+        File filesDir = getApplicationContext().getFilesDir();
+        String filesDirPath = filesDir.getAbsolutePath();
+
         GoogleTestLauncher.GTestListener mGTestListener = new GoogleTestLauncher.GTestListener() {
 
             @Override
@@ -49,7 +54,7 @@ public class LaunchActivity extends Activity {
                 if ( wakeLock != null ) {
                     wakeLock.acquire();
                 }
-                int statusCode = GoogleTestLauncher.invokeGoogleTest(GoogleTestLauncher.testArgs, assetManager, mGTestListener);
+                int statusCode = GoogleTestLauncher.invokeGoogleTest(GoogleTestLauncher.testArgs, assetManager, filesDirPath, mGTestListener);
                 if ( wakeLock != null ) {
                     wakeLock.release();
                 }

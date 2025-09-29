@@ -1,0 +1,21 @@
+load("//macros:mobile_library.bzl", "mobile_library")
+
+filegroup(
+    name = "test-paths-impl",
+    srcs = [
+        "Source/Paths.cpp",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+mobile_library(
+    name = "test-paths",
+    hdrs = [
+        "Include/Paths.h",
+    ],
+    deps = [
+        
+    ],
+    visibility = ["//visibility:public"],
+    testonly = True,
+)

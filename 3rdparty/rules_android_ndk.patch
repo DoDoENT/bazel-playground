@@ -1,0 +1,201 @@
+diff --git a/BUILD.ndk_sysroot.tpl b/BUILD.ndk_sysroot.tpl
+index e5613ac..f14942f 100644
+--- a/BUILD.ndk_sysroot.tpl
++++ b/BUILD.ndk_sysroot.tpl
+@@ -16,7 +16,7 @@ filegroup(
+         "usr/lib/{target_system_name}/{api_level}/*".format(
+             target_system_name = target_system_name,
+         ),
+-    ]),
++    ], allow_empty = True),
+ ) for target_system_name in TARGET_SYSTEM_NAMES]
+ 
+ [filegroup(
+diff --git a/extension.bzl b/extension.bzl
+index 22c8076..af6b0c6 100644
+--- a/extension.bzl
++++ b/extension.bzl
+@@ -15,6 +15,7 @@
+ """A bzlmod extension for loading the NDK."""
+ 
+ load(":rules.bzl", "android_ndk_repository")
++load(":ndk_versions.bzl", "NDK_VERSIONS")
+ 
+ def _android_ndk_repository_extension_impl(module_ctx):
+     root_modules = [m for m in module_ctx.modules if m.is_root and m.tags.configure]
+@@ -29,7 +30,7 @@ def _android_ndk_repository_extension_impl(module_ctx):
+     kwargs = {}
+     if module.tags.configure:
+         kwargs["api_level"] = module.tags.configure[0].api_level
+-        kwargs["path"] = module.tags.configure[0].path
++        kwargs["version"] = module.tags.configure[0].version
+ 
+     android_ndk_repository(
+         name = "androidndk",
+@@ -40,7 +41,11 @@ android_ndk_repository_extension = module_extension(
+     implementation = _android_ndk_repository_extension_impl,
+     tag_classes = {
+         "configure": tag_class(attrs = {
+-            "path": attr.string(),
++            "version": attr.string(
++                mandatory = True,
++                doc = "The version of the Android NDK to download.",
++                values = ["latest"] + NDK_VERSIONS.keys(),
++            ),
+             "api_level": attr.int(),
+         }),
+     },
+diff --git a/ndk_cc_toolchain_config.bzl b/ndk_cc_toolchain_config.bzl
+index a449a1f..3906ca5 100644
+--- a/ndk_cc_toolchain_config.bzl
++++ b/ndk_cc_toolchain_config.bzl
+@@ -348,7 +348,7 @@ def ndk_cc_toolchain_config(
+         ),
+         feature(
+             name = "crosstool_has_neon",
+-            enabled = api_level >= 23,
++            enabled = api_level >= 21,
+         ),
+         feature(
+             name = "crosstool_needs_stackrealign",
+@@ -437,7 +437,7 @@ def ndk_cc_toolchain_config(
+                         action.cpp_link_executable,
+                     ],
+                     flag_groups = [
+-                        flag_group(flags = ["-flto=thin"]),
++                        flag_group(flags = ["-flto=thin", "-fwhole-program-vtables"]),
+                         flag_group(
+                             expand_if_available = "lto_indexing_bitcode_file",
+                             flags = [
+@@ -750,7 +750,7 @@ def ndk_cc_toolchain_config(
+                 ),
+                 flag_set(
+                     actions = actions.all_compile,
+-                    flags = ["-mfpu=neon"],
++                    flags = ["-mfpu=neon-vfpv4"],
+                     features = ["crosstool_cpu_arm", "crosstool_has_neon"],
+                 ),
+                 flag_set(
+diff --git a/ndk_versions.bzl b/ndk_versions.bzl
+new file mode 100644
+index 0000000..dce5a8a
+--- /dev/null
++++ b/ndk_versions.bzl
+@@ -0,0 +1,7 @@
++NDK_VERSIONS = {
++    "r28c": struct(
++        sha256_linux = "dfb20d396df28ca02a8c708314b814a4d961dc9074f9a161932746f815aa552f",
++        sha256_darwin = "0d4599e8bbf1a1668a0d51a541729b2246360f350018a2081d0b302dbb594f2a",
++        sha256_windows = "6bec98ac2354d8a919760889a1a41d020132e5e8cfa1b1fe51610a72c36a466b",
++    ),
++}
+diff --git a/rules.bzl b/rules.bzl
+index 9f76a87..a6dd385 100644
+--- a/rules.bzl
++++ b/rules.bzl
+@@ -14,6 +14,8 @@
+ 
+ """A repository rule for integrating the Android NDK."""
+ 
++load(":ndk_versions.bzl", "NDK_VERSIONS")
++
+ def _android_ndk_repository_impl(ctx):
+     """Install the Android NDK files.
+ 
+@@ -23,12 +25,34 @@ def _android_ndk_repository_impl(ctx):
+     Returns:
+         A final dict of configuration attributes and values.
+     """
+-    ndk_path = ctx.attr.path or ctx.os.environ.get("ANDROID_NDK_HOME", None)
+-    if not ndk_path:
+-        fail("Either the ANDROID_NDK_HOME environment variable or the " +
+-             "path attribute of android_ndk_repository must be set.")
+-    if ndk_path.startswith("$WORKSPACE_ROOT"):
+-        ndk_path = str(ctx.workspace_root) + ndk_path.removeprefix("$WORKSPACE_ROOT")
++    version = ctx.attr.version
++
++    if version == None:
++        version = "latest"
++
++    if version == "latest":
++        version = NDK_VERSIONS[NDK_VERSIONS.keys()[0]]
++    ndk_url = "https://dl.google.com/android/repository/android-ndk-{}-{}.zip"
++
++    if ctx.os.name == "linux":
++        osname = "linux"
++        sha256 = NDK_VERSIONS[version].sha256_linux
++    elif ctx.os.name == "mac os x":
++        # Note: darwin-x86_64 does indeed contain fat binaries with arm64 slices, too.
++        osname = "darwin"
++        sha256 = NDK_VERSIONS[version].sha256_darwin
++    elif ctx.os.name.startswith("windows"):
++        osname = "windows"
++        sha256 = NDK_VERSIONS[version].sha256_windows
++    else:
++        fail("Unsupported operating system: " + ctx.os.name)
++
++    ctx.report_progress("Downloading Android NDK version {}".format(version))
++    ctx.download_and_extract(
++        url = ndk_url.format(version, osname),
++        sha256 =sha256,
++        strip_prefix = "android-ndk-{}".format(version),
++    )
+ 
+     is_windows = False
+     executable_extension = ""
+@@ -46,7 +70,8 @@ def _android_ndk_repository_impl(ctx):
+ 
+     sysroot_directory = "%s/sysroot" % clang_directory
+ 
+-    _create_symlinks(ctx, ndk_path, clang_directory, sysroot_directory)
++    # TODO(#32): Remove this hack
++    ctx.symlink("sources", "ndk/sources")
+ 
+     api_level = ctx.attr.api_level or 31
+ 
+@@ -101,32 +126,13 @@ def _android_ndk_repository_impl(ctx):
+         executable = False,
+     )
+ 
+-# Manually create a partial symlink tree of the NDK to avoid creating BUILD
+-# files in the real NDK directory.
+-def _create_symlinks(ctx, ndk_path, clang_directory, sysroot_directory):
+-    # Path needs to end in "/" for replace() below to work
+-    if not ndk_path.endswith("/"):
+-        ndk_path = ndk_path + "/"
+-
+-    for p in ctx.path(ndk_path + clang_directory).readdir():
+-        repo_relative_path = str(p).replace(ndk_path, "")
+-
+-        # Skip sysroot directory, since it gets its own BUILD file
+-        if repo_relative_path != sysroot_directory:
+-            ctx.symlink(p, repo_relative_path)
+-
+-    for p in ctx.path(ndk_path + sysroot_directory).readdir():
+-        repo_relative_path = str(p).replace(ndk_path, "")
+-        ctx.symlink(p, repo_relative_path)
+-
+-    ctx.symlink(ndk_path + "sources", "sources")
+-
+-    # TODO(#32): Remove this hack
+-    ctx.symlink(ndk_path + "sources", "ndk/sources")
+-
+ android_ndk_repository = repository_rule(
+     attrs = {
+-        "path": attr.string(),
++        "version": attr.string(
++            mandatory = True,
++            doc = "The version of the Android NDK to download. Defaults to 'latest'.",
++            values = ["latest"] + NDK_VERSIONS.keys(),
++        ),
+         "api_level": attr.int(),
+         "_build": attr.label(default = ":BUILD", allow_single_file = True),
+         "_template_ndk_root": attr.label(default = ":BUILD.ndk_root.tpl", allow_single_file = True),
+@@ -134,6 +140,6 @@ android_ndk_repository = repository_rule(
+         "_template_ndk_clang": attr.label(default = ":BUILD.ndk_clang.tpl", allow_single_file = True),
+         "_template_ndk_sysroot": attr.label(default = ":BUILD.ndk_sysroot.tpl", allow_single_file = True),
+     },
+-    local = True,
++    local = False,
+     implementation = _android_ndk_repository_impl,
+ )

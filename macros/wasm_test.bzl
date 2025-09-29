@@ -23,11 +23,18 @@ def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts,
         local_defines = local_defines,
     )
 
+    validate_binary = "basic"
+    if simd and threads:
+        validate_binary = "simd+threads"
+    elif simd:
+        validate_binary = "simd"
+
     posluznik_test(
         name = name,
         visibility = visibility,
         tags = tags,
         wasm_mobile_binary = native.package_relative_label(":" + name + "-bin"),
+        validate_binary = validate_binary,
         args = args,
     )
 

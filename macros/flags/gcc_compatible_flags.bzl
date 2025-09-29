@@ -51,11 +51,17 @@ gcc_compat_flags = {
     "compiler_report_optimization": [
         "-ftree-vectorizer-verbose=6",
     ],
+    "compiler_dev_release_flags": [
+        "-DALLOW_ASSERT_IN_RELEASE",
+        "-DBOOST_ENABLE_ASSERT_HANDLER",
+        "-UNDEBUG",
+    ],
     "compiler_release_flags": [
         "-fomit-frame-pointer",
         "-ffunction-sections",
         "-fmerge-all-constants",
         "-fno-stack-protector",
+        "-DNDEBUG",
     ],
     "compiler_default_warnings": [
         "-Wall",
