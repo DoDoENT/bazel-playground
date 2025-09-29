@@ -40,12 +40,18 @@ mobile_test(
     args = ["--gtest_filter=HelloGreetTest.NonDefaultGreeting"],
 )
 
+filegroup(
+    name = "test-data",
+    srcs = glob(["test-data/**"]),
+    output_group = "",
+)
+
 mobile_test(
     name = "hello-world-test-file",
     srcs = ["tests/hello-test-file.cc"],
     args = ["--gtest_filter=HelloGreetTest.ReadFile"],
     data = [
-        "//:test-data",
+        ":test-data",
     ],
 )
 

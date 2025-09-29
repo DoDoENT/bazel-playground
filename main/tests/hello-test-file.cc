@@ -1,4 +1,4 @@
-#include <TestPaths/TestPaths.hpp>
+#include <Paths.h>
 
 #include <gtest/gtest.h>
 

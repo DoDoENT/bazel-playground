@@ -1,12 +1,5 @@
 load("//macros:test_suite.bzl", "define_subpackage_test_suites")
 
-filegroup(
-    name = "test-data",
-    srcs = glob(["test-data/**"]),
-    output_group = "",
-    visibility = ["//visibility:public"],
-)
-
 define_subpackage_test_suites(
     name = "all-test-suites",
     subpackages = [
