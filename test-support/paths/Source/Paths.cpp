@@ -21,28 +21,17 @@
 #endif
 
 #if TARGET_OS_IPHONE
-// will be defined in the google test ios invoker library
-namespace GoogleTest
-{
-    std::string currentBundlePath();
-    std::string currentOutputDirPath();
-}
+#include "macros/ios-helpers/BundlePathProvider.hpp"
 #endif
 
 #ifdef __ANDROID__
-// will be defined in the google test android invoker library
-namespace GoogleTest
-{
-    AAssetManager     * currentAssetManager();
-    std::string const & internalStoragePath();
-}
-
+#include "PathProvider.hpp"
 #endif
 
-std::string resolveTestDataPath( std::string_view relativePath ) 
+std::string resolveTestDataPath( std::string_view relativePath )
 {
 #if TARGET_OS_IPHONE
-    auto prefix{ GoogleTest::currentBundlePath() + "/test-data/" };
+    auto prefix{ IosBundlePath::currentBundlePath() + "/test-data/" };
 #else
     constexpr auto prefix{ PKG_NAME "/test-data/" };
 #endif
@@ -75,13 +64,13 @@ namespace
     }
 }
 
-FileBuffer readFileToBuffer( std::string const & filePath ) 
+FileBuffer readFileToBuffer( std::string const & filePath )
 {
     FilePtr file { openFile( filePath ) };
     if ( file == nullptr )
     {
 #ifdef __ANDROID__
-        auto * assetManager{ GoogleTest::currentAssetManager() };
+        auto * assetManager{ AndroidPaths::currentAssetManager() };
         if ( assetManager != nullptr )
         {
             std::unique_ptr< AAsset, decltype( &AAsset_close ) > asset
@@ -161,10 +150,10 @@ namespace
 {
     std::string getWriteableDirectoryPath() noexcept
     {
-#if defined (__ANDROID__)
-        return GoogleTest::internalStoragePath();
+#if defined ( __ANDROID__ )
+        return AndroidPaths::internalStoragePath();
 #elif TARGET_OS_IPHONE
-        return GoogleTest::currentOutputDirPath();
+        return IosBundlePath::currentOutputDirPath();
 #else
         static std::string path = []()
         {
@@ -183,7 +172,7 @@ namespace
     }
 }
 
-std::string resolveWriteableDirPath( std::string_view relativePath ) 
+std::string resolveWriteableDirPath( std::string_view relativePath )
 {
     auto prefix{ getWriteableDirectoryPath() };
     std::string fullPath;

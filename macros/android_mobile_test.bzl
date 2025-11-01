@@ -1,84 +1,25 @@
-
 load("@rules_android//android:rules.bzl", "android_binary")
 load("//test-support/android-test/android_instrumentation_test:android_instrumentation_test.bzl", "android_instrumentation_test")
 load("//macros:mobile_library.bzl", "mobile_library")
 load(":test_utils.bzl", "prepare_assets")
 load(":constants.bzl", "TAG_ANDROID")
-
-def _sanitize_name(name):
-    """Sanitize the test name to ensure it is valid for Android."""
-    return name.replace("-", "_").replace(".", "_")
-
-def _sanitize_for_jni(sanitized_name):
-    """Sanitize name further for purpose of JNI naming"""
-    return sanitized_name.replace("_", "_1")
-
-def _package_to_path(pkgName):
-    """Convert java package name to path"""
-    return pkgName.replace(".", "/")
-
-def _generate_test_java_impl(ctx):
-    pkg_name = ctx.attr.package
-    path = _package_to_path(pkg_name)
-    output_file = ctx.actions.declare_file(path + "/GoogleTestLauncher.java")
-    output_activity_file = ctx.actions.declare_file(path + "/LaunchActivity.java")
-
-    package_root = ctx.label.package.split("/")[0]
-
-    substitutions = {
-        "%(package)s": pkg_name,
-        "%(testArgs)s": 'new String[]{' + ",".join(['"' + x + '"' for x in ctx.attr.test_args]) + '}',
-        "%(nativeLibrary)s": ctx.attr.native_lib,
-        "%(deployResources)b": "true" if ctx.attr.deploy_resources else "false",
-        "%(pkgroot)s": package_root,
-    }
-
-    ctx.actions.expand_template(
-        output = output_file,
-        template = ctx.file._src_template,
-        substitutions = substitutions,
-    )
-
-    ctx.actions.expand_template(
-        output = output_activity_file,
-        template = ctx.file._src_launcher_template,
-        substitutions = {
-            "%(package)s": pkg_name,
-        },
-    )
-
-    return [
-        DefaultInfo(files = depset([output_file, output_activity_file])),
-    ]
-
-_generate_test_java = rule(
-    implementation = _generate_test_java_impl,
-    # output_to_genfiles = True,
-    attrs = {
-        "package": attr.string(mandatory = True, doc = "package for generated class"),
-        "test_args": attr.string_list(mandatory = True, doc = "test arguments"),
-        "native_lib": attr.string(mandatory = True, doc = "native lib name"),
-        "deploy_resources": attr.bool(default = False, doc = "if true, resources from assets will be deployed to internal storage before launching the test"),
-        "_src_template": attr.label(
-            allow_single_file = True,
-            default = Label("//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherJavaTemplateSources"),
-        ),
-        "_src_launcher_template": attr.label(
-            allow_single_file = True,
-            default = Label("//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherActivityTemplateSources"),
-        ),
-    },
-)
+load(":android_build_config.bzl", "android_build_config")
+load(":android_utils.bzl", "SANITIZER_SUPPORT_LIBS")
 
 def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, defines, local_defines, deploy_resources):
-    sanitized_name = _sanitize_name(name)
+    # Always use the same package name, as this makes it easier to monitor test runs with ADB and it's not
+    # possible to run multiple tests simultaneously anyway (they would conflict on the device).
+    package_name = "com.example.testrunner"
 
     mobile_library(
-        name = name + "-android-srcs",
+        name = name + "-srcs",
         srcs = srcs + [
             Label("//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherCppSources"),
         ],
-        deps = deps,
+        deps = deps + [
+            Label("//macros/android-helpers/exerunner/PathProvider"),
+            Label("@googletest//:gtest_main"),
+        ],
         copts = copts,
         conlyopts = conlyopts,
         cxxopts = cxxopts,
@@ -89,20 +30,21 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
         testonly = True,
         alwayslink = True,
         linkstatic = False,
-        local_defines = local_defines + [
-            "JNI_PREFIX=com_example_" + _sanitize_for_jni(sanitized_name) + "_test_GoogleTestLauncher",
-        ],
+        local_defines = local_defines,
         defines = defines,
         tags = ["manual"],
     )
 
-    _generate_test_java(
-        name = name + "-java-srcs",
-        package = "com.example." + sanitized_name + ".test",
-        test_args = args,
-        native_lib = name + "-test-app",
-        deploy_resources = deploy_resources,
-        tags = ["manual"],
+    android_build_config(
+        name = name + "-build-config",
+        package = package_name,
+        application_id = package_name,
+        build_config_fields = {
+            "TEST_ARGS": ["String[]", 'new String[]{' + ",".join(['"' + x + '"' for x in args]) + '}'],
+            "NATIVE_LIB_NAME": ["String", '"' + name + '-test-app"'],
+            "DEPLOY_RESOURCES": ["boolean", "true" if deploy_resources else "false"],
+            "PKG_ROOT": ["String", '"' + native.package_name().split("/")[0] + '"'],
+        },
     )
 
     prepare_assets(
@@ -113,28 +55,31 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
     android_binary(
         name = name + "-test-app",
         srcs = [
-            native.package_relative_label(":" + name + "-java-srcs"),
+            native.package_relative_label(":" + name + "-build-config"),
+            Label("//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherJavaSources"),
         ],
-        custom_package = "com.example." + sanitized_name + ".test",
+        custom_package = package_name,
         manifest = Label("//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherManifest"),
         manifest_values = {
-            "applicationId": "com.example." + sanitized_name + ".test",
+            "applicationId": package_name,
             "minSdkVersion": "21",
             "targetSdkVersion": "31",
-            "targetPackage": "com.example." + sanitized_name + ".test",
-            "package": "com.example." + sanitized_name + ".test",
+            "targetPackage": package_name,
+            "package": package_name,
         },
         deps = [
-            native.package_relative_label(":" + name + "-android-srcs"),
+            native.package_relative_label(":" + name + "-srcs"),
             Label("@android_test_deps//:junit_junit"),
             Label("@android_test_deps//:androidx_test_rules"),
             Label("@android_test_deps//:androidx_test_ext_junit"),
-        ],
+        ] + SANITIZER_SUPPORT_LIBS,
         testonly = True,
         assets = [
             native.package_relative_label(":" + name + "-assets"),
         ],
-        resource_files = [Label("//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherResources")],
+        resource_files = [
+            Label("//test-support/android-test/GoogleTestLauncher:GoogleTestLauncherResources"),
+        ],
         assets_dir = name + "-assets",
         tags = ["manual"],
     )

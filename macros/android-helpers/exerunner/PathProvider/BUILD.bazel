@@ -1,0 +1,14 @@
+load("//macros:mobile_library.bzl", "mobile_library")
+
+mobile_library(
+    name = "PathProvider",
+    srcs = [
+        "Source/PathProvider.cpp",
+    ],
+    hdrs = [
+        "Source/PathProvider.hpp",
+        "Source/PathProviderInternal.hpp",
+    ],
+    strip_include_prefix = "Source",
+    visibility = ["//visibility:public"],
+)

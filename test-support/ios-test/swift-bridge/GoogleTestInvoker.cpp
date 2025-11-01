@@ -8,16 +8,6 @@
 namespace GoogleTest
 {
 
-std::string currentBundlePath()
-{
-    return std::string{ GoogleTestSwift::currentBundlePath() };
-}
-
-std::string currentOutputDirPath()
-{
-    return std::string{ GoogleTestSwift::currentOutputDirPath() };
-}
-
 int executeGoogleTests( ArgVector const & args )
 {
     int argc = static_cast< int >( args.size() );

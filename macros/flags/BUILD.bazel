@@ -41,6 +41,22 @@ config_setting(
     visibility = ["//visibility:public"],
 )
 
+config_setting(
+    name = "asan_enabled",
+    values = {
+        "features": "asan",
+    },
+    visibility = ["//visibility:public"],
+)
+
+config_setting(
+    name = "ubsan_enabled",
+    values = {
+        "features": "ubsan",
+    },
+    visibility = ["//visibility:public"],
+)
+
 selects.config_setting_group(
     name = "apple_platform",
     match_any = [

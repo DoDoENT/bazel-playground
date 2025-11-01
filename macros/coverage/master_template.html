@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"/>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready( function () {
+            $('#tejbl').DataTable({
+                paging: false,
+                //searching: false,
+                info: false
+            });
+        } );
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, sans-serif;
+        }
+        pre {
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+        }
+        table {
+            border: 1px solid #dbdbdb;
+            border-radius: 3px;
+        }
+        table.dataTable tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+        table.dataTable tr:hover {
+            background-color: #f0f0f0;
+        }
+        table.dataTable tbody td {
+            padding: 4px 4px;
+        }
+        .dataTables_filter {
+            padding: 8px 4px;
+        }
+    </style>
+</head>
+<body>
+    <table id="tejbl">
+        <thead>
+            <tr>
+                <th>Executable name</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for f in file_list %}
+            <tr>
+                <td><pre><a href="{{ f }}/index.html">{{ f }}</a></pre></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

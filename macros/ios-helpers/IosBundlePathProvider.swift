@@ -1,7 +1,8 @@
 import Foundation
+internal import BundleHolder
 
 public func currentBundlePath() -> String {
-    let path = Bundle(for: GoogleTestInvoker.self ).resourcePath ?? ""
+    let path = getActiveBundle().resourcePath ?? ""
     return path
 }
 

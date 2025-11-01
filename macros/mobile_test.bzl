@@ -37,12 +37,6 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android_deploy_re
         Label("//conditions:default"): [],
     })
     tags = kwargs.pop("tags") or []
-    deps = deps + select({
-        Label("//conditions:default"): [
-            native.package_relative_label(":" + name + "-paths"),
-            Label("@googletest//:gtest_main"),
-        ]
-    })
     default_conlyopts = select(resolved_flags_select_dicts["conlyopts"].flat_select_dict)
     default_copts = select(resolved_flags_select_dicts["copts"].flat_select_dict)
     default_cxxopts = select(resolved_flags_select_dicts["cxxopts"].flat_select_dict)
@@ -77,7 +71,10 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android_deploy_re
         copts = default_copts + copts,
         cxxopts = default_cxxopts + cxxopts,
         conlyopts = default_conlyopts + conlyopts,
-        deps = deps,
+        deps = deps + [
+            native.package_relative_label(":" + name + "-paths"),
+            Label("@googletest//:gtest_main"),
+        ],
         tags = tags + [TAG_HOST],
         args = args,
         data = data,
@@ -96,7 +93,9 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android_deploy_re
             conlyopts = conlyopts,
             cxxopts = cxxopts,
             linkopts = linkopts,
-            deps = deps,
+            deps = deps + [
+                native.package_relative_label(":" + name + "-paths"),
+            ],
             tags = tags,
             args = args,
             data = data,
@@ -111,7 +110,9 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android_deploy_re
             conlyopts = conlyopts,
             cxxopts = cxxopts,
             linkopts = linkopts,
-            deps = deps,
+            deps = deps + [
+                native.package_relative_label(":" + name + "-paths"),
+            ],
             tags = tags,
             args = args,
             data = data,
@@ -127,7 +128,9 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android_deploy_re
             conlyopts = conlyopts,
             cxxopts = cxxopts,
             linkopts = linkopts,
-            deps = deps,
+            deps = deps + [
+                native.package_relative_label(":" + name + "-paths"),
+            ],
             threads = False,
             simd = False,
             args = args,
@@ -144,7 +147,9 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android_deploy_re
             conlyopts = conlyopts,
             cxxopts = cxxopts,
             linkopts = linkopts,
-            deps = deps,
+            deps = deps + [
+                native.package_relative_label(":" + name + "-paths"),
+            ],
             threads = False,
             simd = True,
             args = args,
@@ -161,7 +166,9 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android_deploy_re
             conlyopts = conlyopts,
             cxxopts = cxxopts,
             linkopts = linkopts,
-            deps = deps,
+            deps = deps + [
+                native.package_relative_label(":" + name + "-paths"),
+            ],
             threads = True,
             simd = True,
             args = args,

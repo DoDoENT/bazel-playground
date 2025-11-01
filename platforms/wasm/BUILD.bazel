@@ -1,0 +1,31 @@
+platform(
+    name = "basic",
+    constraint_values = [
+        "@platforms//cpu:wasm32",
+        "@platforms//os:emscripten",
+    ],
+)
+
+platform(
+    name = "advanced",
+    constraint_values = [
+        "@platforms//cpu:wasm32",
+        "@platforms//os:emscripten",
+    ],
+    flags = [
+        "--features=simd",
+    ],
+)
+
+platform(
+    name = "advanced-threads",
+    constraint_values = [
+        "@platforms//cpu:wasm32",
+        "@platforms//os:emscripten",
+    ],
+    flags = [
+        "--features=simd",
+        "--features=use_pthreads",
+    ],
+)
+

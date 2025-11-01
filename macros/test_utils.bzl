@@ -36,3 +36,21 @@ collect_dependencies = rule(
         "deps": attr.label_list(allow_files = True),
     }
 )
+
+def remove_cc_binary_specific_attrs(kwargs):
+    # Remove cc_binary-specific attrs that don't make sense for android_binary
+    remove_attrs = [
+        "output_licenses",
+        "reexport_deps",
+        "nocopts",
+        "malloc",
+        "link_extra_lib",
+        "stamp",
+        "linkshared",
+        "env",
+        "distribs",
+        "dynamic_deps",
+    ]
+    for attr in remove_attrs:
+        kwargs.pop(attr)
+

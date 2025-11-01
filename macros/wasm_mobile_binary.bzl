@@ -3,6 +3,7 @@ load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 load("@aspect_bazel_lib//lib:expand_template.bzl", "expand_template_rule")
 
 load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
+load("//macros/wasm-helpers/posluznik-run:posluznik_run.bzl", "posluznik_run")
 load(":test_utils.bzl", "prepare_assets", "collect_dependencies")
 
 
@@ -39,6 +40,9 @@ def _wasm_mobile_binary_impl(name, visibility, data, threads, simd, html_shell, 
         Label("//conditions:default"): [],
     })
     defines = kwargs.pop("defines") or select({
+        Label("//conditions:default"): [],
+    })
+    includes = kwargs.pop("includes") or select({
         Label("//conditions:default"): [],
     })
     local_defines = kwargs.pop("local_defines") or select({
@@ -84,6 +88,9 @@ def _wasm_mobile_binary_impl(name, visibility, data, threads, simd, html_shell, 
         cxxopts = default_cxxopts + cxxopts,
         conlyopts = default_conlyopts + conlyopts,
         defines = defines,
+        includes = includes + [
+            "Source",
+        ],
         local_defines = local_defines + [
             "EMSCRIPTEN_EMRUN_MAX_NUMBER_OF_WORKERS=" + str(max_number_of_wasm_workers),
         ],
@@ -98,20 +105,30 @@ def _wasm_mobile_binary_impl(name, visibility, data, threads, simd, html_shell, 
         threads = "off" if not threads else "emscripten",
         outputs = outputs,
         tags = ["manual"],
-        testonly = True,
+        testonly = kwargs.get("testonly", False),
     )
 
     final_deps = [
         native.package_relative_label(":" + name + "-wasmcc"),
     ]
+    html_shell_label = None
     if html_shell:
         final_deps.append(native.package_relative_label(":" + name + "-html-shell"))
+        html_shell_label = native.package_relative_label(":" + name + "-html-shell")
 
     collect_dependencies(
-        name = name,
+        name = name + "-all-deps",
         deps = final_deps,
         visibility = visibility,
-        testonly = True,
+        testonly = kwargs.get("testonly", False),
+    )
+
+    posluznik_run(
+        name = name,
+        wasm_mobile_binary = native.package_relative_label(":" + name + "-wasmcc"),
+        html_shell = html_shell_label,
+        args = kwargs.get("args", []),
+        testonly = kwargs.get("testonly", False),
     )
 
 wasm_mobile_binary = macro(

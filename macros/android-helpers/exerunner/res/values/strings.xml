@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ExeRunner</string>
+    <string name="btnExecute">Execute</string>
+    <string name="btnDeployResources">Deploy Resources</string>
+    <string name="deploying_resources">Deploying resources to the internal storage</string>
+    <string name="parameters">Parameters:</string>
+</resources>

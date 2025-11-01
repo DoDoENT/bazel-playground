@@ -3,10 +3,11 @@ load(":clang_flags.bzl", "clang_flags")
 def _calculate_emscripten_flags():
     emscripten_flags = dict(**clang_flags)
     emscripten_flags["compiler_lto"] = [
-        "-flto=thin",
+        # need prebuilt cache with LTO support
+        # "-flto=thin",
     ]
     emscripten_flags["linker_lto"] = [
-        "-flto=thin",
+        # "-flto=thin",
     ]
     emscripten_flags["cxx_compiler_exceptions_off"] = emscripten_flags["cxx_compiler_exceptions_off"] + [
         "-s DISABLE_EXCEPTION_CATCHING=1"
@@ -36,7 +37,6 @@ def _calculate_emscripten_flags():
     ]
     emscripten_flags["linker_common_flags"] = [
         "-s MALLOC=emmalloc",
-        "-flto=thin", # needed because bazel can handle only single emscripten cache
         "-Wno-limited-postlink-optimizations",
         # "-s STRICT=1",
         "-s ALLOW_MEMORY_GROWTH=1",
@@ -51,7 +51,6 @@ def _calculate_emscripten_flags():
     ]
     emscripten_flags["compiler_common_flags"] = emscripten_flags["compiler_common_flags"] + [
         "-fno-PIC",
-        "-flto=thin", # needed because bazel can handle only single emscripten cache
         # "-s STRICT=1",
         "-mmutable-globals",
         "-mreference-types",

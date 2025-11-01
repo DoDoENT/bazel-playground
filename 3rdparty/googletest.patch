@@ -1,0 +1,314 @@
+diff --git a/BUILD.bazel b/BUILD.bazel
+index 3dd3ca6d..79d377a2 100644
+--- a/BUILD.bazel
++++ b/BUILD.bazel
+@@ -118,12 +118,17 @@ cc_library(
+         "googletest/include/gtest/*.h",
+         "googlemock/include/gmock/*.h",
+     ]),
+-    copts = select({
++    copts = [
++        '-w',
++    ] + select({
+         ":qnx": [],
+         ":windows": [],
+         ":emscripten_without_threads": [],
+         "//conditions:default": ["-pthread"],
+     }),
++    cxxopts = [
++        "-std=gnu++2c",
++    ],
+     defines = select({
+         ":has_absl": ["GTEST_HAS_ABSL=1"],
+         ":emscripten_without_threads": ["GTEST_HAS_PTHREAD=0"],
+diff --git a/googletest/include/gtest/gtest-message.h b/googletest/include/gtest/gtest-message.h
+index 448ac6b7..0e4e270b 100644
+--- a/googletest/include/gtest/gtest-message.h
++++ b/googletest/include/gtest/gtest-message.h
+@@ -144,8 +144,38 @@ class GTEST_API_ Message {
+     // from the global namespace.  With this using declaration,
+     // overloads of << defined in the global namespace and those
+     // visible via Koenig lookup are both exposed in this function.
+-    using ::operator<<;
+-    *ss_ << val;
++    using ::operator <<;
++    if constexpr
++    (
++#if __cpp_char8_t
++        std::is_same_v< T, char8_t > ||
++#endif
++        std::is_same_v< T, char16_t > || std::is_same_v< T, char32_t > )
++    {
++        *ss_ << static_cast< char >( val );
++    }
++    else if constexpr( std::is_array_v< T > )
++    {
++        if constexpr
++        (
++    #if __cpp_char8_t
++            std::is_same_v< std::decay_t< decltype( *val ) >, char8_t > ||
++    #endif
++            std::is_same_v< std::decay_t< decltype( *val ) >, char16_t > ||
++            std::is_same_v< std::decay_t< decltype( *val ) >, char32_t >
++        )
++        {
++            *ss_ << reinterpret_cast< char const * >( val );
++        }
++        else
++        {
++            *ss_ << val;
++        }
++    }
++    else
++    {
++      *ss_ << val;
++    }
+     return *this;
+   }
+ 
+@@ -182,7 +212,21 @@ class GTEST_API_ Message {
+     if (pointer == nullptr) {
+       *ss_ << "(null)";
+     } else {
+-      *ss_ << pointer;
++        if constexpr
++        (
++    #if __cpp_char8_t
++            std::is_same_v< std::decay_t< decltype( *pointer ) >, char8_t > ||
++    #endif
++            std::is_same_v< std::decay_t< decltype( *pointer ) >, char16_t > ||
++            std::is_same_v< std::decay_t< decltype( *pointer ) >, char32_t >
++        )
++        {
++            *ss_ << reinterpret_cast< char const * >( pointer );
++        }
++        else
++        {
++            *ss_ << pointer;
++        }
+     }
+     return *this;
+   }
+diff --git a/googletest/include/gtest/gtest.h b/googletest/include/gtest/gtest.h
+index 7be0caaf..fbc57ad5 100644
+--- a/googletest/include/gtest/gtest.h
++++ b/googletest/include/gtest/gtest.h
+@@ -1523,6 +1523,58 @@ GTEST_API_ AssertionResult CmpHelperSTRNE(const char* s1_expression,
+                                           const char* s2_expression,
+                                           const wchar_t* s1, const wchar_t* s2);
+ 
++// Helper function for *_STREQ on UTF16 strings.
++//
++// INTERNAL IMPLEMENTATION - DO NOT USE IN A USER PROGRAM.
++GTEST_API_ AssertionResult CmpHelperSTREQ(const char* s1_expression,
++                                          const char* s2_expression,
++                                          const char16_t* s1,
++                                          const char16_t* s2);
++
++// Helper function for *_STRNE on UTF16 strings.
++//
++// INTERNAL IMPLEMENTATION - DO NOT USE IN A USER PROGRAM.
++GTEST_API_ AssertionResult CmpHelperSTRNE(const char* s1_expression,
++                                          const char* s2_expression,
++                                          const char16_t* s1,
++                                          const char16_t* s2);
++
++// Helper function for *_STREQ on UTF32 strings.
++//
++// INTERNAL IMPLEMENTATION - DO NOT USE IN A USER PROGRAM.
++GTEST_API_ AssertionResult CmpHelperSTREQ(const char* s1_expression,
++                                          const char* s2_expression,
++                                          const char32_t* s1,
++                                          const char32_t* s2);
++
++// Helper function for *_STRNE on UTF32 strings.
++//
++// INTERNAL IMPLEMENTATION - DO NOT USE IN A USER PROGRAM.
++GTEST_API_ AssertionResult CmpHelperSTRNE(const char* s1_expression,
++                                          const char* s2_expression,
++                                          const char32_t* s1,
++                                          const char32_t* s2);
++
++#if __cpp_char8_t
++
++// Helper function for *_STREQ on UTF8 strings.
++//
++// INTERNAL IMPLEMENTATION - DO NOT USE IN A USER PROGRAM.
++GTEST_API_ AssertionResult CmpHelperSTREQ(const char* s1_expression,
++                                          const char* s2_expression,
++                                          const char8_t* s1,
++                                          const char8_t* s2);
++
++// Helper function for *_STRNE on UTF8 strings.
++//
++// INTERNAL IMPLEMENTATION - DO NOT USE IN A USER PROGRAM.
++GTEST_API_ AssertionResult CmpHelperSTRNE(const char* s1_expression,
++                                          const char* s2_expression,
++                                          const char8_t* s1,
++                                          const char8_t* s2);
++
++#endif
++
+ }  // namespace internal
+ 
+ // IsSubstring() and IsNotSubstring() are intended to be used as the
+diff --git a/googletest/src/gtest.cc b/googletest/src/gtest.cc
+index 09af1517..ab836dc0 100644
+--- a/googletest/src/gtest.cc
++++ b/googletest/src/gtest.cc
+@@ -2174,6 +2174,155 @@ AssertionResult CmpHelperSTRNE(const char* s1_expression,
+          << "), actual: " << PrintToString(s1) << " vs " << PrintToString(s2);
+ }
+ 
++namespace
++{
++    template< typename T >
++    bool compareStrings( T const * lhs, T const * rhs)
++    {
++        if ( lhs == nullptr ) return rhs == nullptr;
++        if ( rhs == nullptr ) return false;
++
++        using StringView = std::basic_string_view< std::decay_t< T > >;
++        return StringView{ lhs } == StringView{ rhs };
++    }
++}
++
++// Helper function for *_STREQ on UTF16 strings.
++AssertionResult CmpHelperSTREQ
++(
++    char     const * lhs_expression,
++    char     const * rhs_expression,
++    char16_t const * lhs,
++    char16_t const * rhs
++)
++{
++    if ( compareStrings( lhs, rhs ) )
++    {
++        return AssertionSuccess();
++    }
++
++    return EqFailure
++    (
++        lhs_expression,
++        rhs_expression,
++        PrintToString(lhs),
++        PrintToString(rhs),
++        false
++    );
++}
++
++// Helper function for *_STRNE on UTF16 strings.
++AssertionResult CmpHelperSTRNE
++(
++    char     const * s1_expression,
++    char     const * s2_expression,
++    char16_t const * s1,
++    char16_t const * s2
++)
++{
++    if ( !compareStrings( s1, s2 ) )
++    {
++        return AssertionSuccess();
++    }
++
++    return AssertionFailure() << "Expected: (" << s1_expression << ") != ("
++                              << s2_expression << "), actual: "
++                              << PrintToString(s1)
++                              << " vs " << PrintToString(s2);
++}
++
++// Helper function for *_STREQ on UTF32 strings.
++AssertionResult CmpHelperSTREQ
++(
++    char     const * lhs_expression,
++    char     const * rhs_expression,
++    char32_t const * lhs,
++    char32_t const * rhs
++)
++{
++    if ( compareStrings( lhs, rhs ) )
++    {
++        return AssertionSuccess();
++    }
++
++    return EqFailure
++    (
++        lhs_expression,
++        rhs_expression,
++        PrintToString(lhs),
++        PrintToString(rhs),
++        false
++    );
++}
++
++// Helper function for *_STRNE on UTF32 strings.
++AssertionResult CmpHelperSTRNE
++(
++    char     const * s1_expression,
++    char     const * s2_expression,
++    char32_t const * s1,
++    char32_t const * s2
++)
++{
++    if ( !compareStrings( s1, s2 ) )
++    {
++        return AssertionSuccess();
++    }
++
++    return AssertionFailure() << "Expected: (" << s1_expression << ") != ("
++                              << s2_expression << "), actual: "
++                              << PrintToString(s1)
++                              << " vs " << PrintToString(s2);
++}
++
++#if __cpp_char8_t
++
++// Helper function for *_STREQ on UTF8 strings.
++AssertionResult CmpHelperSTREQ
++(
++    char    const * lhs_expression,
++    char    const * rhs_expression,
++    char8_t const * lhs,
++    char8_t const * rhs
++)
++{
++    if ( compareStrings( lhs, rhs ) )
++    {
++        return AssertionSuccess();
++    }
++
++    return EqFailure
++    (
++        lhs_expression,
++        rhs_expression,
++        PrintToString(lhs),
++        PrintToString(rhs),
++        false
++    );
++}
++
++// Helper function for *_STRNE on UTF32 strings.
++AssertionResult CmpHelperSTRNE
++(
++    char    const * s1_expression,
++    char    const * s2_expression,
++    char8_t const * s1,
++    char8_t const * s2
++)
++{
++    if ( !compareStrings( s1, s2 ) )
++    {
++        return AssertionSuccess();
++    }
++
++    return AssertionFailure() << "Expected: (" << s1_expression << ") != ("
++                              << s2_expression << "), actual: "
++                              << PrintToString(s1)
++                              << " vs " << PrintToString(s2);
++}
++
++#endif
++
+ // Compares two C strings, ignoring case.  Returns true if and only if they have
+ // the same content.
+ //

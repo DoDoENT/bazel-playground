@@ -1,8 +1,8 @@
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
 load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 
-def _mobile_library_impl(name, visibility, **kwargs):
-    default_copts = select(resolved_flags_select_dicts["copts"].flat_select_dict)
+def _mobile_library_common_impl(name, visibility, default_copts_key, **kwargs):
+    default_copts = select(resolved_flags_select_dicts[default_copts_key].flat_select_dict)
     default_cxxopts = select(resolved_flags_select_dicts["cxxopts"].flat_select_dict)
     copts = kwargs.pop("copts") or select({
         Label("//conditions:default"): [],
@@ -47,8 +47,18 @@ def _mobile_library_impl(name, visibility, **kwargs):
         **kwargs,
     )
 
+def _mobile_library_impl(name, visibility, **kwargs):
+    _mobile_library_common_impl(name, visibility, "copts", **kwargs)
+
 mobile_library = macro(
     inherit_attrs = native.cc_library,
     implementation = _mobile_library_impl,
 )
 
+def _hot_mobile_library_impl(name, visibility, **kwargs):
+    _mobile_library_common_impl(name, visibility, "hot_copts", **kwargs)
+
+hot_code_mobile_library = macro(
+    inherit_attrs = native.cc_library,
+    implementation = _hot_mobile_library_impl,
+)

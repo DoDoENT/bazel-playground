@@ -5,51 +5,88 @@ import %workspace%/tools/preset.bazelrc
 # Apple iOS rules expect rules_python to be preloaded.
 # Also, without preloading rules_android, bazel complains about missing aar_import and similar rules
 # in rules_jvm_external.
-# Additionally, to run java tools like copybara, we need to preload rules_java.
-common --incompatible_autoload_externally="+@rules_python,+@rules_android,+@rules_java"
+common --incompatible_autoload_externally="+@rules_python,+@rules_android"
 # Apple and Android rules not yet compatible with automatic exec groups
 common --noincompatible_auto_exec_groups
 # Cache options
 
-common:remote --remote_cache=grpc://pablo.microblink.com:9092 --remote_cache_compression=true --guard_against_concurrent_changes=full 
-common --disk_cache=~/.bazel-cache/build --experimental_disk_cache_gc_max_size=100G
+common:remote --remote_cache=grpc://your.remote.cache:9092 --remote_cache_compression=true --guard_against_concurrent_changes=full
+common --disk_cache=~/.bazel-cache/build --experimental_disk_cache_gc_max_size=20G
+
+# Config that doesn't use remote cache - for offline builds
+common:offline --remote_cache=
 
 # Build flags
-common --copt=-g --strip=never
+common --copt=-g --strip=never --verbose_failures
+
+# Treat external include paths as system includes to avoid warnings from 3rd party code
+# disabled due to issue: https://github.com/yuyawk/rules_build_error/issues/145
+# common --features=external_include_paths
 
 # needed for both copybara and android
 common --java_runtime_version=remotejdk_21
 
 # Build features
-common --features=asan --features=ubsan 
+common --features=asan --features=ubsan
+
+# disabled as UBSAN compilation causes clang to allocate 30GB of RAM during the build, crashing the system
+# also, ASAN does not work with SAFE_HEAP
+# common --features=wasm_asan --features=wasm_ubsan
+
 common --test_tag_filters=host,starlark
 
 
-common:release --features=-asan --features=-ubsan --compilation_mode=opt --features=thin_lto
+
+# Make sure object files and static libraries are downloaded from remote cache on MacOS as
+# they are required for debugger to work properly
+# See: https://www.smileykeith.com/2025/09/21/understanding-apple-debug-info/
+build:macos --remote_download_regex='.*\.(a|lo|o)$'
+build:macos --apple_generate_dsym --output_groups=+dsyms
+
+# Bazel documentation on coverage: https://bazel.build/configure/coverage
+# export GCOV=llvm-profdata
+# export BAZEL_USE_LLVM_NATIVE_COVERAGE=1
+# example to run coverage: bazel coverage --config=release //:host  --instrument_test_targets=true --combined_report=lcov --experimental_use_llvm_covmap=true --experimental_generate_llvm_lcov=true --instrumentation_filter=//...
+# To generate the profdata files from the .profraw files, use llvm-profdata tool: ```llvm-profdata merge -sparse $(find bazel-out/ | grep profraw | xargs) -o default.profdata```
+# Then run bazel run //macros/coverage:coverage_report -- -s $PWD -i '*/external/*' -o /home/build/html_coverage -p /home/build/default.profdata $PWD/bazel-out
+# Alternatively, you can use lcov's genhtml tool directly: genhtml --branch-coverage --ignore-errors category --output genhtml "$(bazel info output_path)/_coverage/_coverage_report.dat"
+
+common:no_sanitizers --features=-asan --features=-ubsan --features=-wasm_asan --features=-wasm_ubsan
+
+common:release --config=no_sanitizers --compilation_mode=opt --features=thin_lto
 common:debug --compilation_mode=dbg
 
-common:mobile --features=-asan --features=-ubsan
+# ASAN on Android throws errors in code that is actually correct. It doesn't print any useful stack traces either, so even if the code was buggy
+# specifically on Android, it's not easy to debug. For the time being, we disable sanitizers on Android builds, as they weren't used even
+# in CMake builds.
+#     (2025-10-28) (Nenad Mikša)
 
-common:android --config=mobile --test_tag_filters=android
-common:android --android_platforms=//platforms:arm64-v8a,//platforms:armeabi-v7a
+common:android --test_tag_filters=android --config=no_sanitizers
+common:android --android_platforms=//platforms/android:arm64-v8a,//platforms/android:armeabi-v7a
 common:android --extra_toolchains=@androidndk//:all
 
 # This enables the use of mobile-install command with rules_android
 # Based on instructions from https://docs.google.com/document/d/1PAANxcHNnKMI6k5hdKIlFyx_rHaV7WkJjDi15XrZSnM/edit?tab=t.0
 mobile-install --mode=skylark --mobile_install_aspect=@rules_android//mobile_install:mi.bzl --mobile_install_supported_rules=android_binary --tool_java_runtime_version=remotejdk_21
 
-common:ios_device --config=mobile --ios_multi_cpus=arm64 --test_tag_filters=ios
-common:ios_simulator --config=mobile --test_tag_filters=ios
+# ASAN on iOS throws bogus errors, causing "container overflow" errors on bening code (which works correctly on other sanitized platforms).
+# This is likely due to iOS build using libc++ without sanitization support. Also, the ASAN reports are not useful on iOS because the stack
+# trace is always within the guts of the gtest initialization code, regardless of where the actual error is.
+# For these reasons, we disable sanitizers on iOS builds.
+#     (2025-10-28) (Nenad Mikša)
 
-common:wasm --config=mobile --test_tag_filters=wasm-basic,wasm-advanced,wasm-advanced-threads
+common:ios_device --config=no_sanitizers --ios_multi_cpus=arm64 --test_tag_filters=ios
+common:ios_simulator --config=no_sanitizers --ios_multi_cpus=sim_arm64,x86_64 --test_tag_filters=ios
+
+common:wasm --test_tag_filters=wasm-basic,wasm-advanced,wasm-advanced-threads
 
 # TODO: This needs to be ported to toolchain rules
 common:linux_haswell --copt=-march=haswell --copt=-mtune=haswell --copt=-mavx --copt=-mavx2
 
-# MacOS Debuggable Configuration needs disabled cache dir and disabled remote cache in order for the debugger to work properly
-build:mac_debuggable --spawn_strategy=local --disk_cache= --remote_cache=
+common:rules_xcodeproj --config=no_sanitizers
 
-build:rules_xcodeproj --config=mobile -s
+common:xcode_cache_warming --aspects=@rules_xcodeproj//xcodeproj:xcodeproj_cache_warm_aspect.bzl%xcodeproj_cache_warm_aspect
+common:xcode_cache_warming --output_groups=compiles,resources
 
 
 

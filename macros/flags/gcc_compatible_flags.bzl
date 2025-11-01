@@ -38,6 +38,7 @@ gcc_compat_flags = {
     ],
     "compiler_optimize_for_speed": [
         "-O3",
+        "-funroll-loops",
     ],
     "compiler_optimize_for_size": [
         "-Os",
@@ -55,6 +56,8 @@ gcc_compat_flags = {
         "-DALLOW_ASSERT_IN_RELEASE",
         "-DBOOST_ENABLE_ASSERT_HANDLER",
         "-UNDEBUG",
+        "-funwind-tables",
+        "-fasynchronous-unwind-tables",
     ],
     "compiler_release_flags": [
         "-fomit-frame-pointer",
@@ -62,6 +65,8 @@ gcc_compat_flags = {
         "-fmerge-all-constants",
         "-fno-stack-protector",
         "-DNDEBUG",
+        "-fno-unwind-tables",
+        "-fno-asynchronous-unwind-tables",
     ],
     "compiler_default_warnings": [
         "-Wall",

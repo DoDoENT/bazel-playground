@@ -13,9 +13,14 @@ mobile_library(
     hdrs = [
         "Include/Paths.h",
     ],
-    deps = [
-        
-    ],
+    deps = select({
+        "@platforms//os:android": [
+            "//macros/android-helpers/exerunner/PathProvider",
+        ],
+        "@platforms//os:ios": [
+            "//macros/ios-helpers:ios-bundle-path-provider",
+        ],
+        "//conditions:default": [],
+    }),
     visibility = ["//visibility:public"],
-    testonly = True,
 )

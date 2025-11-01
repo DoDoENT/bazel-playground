@@ -1,16 +1,12 @@
-diff --git a/BUILD.ndk_sysroot.tpl b/BUILD.ndk_sysroot.tpl
-index e5613ac..f14942f 100644
---- a/BUILD.ndk_sysroot.tpl
-+++ b/BUILD.ndk_sysroot.tpl
-@@ -16,7 +16,7 @@ filegroup(
-         "usr/lib/{target_system_name}/{api_level}/*".format(
-             target_system_name = target_system_name,
-         ),
--    ]),
-+    ], allow_empty = True),
- ) for target_system_name in TARGET_SYSTEM_NAMES]
+diff --git a/.gitignore b/.gitignore
+index 378977b..afc5028 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -4,3 +4,4 @@ bazel-*
+ MODULE.bazel.lock
  
- [filegroup(
+ *.swp
++Session.vim
 diff --git a/extension.bzl b/extension.bzl
 index 22c8076..af6b0c6 100644
 --- a/extension.bzl
@@ -46,7 +42,7 @@ index 22c8076..af6b0c6 100644
          }),
      },
 diff --git a/ndk_cc_toolchain_config.bzl b/ndk_cc_toolchain_config.bzl
-index a449a1f..3906ca5 100644
+index a449a1f..8682172 100644
 --- a/ndk_cc_toolchain_config.bzl
 +++ b/ndk_cc_toolchain_config.bzl
 @@ -348,7 +348,7 @@ def ndk_cc_toolchain_config(
@@ -67,7 +63,15 @@ index a449a1f..3906ca5 100644
                          flag_group(
                              expand_if_available = "lto_indexing_bitcode_file",
                              flags = [
-@@ -750,7 +750,7 @@ def ndk_cc_toolchain_config(
+@@ -644,7 +644,6 @@ def ndk_cc_toolchain_config(
+                         "-std=gnu++17",
+                         "-Wc++2a-extensions",
+                         "-Woverloaded-virtual",
+-                        "-Wnon-virtual-dtor",
+                         "-Wno-deprecated",
+                         "-fshow-overloads=best",
+                         "-Wdeprecated-increment-bool",
+@@ -750,7 +749,7 @@ def ndk_cc_toolchain_config(
                  ),
                  flag_set(
                      actions = actions.all_compile,
@@ -76,13 +80,49 @@ index a449a1f..3906ca5 100644
                      features = ["crosstool_cpu_arm", "crosstool_has_neon"],
                  ),
                  flag_set(
+@@ -862,7 +861,6 @@ def ndk_cc_toolchain_config(
+                     flags = [
+                         "-Wno-deprecated",
+                         "-Wdeprecated-increment-bool",
+-                        "-Wnon-virtual-dtor",
+                         "-Woverloaded-virtual",
+                     ],
+                 ),
+@@ -1074,10 +1072,9 @@ def ndk_cc_toolchain_config(
+                     actions = actions.all_compile,
+                     flags = [
+                         "-fsanitize=undefined",
+-                        # Due to lack of runtimes in NDK, only operate in TRAP mode.
+-                        "-fsanitize-trap=undefined",
+-                        # NDK doesn't support this yet https://github.com/android-ndk/ndk/issues/184
+-                        "-fno-sanitize=signed-integer-overflow",
++
++                        # NDK issue: https://github.com/android/ndk/issues/2065
++                        "-fno-sanitize=vptr",
+                     ],
+                     features = ["ubsan"],
+                 ),
+@@ -1085,8 +1082,6 @@ def ndk_cc_toolchain_config(
+                     actions = actions.all_link,
+                     flags = [
+                         "-fsanitize=undefined",
+-                        # Due to lack of runtimes in NDK, only operate in TRAP mode.
+-                        "-fsanitize-trap=undefined",
+                     ],
+                     features = ["ubsan"],
+                 ),
 diff --git a/ndk_versions.bzl b/ndk_versions.bzl
 new file mode 100644
-index 0000000..dce5a8a
+index 0000000..bd801d4
 --- /dev/null
 +++ b/ndk_versions.bzl
-@@ -0,0 +1,7 @@
+@@ -0,0 +1,12 @@
 +NDK_VERSIONS = {
++    "r29": struct(
++        sha256_linux = "4abbbcdc842f3d4879206e9695d52709603e52dd68d3c1fff04b3b5e7a308ecf",
++        sha256_darwin = "ce5e4b100ec5fe5be4eb3edcb2c02528824ff9cda3860f5304619be6c3da34d3",
++        sha256_windows = "4f83a1a87ea0d33ae2b43812ce27b768be949bc78acf90b955134d19e3068f1c",
++    ),
 +    "r28c": struct(
 +        sha256_linux = "dfb20d396df28ca02a8c708314b814a4d961dc9074f9a161932746f815aa552f",
 +        sha256_darwin = "0d4599e8bbf1a1668a0d51a541729b2246360f350018a2081d0b302dbb594f2a",
