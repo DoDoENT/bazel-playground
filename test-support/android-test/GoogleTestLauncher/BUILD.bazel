@@ -10,8 +10,8 @@ filegroup(
 filegroup(
     name = "GoogleTestLauncherJavaSources",
     srcs = [
-        "java/com/microblink/testrunner/LaunchActivity.java",
-        "java/com/microblink/testrunner/GoogleTestLauncher.java",
+        "java/com/example/testrunner/LaunchActivity.java",
+        "java/com/example/testrunner/GoogleTestLauncher.java",
     ],
     visibility = ["//visibility:public"],
 )

@@ -13,9 +13,7 @@ mobile_library(
     hdrs = [
         "Include/Paths.h",
     ],
-    deps = [
-        "//build-helper:BuildHelper",
-    ] + select({
+    deps = select({
         "@platforms//os:android": [
             "//macros/android-helpers/exerunner/PathProvider",
         ],

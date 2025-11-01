@@ -28,7 +28,7 @@
 #include "PathProvider.hpp"
 #endif
 
-std::string resolveTestDataPath( std::string_view relativePath ) MB_NOEXCEPT_EXCEPT_BADALLOC
+std::string resolveTestDataPath( std::string_view relativePath )
 {
 #if TARGET_OS_IPHONE
     auto prefix{ IosBundlePath::currentBundlePath() + "/test-data/" };
@@ -64,7 +64,7 @@ namespace
     }
 }
 
-FileBuffer readFileToBuffer( std::string const & filePath ) MB_NOEXCEPT_EXCEPT_BADALLOC
+FileBuffer readFileToBuffer( std::string const & filePath )
 {
     FilePtr file { openFile( filePath ) };
     if ( file == nullptr )
@@ -172,7 +172,7 @@ namespace
     }
 }
 
-std::string resolveWriteableDirPath( std::string_view relativePath ) MB_NOEXCEPT_EXCEPT_BADALLOC
+std::string resolveWriteableDirPath( std::string_view relativePath )
 {
     auto prefix{ getWriteableDirectoryPath() };
     std::string fullPath;
