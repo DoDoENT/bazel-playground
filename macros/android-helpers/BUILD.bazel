@@ -1,0 +1,143 @@
+load("@rules_cc//cc:cc_import.bzl", "cc_import")
+load("@rules_java//java:java_library.bzl", "java_library")
+load("@bazel_skylib//lib:selects.bzl", "selects")
+
+_NDK_CLANG_VERSION = "21"
+_PACKAGE_ROOT = "macros/android-helpers"
+
+# https://github.com/bazelbuild/rules_android/issues/189
+[
+    java_library(
+        name = "android_sanitizer_wrap_{}".format(abi),
+        srcs = [],
+        resources = [
+            "lib/{}/wrap.sh".format(abi),
+        ],
+        resource_strip_prefix = _PACKAGE_ROOT,
+        visibility = ["//visibility:public"],
+    )
+    for abi in ["arm64-v8a", "armeabi-v7a", "x86", "x86_64"]
+]
+[
+    cc_import(
+        name = "android_asan_runtime_{}".format(host_platform),
+        shared_library = select({
+            "@platforms//cpu:arm64": "@androidndk//toolchains/llvm/prebuilt/{}-x86_64:lib/clang/{}/lib/linux/libclang_rt.asan-aarch64-android.so".format(host_platform, _NDK_CLANG_VERSION),
+            "@platforms//cpu:armv7": "@androidndk//toolchains/llvm/prebuilt/{}-x86_64:lib/clang/{}/lib/linux/libclang_rt.asan-arm-android.so".format(host_platform, _NDK_CLANG_VERSION),
+            "@platforms//cpu:x86_32": "@androidndk//toolchains/llvm/prebuilt/{}-x86_64:lib/clang/{}/lib/linux/libclang_rt.asan-i686-android.so".format(host_platform, _NDK_CLANG_VERSION),
+            "@platforms//cpu:x86_64": "@androidndk//toolchains/llvm/prebuilt/{}-x86_64:lib/clang/{}/lib/linux/libclang_rt.asan-x86_64-android.so".format(host_platform, _NDK_CLANG_VERSION),
+        }),
+        visibility = ["//visibility:public"],
+    )
+    for host_platform in ["darwin", "linux", "windows"]
+]
+[
+    cc_import(
+        name = "android_ubsan_runtime_{}".format(host_platform),
+        shared_library = select({
+            "@platforms//cpu:arm64": "@androidndk//toolchains/llvm/prebuilt/{}-x86_64:lib/clang/{}/lib/linux/libclang_rt.ubsan_standalone-aarch64-android.so".format(host_platform, _NDK_CLANG_VERSION),
+            "@platforms//cpu:armv7": "@androidndk//toolchains/llvm/prebuilt/{}-x86_64:lib/clang/{}/lib/linux/libclang_rt.ubsan_standalone-arm-android.so".format(host_platform, _NDK_CLANG_VERSION),
+            "@platforms//cpu:x86_32": "@androidndk//toolchains/llvm/prebuilt/{}-x86_64:lib/clang/{}/lib/linux/libclang_rt.ubsan_standalone-i686-android.so".format(host_platform, _NDK_CLANG_VERSION),
+            "@platforms//cpu:x86_64": "@androidndk//toolchains/llvm/prebuilt/{}-x86_64:lib/clang/{}/lib/linux/libclang_rt.ubsan_standalone-x86_64-android.so".format(host_platform, _NDK_CLANG_VERSION),
+        }),
+        visibility = ["//visibility:public"],
+    )
+    for host_platform in ["darwin", "linux", "windows"]
+]
+
+[
+    selects.config_setting_group(
+        name = "{}_asan".format(os),
+        match_all = [
+            "@platforms//os:{}".format(os),
+            "//macros/flags:asan_enabled",
+        ],
+        visibility = ["//visibility:public"],
+    )
+    for os in ["macos", "linux", "windows"]
+]
+
+[
+    selects.config_setting_group(
+        name = "{}_ubsan".format(os),
+        match_all = [
+            "@platforms//os:{}".format(os),
+            "//macros/flags:ubsan_enabled",
+        ],
+        visibility = ["//visibility:public"],
+    )
+    for os in ["macos", "linux", "windows"]
+]
+
+selects.config_setting_group(
+    name = "any_sanitizer",
+    match_any = [
+        "//macros/flags:asan_enabled",
+        "//macros/flags:ubsan_enabled",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+config_setting(
+    name = "android-arm64-enabled",
+    values = {
+        "android_platforms": "//platforms/android:arm64-v8a",
+    },
+)
+
+config_setting(
+    name = "android-armv7-enabled",
+    values = {
+        "android_platforms": "//platforms/android:armeabi-v7a",
+    },
+)
+
+config_setting(
+    name = "android-x86_64-enabled",
+    values = {
+        "android_platforms": "//platforms/android:x86_64",
+    },
+)
+
+config_setting(
+    name = "android-x86-enabled",
+    values = {
+        "android_platforms": "//platforms/android:x86",
+    },
+)
+
+selects.config_setting_group(
+    name = "android-needs-arm64-wrap",
+    match_all = [
+        ":android-arm64-enabled",
+        ":any_sanitizer",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+selects.config_setting_group(
+    name = "android-needs-armv7-wrap",
+    match_all = [
+        ":android-armv7-enabled",
+        ":any_sanitizer",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+selects.config_setting_group(
+    name = "android-needs-x86_64-wrap",
+    match_all = [
+        ":android-x86_64-enabled",
+        ":any_sanitizer",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+selects.config_setting_group(
+    name = "android-needs-x86-wrap",
+    match_all = [
+        ":android-x86-enabled",
+        ":any_sanitizer",
+    ],
+    visibility = ["//visibility:public"],
+)

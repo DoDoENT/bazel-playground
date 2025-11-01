@@ -1,0 +1,3 @@
+exports_files([
+    "posluznik_run.template.sh",
+])

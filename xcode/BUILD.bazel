@@ -1,0 +1,55 @@
+load("@rules_xcodeproj//xcodeproj:top_level_target.bzl", "top_level_target")
+load("@rules_xcodeproj//xcodeproj:xcodeproj.bzl", "xcodeproj")
+load("@rules_xcodeproj//xcodeproj:xcschemes.bzl", "xcschemes")
+
+load(":ios-targets.bzl", "IOS_APP_TARGETS", "IOS_TEST_TARGETS")
+
+xcodeproj(
+    name = "ios-projects",
+    project_name = "iOSProjects",
+    tags = ["manual"],
+    top_level_targets = [
+        top_level_target(name, target_environments = ["device", "simulator"]) for name in IOS_APP_TARGETS + IOS_TEST_TARGETS
+    ],
+    xcschemes = [
+        xcschemes.scheme(
+            name = target.split(":")[-1].replace("-ios", ""),
+            test = xcschemes.test(
+                test_targets = [
+                    xcschemes.test_target(target)
+                ],
+                build_targets = [
+                    xcschemes.top_level_build_target("//test-support/ios-test/GoogleTestHost:GoogleTestHost"),
+                ]
+            ),
+            run = xcschemes.run(
+                launch_target = xcschemes.launch_target("//test-support/ios-test/GoogleTestHost:GoogleTestHost"),
+            )
+        ) for target in IOS_TEST_TARGETS
+    ] + [
+        xcschemes.scheme(
+            name = target.split(":")[-1].replace("-ios", ""),
+            run = xcschemes.run(
+                launch_target = xcschemes.launch_target(target),
+            )
+        ) for target in IOS_APP_TARGETS
+    ],
+    xcode_configurations = {
+        "Debug": {
+            "//command_line_option:compilation_mode": "dbg",
+            "//command_line_option:features": [],
+        },
+        "DevRelease": {
+            "//command_line_option:compilation_mode": "fastbuild",
+            "//command_line_option:features": [],
+        },
+        "Release": {
+            "//command_line_option:compilation_mode": "opt",
+            "//command_line_option:features": ["thin_lto"],
+        }
+    },
+    target_compatible_with = [
+        # note: this target needs to run on macOS as Xcode project is generated there
+        "@platforms//os:macos",
+    ],
+)

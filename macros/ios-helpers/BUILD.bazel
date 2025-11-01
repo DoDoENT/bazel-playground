@@ -1,0 +1,42 @@
+load("@rules_swift//mixed_language:mixed_language_library.bzl", "mixed_language_library")
+load("@rules_swift//swift:swift.bzl", "swift_library")
+load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
+
+swift_library(
+    name = "BundleHolder",
+    srcs = [
+        "BundleHolder.swift",
+    ],
+    module_name = "BundleHolder",
+    visibility = ["//visibility:public"],
+)
+
+mixed_language_library(
+    name = "ios-bundle-path-provider",
+    swift_srcs = [
+        "IosBundlePathProvider.swift",
+    ],
+    clang_srcs = [
+        "BundlePathProvider.cpp",
+    ],
+    clang_copts = select(resolved_flags_select_dicts["copts"].flat_select_dict) + select(resolved_flags_select_dicts["cxxopts"].flat_select_dict),
+    linkopts = select(resolved_flags_select_dicts["linkopts"].flat_select_dict),
+    hdrs = [
+        "BundlePathProvider.hpp",
+    ],
+    module_name = "BundlePathProviderSwift",
+    swift_copts = [
+        "-cxx-interoperability-mode=default",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":BundleHolder",
+    ],
+    alwayslink = True,
+)
+
+filegroup(
+    name = "info-plist",
+    srcs = ["Info.plist"],
+    visibility = ["//visibility:public"],
+)

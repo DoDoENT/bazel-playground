@@ -1,0 +1,50 @@
+module(name = "emsdk-cache-builder")
+
+bazel_dep(name = "rules_cc", version = "0.2.13")
+bazel_dep(name = "emsdk", version = "4.0.16")
+
+emscripten_cache = use_extension(
+    "@emsdk//:emscripten_cache.bzl",
+    "emscripten_cache",
+)
+
+emscripten_cache.configuration(flags = ["--lto=thin"])
+emscripten_cache.targets(targets = [
+    "crtbegin",
+    "libal",
+    "libc-mt",
+    "libc-mt-debug",
+    "libc",
+    "libc++-mt-noexcept",
+    "libc++-noexcept",
+    "libc++-debug-mt-noexcept",
+    "libc++-debug-noexcept",
+    "libc++abi-noexcept",
+    "libc++abi-mt-noexcept",
+    "libc++abi-debug-mt-noexcept",
+    "libc++abi-debug-noexcept",
+    "libcompiler_rt-mt",
+    "libcompiler_rt",
+    "libembind-rtti",
+    "libemmalloc-mt",
+    "libemmalloc-mt-debug",
+    "libemmalloc",
+    "libemmalloc-debug",
+    "libfetch-mt",
+    "libfetch",
+    "libGL-getprocaddr",
+    "libGL-mt-getprocaddr",
+    "libhtml5",
+    "libnoexit",
+    "libsockets-mt",
+    "libsockets",
+    "libprintf_long_double-mt",
+    "libprintf_long_double-mt-debug",
+    "libprintf_long_double",
+    "libprintf_long_double-debug",
+    "libstubs",
+    "libstubs-debug",
+    "libc-debug",
+    "libdlmalloc",
+    "libc++abi-debug-noexcept",
+])

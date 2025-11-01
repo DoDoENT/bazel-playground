@@ -1,0 +1,17 @@
+load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
+load("@emsdk//emscripten_toolchain:wasm_rules.bzl", "wasm_cc_binary")
+
+cc_binary(
+    name = "dummy",
+    srcs = ["dummy.cpp"],
+    copts = ["-flto=thin"],
+    linkopts = [
+        "-flto=thin",
+        "-s MALLOC=emmalloc",
+    ],
+)
+
+wasm_cc_binary(
+    name = "dummy_wasm",
+    cc_target = ":dummy",
+)

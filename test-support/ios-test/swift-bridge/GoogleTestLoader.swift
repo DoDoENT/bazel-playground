@@ -1,9 +1,11 @@
 import XCTest
 internal import CxxStdlib
+internal import BundleHolder
 
 final class GoogleTestInvoker: XCTestCase {
     // note: XCTest expects test function to have name in format testSomething
     func testInvokeGoogleTest() {
+        setActiveBundle(Bundle(for: GoogleTestInvoker.self))
         // obtain args from TEST_ARGS environment variable
         let args = ProcessInfo.processInfo.environment["TEST_ARGS"]?.split(separator: " ").map { std.string(String($0)) } ?? []
         // convert args to CxxStringVector

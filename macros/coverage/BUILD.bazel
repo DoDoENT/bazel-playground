@@ -1,0 +1,25 @@
+load("@rules_python//python/uv:lock.bzl", "lock")
+load("@rules_python//python:defs.bzl", "py_binary")
+
+lock(
+    name = "coverage_pip_deps",
+    srcs = ["pyproject.toml"],
+    out = "requirements_lock.txt",
+)
+
+py_binary(
+    name = "coverage_report",
+    main = "convert_all.py",
+    imports = ["."],
+    srcs = [
+        "convert.py",
+        "convert_all.py",
+    ],
+    data = [
+        "master_template.html",
+        "template.html",
+    ],
+    deps = [
+        "@coverage_pip_deps//jinja2",
+    ],
+)

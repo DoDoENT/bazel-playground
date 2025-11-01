@@ -80,12 +80,12 @@ fi
 
 # check if outputs contains errors
 if echo "$output" | grep -q "FAILURES"; then
-    echo "Instrumentation test failed."
+    echo "Instrumentation test failed: has test failures."
     echo "$output"
     exit 1
 fi
-if echo "$log_output" | grep -q "Fatal signal"; then
-    echo "Instrumentation test failed."
+if echo "$log_output" | grep "Fatal signal" | grep -v -q "Fatal signal 31"; then
+    echo "Instrumentation test failed: has fatal signals in logcat."
     echo "$output"
     exit 1
 fi

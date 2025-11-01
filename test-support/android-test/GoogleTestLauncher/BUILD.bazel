@@ -8,17 +8,10 @@ filegroup(
 
 
 filegroup(
-    name = "GoogleTestLauncherJavaTemplateSources",
+    name = "GoogleTestLauncherJavaSources",
     srcs = [
-        "java/GoogleTestLauncher.template.java",
-    ],
-    visibility = ["//visibility:public"],
-)
-
-filegroup(
-    name = "GoogleTestLauncherActivityTemplateSources",
-    srcs = [
-        "java/LaunchActivity.template.java",
+        "java/com/microblink/testrunner/LaunchActivity.java",
+        "java/com/microblink/testrunner/GoogleTestLauncher.java",
     ],
     visibility = ["//visibility:public"],
 )

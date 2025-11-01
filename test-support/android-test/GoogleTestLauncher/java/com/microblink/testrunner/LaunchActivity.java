@@ -1,4 +1,4 @@
-package %(package)s;
+package com.example.testrunner;
 
 import static android.content.Context.POWER_SERVICE;
 
@@ -33,11 +33,6 @@ public class LaunchActivity extends Activity {
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyApp::MyWakelockTag");
 
-        AssetManager assetManager = getAssets();
-
-        File filesDir = getApplicationContext().getFilesDir();
-        String filesDirPath = filesDir.getAbsolutePath();
-
         GoogleTestLauncher.GTestListener mGTestListener = new GoogleTestLauncher.GTestListener() {
 
             @Override
@@ -54,7 +49,7 @@ public class LaunchActivity extends Activity {
                 if ( wakeLock != null ) {
                     wakeLock.acquire();
                 }
-                int statusCode = GoogleTestLauncher.invokeGoogleTest(GoogleTestLauncher.testArgs, assetManager, filesDirPath, mGTestListener);
+                int statusCode = GoogleTestLauncher.invokeGoogleTest(GoogleTestLauncher.testArgs, mGTestListener, LaunchActivity.this);
                 if ( wakeLock != null ) {
                     wakeLock.release();
                 }

@@ -1,0 +1,6 @@
+bazel-*
+MODULE.bazel.lock
+
+emsdk-cache/
+
+emsdk-cache.tar.gz

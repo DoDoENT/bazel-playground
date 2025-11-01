@@ -6,7 +6,6 @@ load(":ios.bzl", "ios_flags")
 load(":linux.bzl", "linux_clang_flags", "linux_gcc_flags")
 load(":macos.bzl", "macos_flags")
 
-load("//macros/flags/flatten:flatten.bzl", "flatten_select_dict")
 load("//macros/flags/flatten:flat_config_groups.bzl", "create_config_setting_groups")
 load("//macros/flags/flatten:concat.bzl", "concat_select_dicts")
 
@@ -61,6 +60,22 @@ flags_dicts = {
     "linker_release_flags": _transform_to_select_dict("linker_release_flags"),
 }
 
+_common_copts = [
+    flags_dicts["compiler_common_flags"],
+    flags_dicts["compiler_default_warnings"],
+    flags_dicts["compiler_warnings_as_errors"],
+    flags_dicts["compiler_debug_symbols"],
+    selects.with_or_dict({
+        Label(":debug"): flags_dicts["compiler_debug_flags"],
+        (Label(":devRelease"), Label(":release")): flags_dicts["compiler_release_flags"],
+    }),
+    {
+        Label(":release"): flags_dicts["compiler_lto"],
+        Label(":devRelease"): flags_dicts["compiler_dev_release_flags"], # override some release flags for devRelease (i.e. remove the NDEBUG define)
+        Label("//conditions:default"): [],
+    },
+]
+
 resolved_flags_select_dicts = {
     "linkopts": concat_select_dicts(
         "linkopts_conditions",
@@ -84,23 +99,26 @@ resolved_flags_select_dicts = {
     "copts": concat_select_dicts(
         "copts_conditions",
         "//macros/flags",
-        flags_dicts["compiler_common_flags"],
-        flags_dicts["compiler_default_warnings"],
-        flags_dicts["compiler_warnings_as_errors"],
-        flags_dicts["compiler_debug_symbols"],
-        selects.with_or_dict({
-            (Label(":devRelease"), Label(":release")): flags_dicts["compiler_optimize_for_size"],
-            Label("//conditions:default"): [],
-        }),
-        selects.with_or_dict({
-            Label(":debug"): flags_dicts["compiler_debug_flags"],
-            (Label(":devRelease"), Label(":release")): flags_dicts["compiler_release_flags"],
-        }),
-        {
-            Label(":release"): flags_dicts["compiler_lto"],
-            Label(":devRelease"): flags_dicts["compiler_dev_release_flags"], # override some release flags for devRelease (i.e. remove the NDEBUG define)
-            Label("//conditions:default"): [],
-        },
+        *(_common_copts + [
+            selects.with_or_dict({
+                (Label(":devRelease"), Label(":release")): flags_dicts["compiler_optimize_for_size"],
+                Label("//conditions:default"): [],
+            }),
+        ]),
+    ),
+    "hot_copts": concat_select_dicts(
+        "hot_copts_conditions",
+        "//macros/flags",
+        *(_common_copts + [
+            selects.with_or_dict({
+                (Label(":devRelease"), Label(":release")): flags_dicts["compiler_optimize_for_speed"],
+                Label("//conditions:default"): [],
+            }),
+            {
+                Label("@platforms//cpu:armv7"): ["-marm"],
+                Label("//conditions:default"): [],
+            }
+        ]),
     ),
     "cxxopts": concat_select_dicts(
         "cxxopts_conditions",
@@ -113,6 +131,11 @@ resolved_flags_select_dicts = {
             (Label(":debug"), Label(":devRelease")): flags_dicts["cxx_compiler_rtti_on"],
             Label(":release"): flags_dicts["cxx_compiler_rtti_off"],
         }),
+    ),
+    "compiler_disable_lto": concat_select_dicts(
+        "compiler_disable_lto_conditions",
+        "//macros/flags",
+        flags_dicts["compiler_disable_lto"],
     ),
 }
 

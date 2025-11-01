@@ -5,7 +5,6 @@ mixed_language_library(
     name = "googletest-ios-swift-bridge",
     swift_srcs = [
         "GoogleTestLoader.swift",
-        "IosBundlePathProvider.swift",
     ],
     clang_srcs = [
         "GoogleTestInvoker.cpp",
@@ -21,6 +20,7 @@ mixed_language_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
+        "//macros/ios-helpers:ios-bundle-path-provider",
         "@googletest//:gtest_main",
     ],
     testonly = True,

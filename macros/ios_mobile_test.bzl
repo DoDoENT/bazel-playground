@@ -1,19 +1,16 @@
 load("@rules_apple//apple:ios.bzl", "ios_unit_test")
 load("@rules_apple//apple:resources.bzl", "apple_resource_group")
 
-load("@rules_xcodeproj//xcodeproj:top_level_target.bzl", "top_level_target")
-load("@rules_xcodeproj//xcodeproj:xcodeproj.bzl", "xcodeproj")
-load("@rules_xcodeproj//xcodeproj:xcschemes.bzl", "xcschemes")
-
 load("//macros:mobile_library.bzl", "mobile_library")
 load(":constants.bzl", "TAG_IOS")
 
 def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, defines, local_defines):
     mobile_library(
-        name = name + "-ios-srcs",
+        name = name + "-srcs",
         srcs = srcs,
         deps = deps + [
             Label("//test-support/ios-test/swift-bridge:googletest-ios-swift-bridge"),
+            Label("@googletest//:gtest_main"),
         ],
         copts = copts,
         conlyopts = conlyopts,
@@ -36,7 +33,7 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, lin
         bundle_id = "com.example." + name + "Tests",
         visibility = visibility + ["//visibility:public"],
         deps = [
-            native.package_relative_label(":" + name + "-ios-srcs"),
+            native.package_relative_label(":" + name + "-srcs"),
         ],
         env = {
             "TEST_ARGS": " ".join(args),
@@ -52,36 +49,6 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, lin
         runner = Label("//test-support/ios-test:test_runner"),
         target_compatible_with = [
             # note: this target needs to run on macOS and introduces transition to iOS
-            Label("@platforms//os:macos"),
-        ],
-    )
-    xcodeproj(
-        name = name + "-xcodeproj",
-        project_name = name,
-        tags = ["manual"],
-        top_level_targets = [
-            top_level_target(name, target_environments = ["device", "simulator"]),
-            top_level_target(Label("//test-support/ios-test/GoogleTestHost:GoogleTestHost"), target_environments = ["device", "simulator"]),
-        ],
-        xcschemes = [
-            xcschemes.scheme(
-                name = name,
-                test = xcschemes.test(
-                    args = args,
-                    test_targets = [
-                        xcschemes.test_target(native.package_relative_label(":" + name))
-                    ],
-                    build_targets = [
-                        xcschemes.top_level_build_target(Label("//test-support/ios-test/GoogleTestHost:GoogleTestHost")),
-                    ]
-                ),
-                run = xcschemes.run(
-                    launch_target = xcschemes.launch_target(Label("//test-support/ios-test/GoogleTestHost:GoogleTestHost")),
-                )
-            )
-        ],
-        target_compatible_with = [
-            # note: this target needs to run on macOS as Xcode project is generated there
             Label("@platforms//os:macos"),
         ],
     )

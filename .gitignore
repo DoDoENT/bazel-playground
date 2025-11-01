@@ -2,6 +2,7 @@ Session.vim
 .tasks.json
 
 /bazel-*
+/external
 
 derived-data
 
@@ -9,3 +10,5 @@ derived-data
 automatic.bazelrc
 
 .vimspector.json
+
+__pycache__

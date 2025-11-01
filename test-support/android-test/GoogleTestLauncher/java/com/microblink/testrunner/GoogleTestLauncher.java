@@ -1,4 +1,4 @@
-package %(package)s;
+package com.example.testrunner;
 
 import static android.content.Context.POWER_SERVICE;
 
@@ -25,16 +25,11 @@ import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
 @RunWith(AndroidJUnit4.class)
 public class GoogleTestLauncher {
 
-    static String[] testArgs = %(testArgs)s;
-    private static final boolean deployResources = %(deployResources)b;
+    static String[] testArgs = BuildConfig.TEST_ARGS;
+    private static final boolean deployResources = BuildConfig.DEPLOY_RESOURCES;
 
     @Test
     public void invokeGoogleTest() {
@@ -43,23 +38,19 @@ public class GoogleTestLauncher {
         PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyApp::MyWakelockTag");
         wakeLock.acquire();
 
-        File filesDir = targetContext.getFilesDir();
-        String filesDirPath = filesDir.getAbsolutePath();
-
-        AssetManager assetManager = targetContext.getAssets();
         if ( deployResources ) {
             deployAssetsToInternalStorage( targetContext );
         }
-        invokeGoogleTest(testArgs, assetManager, filesDirPath, mGTestListener);
+        invokeGoogleTest(testArgs, mGTestListener, targetContext);
 
         wakeLock.release();
     }
 
     static {
-        System.loadLibrary("%(nativeLibrary)s");
+        System.loadLibrary(BuildConfig.NATIVE_LIB_NAME);
     }
 
-    static native int invokeGoogleTest(String[] arguments, AssetManager assetManager, String filesDir, GTestListener listener);
+    static native int invokeGoogleTest(String[] arguments, GTestListener listener, Context context);
 
     public interface GTestListener
     {
@@ -91,7 +82,7 @@ public class GoogleTestLauncher {
             Log.e("tag", "Cannot create directory: " + internalStorage.getPath() );
         }
 
-        copyFileOrDir( "%(pkgroot)s", context, internalStorage.getPath() );
+        copyFileOrDir( BuildConfig.PKG_ROOT, context, internalStorage.getPath() );
     }
 
     private static void deleteRecursive( File fileOrDirectory ) {

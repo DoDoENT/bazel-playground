@@ -1,0 +1,32 @@
+filegroup(
+    name = "ExerunnerCppSources",
+    srcs = [
+        "cpp/native-lib.cpp",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "ExerunnerJavaSources",
+    srcs = [
+        "java/com/microblink/exerunner/RunActivity.java",
+        "java/com/microblink/exerunner/NativeRunner.java",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "ExerunnerResources",
+    srcs = glob([
+        "res/**",
+    ]),
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "ExerunnerManifest",
+    srcs = [
+        "AndroidManifest.xml",
+    ],
+    visibility = ["//visibility:public"],
+)
