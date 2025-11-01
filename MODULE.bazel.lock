@@ -4074,8 +4074,8 @@
     },
     "@@rules_xcodeproj+//xcodeproj:extensions.bzl%internal": {
       "general": {
-        "bzlTransitiveDigest": "K0kRdLwrfjLC5T5zCEa3vV5A8eKpPWBih/jrIeFAQ6E=",
-        "usagesDigest": "rSPPoS51oEL5HYj8q9i5GgDd4r2MOt4Ah1g7ZVfz3dc=",
+        "bzlTransitiveDigest": "UiQty688ARA3y7rU+E4Q8jiePbD2b8kVXeBMy2cd04c=",
+        "usagesDigest": "6/g29r44GIxM5/kJRHOJST9IbKbpcw64BfYIk0WW3VY=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
         "envVariables": {},
@@ -4087,6 +4087,21 @@
         },
         "recordedRepoMappingEntries": [
           [
+            "bazel_features+",
+            "bazel_features_globals",
+            "bazel_features++version_extension+bazel_features_globals"
+          ],
+          [
+            "bazel_features+",
+            "bazel_features_version",
+            "bazel_features++version_extension+bazel_features_version"
+          ],
+          [
+            "rules_xcodeproj+",
+            "bazel_features",
+            "bazel_features+"
+          ],
+          [
             "rules_xcodeproj+",
             "bazel_tools",
             "bazel_tools"
@@ -4096,8 +4111,8 @@
     },
     "@@rules_xcodeproj+//xcodeproj:extensions.bzl%non_module_deps": {
       "general": {
-        "bzlTransitiveDigest": "K0kRdLwrfjLC5T5zCEa3vV5A8eKpPWBih/jrIeFAQ6E=",
-        "usagesDigest": "CBVD1t8qxr05oeI76aQKImJcjeZVaUVjSuCK5J6EqBA=",
+        "bzlTransitiveDigest": "UiQty688ARA3y7rU+E4Q8jiePbD2b8kVXeBMy2cd04c=",
+        "usagesDigest": "UUbZqMUhpGq+8aVoO9XYwMLbxuBPfZ6pYyCkdNVQu+M=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
         "envVariables": {},
@@ -4122,6 +4137,21 @@
           }
         },
         "recordedRepoMappingEntries": [
+          [
+            "bazel_features+",
+            "bazel_features_globals",
+            "bazel_features++version_extension+bazel_features_globals"
+          ],
+          [
+            "bazel_features+",
+            "bazel_features_version",
+            "bazel_features++version_extension+bazel_features_version"
+          ],
+          [
+            "rules_xcodeproj+",
+            "bazel_features",
+            "bazel_features+"
+          ],
           [
             "rules_xcodeproj+",
             "bazel_tools",
