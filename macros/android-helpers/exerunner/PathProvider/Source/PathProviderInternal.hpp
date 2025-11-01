@@ -1,4 +1,3 @@
-
 #include "PathProvider.hpp"
 
 #include <jni.h>

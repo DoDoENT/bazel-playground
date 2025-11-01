@@ -1,4 +1,3 @@
-
 #if defined( __EMSCRIPTEN__ ) && defined( __EMSCRIPTEN_PTHREADS__ )
 #include <emscripten.h>
 

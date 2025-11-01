@@ -1,4 +1,3 @@
-
 package com.example.exerunner;
 
 import android.content.Context;

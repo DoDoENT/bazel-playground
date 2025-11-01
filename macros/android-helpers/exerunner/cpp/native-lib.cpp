@@ -1,4 +1,3 @@
-
 #if __has_include(<CoreUtils/Android/Application.hpp>)
 #   include <CoreUtils/Android/Application.hpp>
 #   define MB_HAS_COREUTILS_ANDROID_APPLICATION 1
