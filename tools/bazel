@@ -22,7 +22,8 @@ elif [[ $OSTYPE == linux* ]]; then
     #               (2025-10-10) (Nenad Mikša)
 
     clang_version=$(clang --version | head -n1 | sed 's/.*version \([^ ]*\).*/\1/')
-    ln -sf /usr/local/bin/clang /tmp/clang-$clang_version
+    clang_path=$(which clang)
+    ln -sf $clang_path /tmp/clang-$clang_version
     bazelrc_lines+=("common --action_env=CC=/tmp/clang-$clang_version")
 fi
 
