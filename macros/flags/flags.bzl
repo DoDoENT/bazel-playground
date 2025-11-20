@@ -58,6 +58,7 @@ flags_dicts = {
     "linker_runtime_checks": _transform_to_select_dict("linker_runtime_checks"),
     "linker_coverage": _transform_to_select_dict("linker_coverage"),
     "linker_release_flags": _transform_to_select_dict("linker_release_flags"),
+    "linker_cxx_static_runtime": _transform_to_select_dict("linker_cxx_static_runtime"),
 }
 
 _common_copts = [
@@ -90,6 +91,14 @@ resolved_flags_select_dicts = {
             Label(":release"): flags_dicts["linker_lto"],
             Label("//conditions:default"): [],
         },
+    ),
+    "linker_cxx_static_runtime": concat_select_dicts(
+        "linker_cxx_static_runtime_conditions",
+        "//macros/flags",
+        {
+            Label(":release"): flags_dicts["linker_cxx_static_runtime"],
+            Label("//conditions:default"): [],
+        }
     ),
     "conlyopts": concat_select_dicts(
         "conlyopts_conditions",

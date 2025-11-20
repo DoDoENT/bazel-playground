@@ -14,7 +14,7 @@ load(
     "TAG_HOST",
 )
 
-def _mobile_binary_impl(name, visibility, data, args, host_only, **kwargs):
+def _mobile_binary_impl(name, visibility, data, args, host_only, static_cxx_runtime, **kwargs):
     mobile_library(
         name = name + "-paths",
         srcs = [
@@ -38,7 +38,11 @@ def _mobile_binary_impl(name, visibility, data, args, host_only, **kwargs):
     default_conlyopts = select(resolved_flags_select_dicts["conlyopts"].flat_select_dict)
     default_copts = select(resolved_flags_select_dicts["copts"].flat_select_dict)
     default_cxxopts = select(resolved_flags_select_dicts["cxxopts"].flat_select_dict)
+
     default_linkopts = select(resolved_flags_select_dicts["linkopts"].flat_select_dict)
+    if static_cxx_runtime:
+        default_linkopts += select(resolved_flags_select_dicts["linker_cxx_static_runtime"].flat_select_dict)
+
     conlyopts = kwargs.pop("conlyopts") or select({
         Label("//conditions:default"): []
     })
@@ -213,6 +217,11 @@ mobile_binary = macro(
         "host_only": attr.bool(
             default = False,
             doc = "If true, only define the host version of the binary.",
+            configurable = False,
+        ),
+        "static_cxx_runtime": attr.bool(
+            default = False,
+            doc = "If true, link the C++ runtime statically in release build.",
             configurable = False,
         ),
     }

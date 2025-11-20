@@ -19,12 +19,28 @@ def _calculate_linux_clang_flags():
         "-polly",
     ]
 
+    _linux_clang_flags["linker_cxx_static_runtime"] = [
+        "-nodefaultlibs",
+        "-Wl,-Bstatic",
+        "-lc++",
+        "-lc++abi",
+        "-Wl,-Bdynamic",
+        "-lgcc",
+        "-lc",
+        "-lm",
+    ]
+
     return _linux_clang_flags
 
 linux_clang_flags = _calculate_linux_clang_flags()
 
 def _calculate_linux_gcc_flags():
     _linux_gcc_flags = _calculate_linux_flags(gcc_compat_flags)
+
+    _linux_gcc_flags["linker_cxx_static_runtime"] = [
+        "-static-libgcc",
+        "-static-libstdc++",
+    ]
 
     return _linux_gcc_flags
 
