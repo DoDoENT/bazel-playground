@@ -39,7 +39,7 @@ def _ios_mobile_binary_impl(name, visibility, args, **kwargs):
         ],
         minimum_os_version = "15.0",
         provisioning_profile = Label("//test-support/ios-test:xcode_profile"),
-        tags = tags + [TAG_IOS], # need to be exclusive to prevent parallel invocation on the same device
+        tags = tags + [TAG_IOS],
         families = [
             "iphone",
             "ipad",
