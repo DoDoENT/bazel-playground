@@ -59,6 +59,7 @@ def _android_mobile_binary_impl(name, visibility, args, **kwargs):
 
     android_binary(
         name = name,
+        visibility = visibility,
         srcs = [
             native.package_relative_label(":" + name + "-build-config"),
             Label("//macros/android-helpers/exerunner:ExerunnerJavaSources"),
