@@ -62,6 +62,8 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android_deploy_re
     linkstatic = kwargs.pop("linkstatic")
     if linkstatic == None:
         linkstatic = True  # Default to static linking if not specified
+    test_size = kwargs.pop("size")
+    test_timeout = kwargs.pop("timeout")
 
     cc_test(
         name = name,
@@ -81,6 +83,8 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android_deploy_re
         defines = defines,
         local_defines = local_defines,
         linkstatic = linkstatic,
+        size = test_size,
+        timeout = test_timeout,
         **kwargs,
     )
     if not host_only:
@@ -101,6 +105,8 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android_deploy_re
             data = data,
             defines = defines,
             local_defines = local_defines,
+            size = test_size,
+            timeout = test_timeout,
         )
         android_mobile_test(
             name = name + "-android",
@@ -119,6 +125,8 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android_deploy_re
             defines = defines,
             local_defines = local_defines,
             deploy_resources = android_deploy_resources,
+            size = test_size,
+            timeout = test_timeout,
         )
         wasm_test(
             name = name + "-wasm-basic",
@@ -138,6 +146,8 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android_deploy_re
             data = data,
             defines = defines,
             local_defines = local_defines,
+            size = test_size,
+            timeout = test_timeout,
         )
         wasm_test(
             name = name + "-wasm-advanced",
@@ -157,6 +167,8 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android_deploy_re
             data = data,
             defines = defines,
             local_defines = local_defines,
+            size = test_size,
+            timeout = test_timeout,
         )
         wasm_test(
             name = name + "-wasm-advanced-threads",
@@ -176,6 +188,8 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android_deploy_re
             data = data,
             defines = defines,
             local_defines = local_defines,
+            size = test_size,
+            timeout = test_timeout,
         )
 
 

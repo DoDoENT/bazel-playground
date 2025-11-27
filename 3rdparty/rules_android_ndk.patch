@@ -42,7 +42,7 @@ index 22c8076..af6b0c6 100644
          }),
      },
 diff --git a/ndk_cc_toolchain_config.bzl b/ndk_cc_toolchain_config.bzl
-index a449a1f..8682172 100644
+index a449a1f..a7230d7 100644
 --- a/ndk_cc_toolchain_config.bzl
 +++ b/ndk_cc_toolchain_config.bzl
 @@ -348,7 +348,7 @@ def ndk_cc_toolchain_config(
@@ -71,7 +71,7 @@ index a449a1f..8682172 100644
                          "-Wno-deprecated",
                          "-fshow-overloads=best",
                          "-Wdeprecated-increment-bool",
-@@ -750,7 +749,7 @@ def ndk_cc_toolchain_config(
+@@ -750,18 +749,13 @@ def ndk_cc_toolchain_config(
                  ),
                  flag_set(
                      actions = actions.all_compile,
@@ -80,7 +80,19 @@ index a449a1f..8682172 100644
                      features = ["crosstool_cpu_arm", "crosstool_has_neon"],
                  ),
                  flag_set(
-@@ -862,7 +861,6 @@ def ndk_cc_toolchain_config(
+                     actions = actions.all_compile,
+                     flags = ["-mthumb"],
+-                    features = ["crosstool_cpu_arm", "opt"],
+-                ),
+-                flag_set(
+-                    actions = actions.all_compile,
+-                    flags = ["-marm"],
+-                    features = ["crosstool_cpu_arm", "dbg"],
++                    features = ["crosstool_cpu_arm"],
+                 ),
+                 flag_set(
+                     actions = actions.all_link,
+@@ -862,7 +856,6 @@ def ndk_cc_toolchain_config(
                      flags = [
                          "-Wno-deprecated",
                          "-Wdeprecated-increment-bool",
@@ -88,7 +100,7 @@ index a449a1f..8682172 100644
                          "-Woverloaded-virtual",
                      ],
                  ),
-@@ -1074,10 +1072,9 @@ def ndk_cc_toolchain_config(
+@@ -1074,10 +1067,9 @@ def ndk_cc_toolchain_config(
                      actions = actions.all_compile,
                      flags = [
                          "-fsanitize=undefined",
@@ -102,7 +114,7 @@ index a449a1f..8682172 100644
                      ],
                      features = ["ubsan"],
                  ),
-@@ -1085,8 +1082,6 @@ def ndk_cc_toolchain_config(
+@@ -1085,8 +1077,6 @@ def ndk_cc_toolchain_config(
                      actions = actions.all_link,
                      flags = [
                          "-fsanitize=undefined",

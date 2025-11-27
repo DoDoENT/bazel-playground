@@ -5,7 +5,7 @@ load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 load(":wasm_mobile_binary.bzl", "wasm_mobile_binary")
 load("//test-support/wasm-test/posluznik-test:posluznik_test.bzl", "posluznik_test")
 
-def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, threads, simd, args, tags, data, defines, local_defines):
+def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, threads, simd, args, tags, data, defines, local_defines, size, timeout):
     wasm_mobile_binary(
         name = name + "-bin",
         srcs = srcs,
@@ -38,6 +38,8 @@ def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts,
         wasm_mobile_binary = native.package_relative_label(":" + name + "-bin-all-deps"),
         validate_binary = validate_binary,
         args = args,
+        size = size,
+        timeout = timeout,
     )
 
 
@@ -99,6 +101,16 @@ wasm_test = macro(
         "local_defines": attr.string_list(
             default = [],
             doc = "Preprocessor defines for the Android mobile test that should not be propagated to dependents.",
+        ),
+        "size": attr.string(
+            default = "medium",
+            doc = "Size of the test: small, medium, large, or enormous.",
+            configurable = False
+        ),
+        "timeout": attr.string(
+            default = "moderate",
+            doc = "Timeout for the test: short, moderate, long, or eternal.",
+            configurable = False
         ),
     },
 )

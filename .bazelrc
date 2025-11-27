@@ -94,7 +94,7 @@ common:xcode_cache_warming --output_groups=compiles,resources
 # note - avoid using local disk cache in CI - it's not needed. Bazel's internal cache (~/.cache/bazel) and remote cache are sufficient.
 #        Namely, using local disk cache in CI can cause the actions to sometimes not be uploaded to the remote cache.
 
-common:ci --show_progress_rate_limit=10 --show_progress=true --test_output=errors --test_timeout=300 --disk_cache=
+common:ci --show_progress_rate_limit=10 --show_progress=true --test_output=errors --disk_cache=
 
 # Our repo is not large enough to need terse output, so we use short output
 test:ci --test_summary="short"

@@ -4,7 +4,7 @@ load("@rules_apple//apple:resources.bzl", "apple_resource_group")
 load("//macros:mobile_library.bzl", "mobile_library")
 load(":constants.bzl", "TAG_IOS")
 
-def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, defines, local_defines):
+def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, defines, local_defines, size, timeout):
     mobile_library(
         name = name + "-srcs",
         srcs = srcs,
@@ -16,7 +16,7 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, lin
         conlyopts = conlyopts,
         cxxopts = cxxopts,
         linkopts = linkopts,
-        testonly = True, 
+        testonly = True,
         alwayslink = True,
         local_defines = local_defines,
         defines = defines,
@@ -51,6 +51,8 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, lin
             # note: this target needs to run on macOS and introduces transition to iOS
             Label("@platforms//os:macos"),
         ],
+        size = size,
+        timeout = timeout,
     )
 
 
@@ -105,6 +107,16 @@ ios_mobile_test = macro(
         "local_defines": attr.string_list(
             default = [],
             doc = "Preprocessor defines for the Android mobile test that should not be propagated to dependents.",
+        ),
+        "size": attr.string(
+            default = "medium",
+            doc = "Size of the test: small, medium, large, or enormous.",
+            configurable = False
+        ),
+        "timeout": attr.string(
+            default = "moderate",
+            doc = "Timeout for the test: short, moderate, long, or eternal.",
+            configurable = False
         ),
     },
 )

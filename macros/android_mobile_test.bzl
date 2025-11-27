@@ -6,7 +6,7 @@ load(":constants.bzl", "TAG_ANDROID")
 load(":android_build_config.bzl", "android_build_config")
 load(":android_utils.bzl", "SANITIZER_SUPPORT_LIBS")
 
-def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, defines, local_defines, deploy_resources):
+def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, defines, local_defines, deploy_resources, size, timeout):
     # Always use the same package name, as this makes it easier to monitor test runs with ADB and it's not
     # possible to run multiple tests simultaneously anyway (they would conflict on the device).
     package_name = "com.example.testrunner"
@@ -90,6 +90,8 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
         visibility = visibility,
         test_app = native.package_relative_label(":" + name + "-test-app"),
         tags = tags + [TAG_ANDROID, "exclusive"],  # need to be exclusive to prevent parallel invocation on the same device
+        size = size,
+        timeout = timeout,
     )
 
 
@@ -149,6 +151,16 @@ android_mobile_test = macro(
             default = False,
             doc = "If true, resources from 'data' will be deployed to internal storage before launching the test.",
             configurable = False,
+        ),
+        "size": attr.string(
+            default = "medium",
+            doc = "Size of the test: small, medium, large, or enormous.",
+            configurable = False
+        ),
+        "timeout": attr.string(
+            default = "moderate",
+            doc = "Timeout for the test: short, moderate, long, or eternal.",
+            configurable = False
         ),
     },
 )

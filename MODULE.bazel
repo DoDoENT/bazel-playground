@@ -4,32 +4,22 @@ module(name = "playground")
 
 # Note: This needs to be before rules_cc in order to correctly configure the C++ toolchain.
 # See here why: https://www.smileykeith.com/2025/09/21/understanding-apple-debug-info/
-bazel_dep(name = "apple_support", version = "1.24.3")
-bazel_dep(name = "rules_cc", version = "0.2.13")
+bazel_dep(name = "apple_support", version = "1.24.5")
+bazel_dep(name = "rules_cc", version = "0.2.14")
 bazel_dep(name = "aspect_bazel_lib", version = "2.21.2")
 bazel_dep(name = "bazel_skylib", version = "1.8.2")
-bazel_dep(name = "bazelrc-preset.bzl", version = "1.5.0")
+bazel_dep(name = "bazelrc-preset.bzl", version = "1.6.0")
 bazel_dep(name = "platforms", version = "1.0.0")
-bazel_dep(name = "rules_build_error", version = "0.8.6")
+bazel_dep(name = "rules_build_error", version = "0.9.0")
 bazel_dep(name = "rules_license", version = "1.0.0")
 
 # Bazel rules end
 
 # Apple rules begin
 
-bazel_dep(name = "rules_apple", version = "4.2.0")
-
-# Fix for running tests on iOS devices with Xcode 16.3+
-single_version_override(
-    module_name = "rules_apple",
-    patch_strip = 1,
-    patches = [
-        "//3rdparty:rules_apple.patch",
-    ],
-)
-
-bazel_dep(name = "rules_swift", version = "3.2.0")
-bazel_dep(name = "rules_xcodeproj", version = "3.3.0")
+bazel_dep(name = "rules_apple", version = "4.3.2")
+bazel_dep(name = "rules_swift", version = "3.3.0")
+bazel_dep(name = "rules_xcodeproj", version = "3.4.1")
 
 # Apple rules end
 
@@ -155,7 +145,7 @@ bazel_dep(name = "wabt", version = "1.0.37")
 # DEV DEPENDENCIES
 
 
-bazel_dep(name = "googletest", version = "1.17.0.bcr.1", dev_dependency = True)
+bazel_dep(name = "googletest", version = "1.17.0.bcr.2", dev_dependency = True)
 single_version_override(
     module_name = "googletest",
     patch_strip = 1,
