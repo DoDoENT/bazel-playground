@@ -807,7 +807,7 @@
     },
     "@@rules_rust+//crate_universe:extension.bzl%crate": {
       "general": {
-        "bzlTransitiveDigest": "HUJHil3nTQekbpJsehsnJr1bGM/PruvLJdL/rML7aps=",
+        "bzlTransitiveDigest": "rXQAEBvZBM0kC99GgBx1Wfa+redYu4S+3AMWgBwC3Ts=",
         "usagesDigest": "upQqT9bfa9xk2DpGWj7aeo5FxO9BfUYgaF6XB4RgwTA=",
         "recordedFileInputs": {
           "@@posluznik+//Cargo.lock": "fb6b702206236e90d59b09ca0ca70e02286a4ffb651d21a082c995f38044fe99",

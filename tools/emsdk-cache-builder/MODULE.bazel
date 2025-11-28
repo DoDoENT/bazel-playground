@@ -26,6 +26,7 @@ emscripten_cache.targets(targets = [
     "libcompiler_rt-mt",
     "libcompiler_rt",
     "libembind-rtti",
+    "libembind-mt-rtti",
     "libemmalloc-mt",
     "libemmalloc-mt-debug",
     "libemmalloc",
