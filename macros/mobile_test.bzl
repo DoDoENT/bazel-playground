@@ -14,7 +14,7 @@ load(
     "TAG_ANDROID",
 )
 
-def _mobile_test_impl(name, visibility, args, data, host_only, android_deploy_resources, **kwargs):
+def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, wasm_basic, wasm_advanced, wasm_advanced_threads, android_deploy_resources, **kwargs):
 
     mobile_library(
         name = name + "-paths",
@@ -88,109 +88,118 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android_deploy_re
         **kwargs,
     )
     if not host_only:
-        # Note: iOS, Android, and Wasm will internally add default copts, cxxopts, and linkopts
-        ios_mobile_test(
-            name = name + "-ios",
-            visibility = visibility,
-            srcs = srcs,
-            copts = copts,
-            conlyopts = conlyopts,
-            cxxopts = cxxopts,
-            linkopts = linkopts,
-            deps = deps + [
-                native.package_relative_label(":" + name + "-paths"),
-            ],
-            tags = tags,
-            args = args,
-            data = data,
-            defines = defines,
-            local_defines = local_defines,
-            size = test_size,
-            timeout = test_timeout,
-        )
-        android_mobile_test(
-            name = name + "-android",
-            visibility = visibility,
-            srcs = srcs,
-            copts = copts,
-            conlyopts = conlyopts,
-            cxxopts = cxxopts,
-            linkopts = linkopts,
-            deps = deps + [
-                native.package_relative_label(":" + name + "-paths"),
-            ],
-            tags = tags,
-            args = args,
-            data = data,
-            defines = defines,
-            local_defines = local_defines,
-            deploy_resources = android_deploy_resources,
-            size = test_size,
-            timeout = test_timeout,
-        )
-        wasm_test(
-            name = name + "-wasm-basic",
-            visibility = visibility,
-            srcs = srcs,
-            copts = copts,
-            conlyopts = conlyopts,
-            cxxopts = cxxopts,
-            linkopts = linkopts,
-            deps = deps + [
-                native.package_relative_label(":" + name + "-paths"),
-            ],
-            threads = False,
-            simd = False,
-            args = args,
-            tags = tags + [TAG_WASM_BASIC],
-            data = data,
-            defines = defines,
-            local_defines = local_defines,
-            size = test_size,
-            timeout = test_timeout,
-        )
-        wasm_test(
-            name = name + "-wasm-advanced",
-            visibility = visibility,
-            srcs = srcs,
-            copts = copts,
-            conlyopts = conlyopts,
-            cxxopts = cxxopts,
-            linkopts = linkopts,
-            deps = deps + [
-                native.package_relative_label(":" + name + "-paths"),
-            ],
-            threads = False,
-            simd = True,
-            args = args,
-            tags = tags + [TAG_WASM_ADVANCED],
-            data = data,
-            defines = defines,
-            local_defines = local_defines,
-            size = test_size,
-            timeout = test_timeout,
-        )
-        wasm_test(
-            name = name + "-wasm-advanced-threads",
-            visibility = visibility,
-            srcs = srcs,
-            copts = copts,
-            conlyopts = conlyopts,
-            cxxopts = cxxopts,
-            linkopts = linkopts,
-            deps = deps + [
-                native.package_relative_label(":" + name + "-paths"),
-            ],
-            threads = True,
-            simd = True,
-            args = args,
-            tags = tags + [TAG_WASM_ADVANCED_THREADS],
-            data = data,
-            defines = defines,
-            local_defines = local_defines,
-            size = test_size,
-            timeout = test_timeout,
-        )
+        if ios:
+            # Note: iOS, Android, and Wasm will internally add default copts, cxxopts, and linkopts
+            ios_mobile_test(
+                name = name + "-ios",
+                visibility = visibility,
+                srcs = srcs,
+                copts = copts,
+                conlyopts = conlyopts,
+                cxxopts = cxxopts,
+                linkopts = linkopts,
+                deps = deps + [
+                    native.package_relative_label(":" + name + "-paths"),
+                ],
+                tags = tags,
+                args = args,
+                data = data,
+                defines = defines,
+                local_defines = local_defines,
+                size = test_size,
+                timeout = test_timeout,
+            )
+
+        if android:
+            android_mobile_test(
+                name = name + "-android",
+                visibility = visibility,
+                srcs = srcs,
+                copts = copts,
+                conlyopts = conlyopts,
+                cxxopts = cxxopts,
+                linkopts = linkopts,
+                deps = deps + [
+                    native.package_relative_label(":" + name + "-paths"),
+                ],
+                tags = tags,
+                args = args,
+                data = data,
+                defines = defines,
+                local_defines = local_defines,
+                deploy_resources = android_deploy_resources,
+                size = test_size,
+                timeout = test_timeout,
+            )
+
+        if wasm_basic:
+            wasm_test(
+                name = name + "-wasm-basic",
+                visibility = visibility,
+                srcs = srcs,
+                copts = copts,
+                conlyopts = conlyopts,
+                cxxopts = cxxopts,
+                linkopts = linkopts,
+                deps = deps + [
+                    native.package_relative_label(":" + name + "-paths"),
+                ],
+                threads = False,
+                simd = False,
+                args = args,
+                tags = tags + [TAG_WASM_BASIC],
+                data = data,
+                defines = defines,
+                local_defines = local_defines,
+                size = test_size,
+                timeout = test_timeout,
+            )
+
+        if wasm_advanced:
+            wasm_test(
+                name = name + "-wasm-advanced",
+                visibility = visibility,
+                srcs = srcs,
+                copts = copts,
+                conlyopts = conlyopts,
+                cxxopts = cxxopts,
+                linkopts = linkopts,
+                deps = deps + [
+                    native.package_relative_label(":" + name + "-paths"),
+                ],
+                threads = False,
+                simd = True,
+                args = args,
+                tags = tags + [TAG_WASM_ADVANCED],
+                data = data,
+                defines = defines,
+                local_defines = local_defines,
+                size = test_size,
+                timeout = test_timeout,
+            )
+
+        if wasm_advanced_threads:
+            wasm_test(
+                name = name + "-wasm-advanced-threads",
+                visibility = visibility,
+                srcs = srcs,
+                copts = copts,
+                conlyopts = conlyopts,
+                cxxopts = cxxopts,
+                linkopts = linkopts,
+                deps = deps + [
+                    native.package_relative_label(":" + name + "-paths"),
+                ],
+                threads = True,
+                simd = True,
+                args = args,
+                tags = tags + [TAG_WASM_ADVANCED_THREADS],
+                data = data,
+                defines = defines,
+                local_defines = local_defines,
+                size = test_size,
+                timeout = test_timeout,
+            )
 
 
 mobile_test = macro(
@@ -211,6 +220,31 @@ mobile_test = macro(
         "host_only": attr.bool(
             default = False,
             doc = "If true, only define the host version of the test.",
+            configurable = False,
+        ),
+        "android": attr.bool(
+            default = True,
+            doc = "Whether to define the Android version of the test.",
+            configurable = False,
+        ),
+        "ios": attr.bool(
+            default = True,
+            doc = "Whether to define the iOS version of the test.",
+            configurable = False,
+        ),
+        "wasm_basic": attr.bool(
+            default = True,
+            doc = "Whether to define the WASM-basic version of the test.",
+            configurable = False,
+        ),
+        "wasm_advanced": attr.bool(
+            default = True,
+            doc = "Whether to define the WASM-advanced version of the test.",
+            configurable = False,
+        ),
+        "wasm_advanced_threads": attr.bool(
+            default = True,
+            doc = "Whether to define the WASM-advanced-threads version of the test.",
             configurable = False,
         ),
         "android_deploy_resources": attr.bool(
