@@ -49,7 +49,9 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
 
     prepare_assets(
         name = name + "-assets",
-        data = data
+        data = data,
+        deps_runfiles = deps,
+        testonly = True,
     )
 
     android_binary(

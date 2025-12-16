@@ -31,7 +31,7 @@
 std::string resolveTestDataPath( std::string_view relativePath )
 {
 #if TARGET_OS_IPHONE
-    auto prefix{ IosBundlePath::currentBundlePath() + "/test-data/" };
+    auto prefix{ IosBundlePath::currentBundlePath() + "/" PKG_NAME "/test-data/" };
 #else
     constexpr auto prefix{ PKG_NAME "/test-data/" };
 #endif

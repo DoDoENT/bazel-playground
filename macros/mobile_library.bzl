@@ -44,6 +44,12 @@ def _mobile_library_common_impl(name, visibility, default_copts_key, **kwargs):
         linkstatic = linkstatic,
         strip_include_prefix = kwargs.pop("strip_include_prefix") or "Include",
         testonly = testonly,
+        aspect_hints = [
+            # ios_mobile_test and ios_mobile_binary know how to handle resources correctly,
+            # so suppress resource handling in cc_library to avoid redundant packaging of
+            # cc_library data.
+            "@rules_apple//apple:suppress_resources",
+        ],
         **kwargs,
     )
 

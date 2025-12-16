@@ -9,12 +9,21 @@ def _prepare_assets_impl(ctx):
                 target_file = file,
             )
             outputs.append(output)
-    return [DefaultInfo(files = depset(outputs))]
+    for dep in ctx.attr.deps_runfiles:
+        for file in dep[DefaultInfo].default_runfiles.files.to_list():
+            output = ctx.actions.declare_file("%s/%s" % (output_dir, file.short_path))
+            ctx.actions.symlink(
+                output = output,
+                target_file = file,
+            )
+            outputs.append(output)
+    return DefaultInfo(files = depset(outputs))
 
 prepare_assets = rule(
     implementation = _prepare_assets_impl,
     attrs = {
         "data": attr.label_list(allow_files = True),
+        "deps_runfiles": attr.label_list(),
     }
 )
 

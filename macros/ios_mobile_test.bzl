@@ -3,6 +3,7 @@ load("@rules_apple//apple:resources.bzl", "apple_resource_group")
 
 load("//macros:mobile_library.bzl", "mobile_library")
 load(":constants.bzl", "TAG_IOS")
+load(":test_utils.bzl", "prepare_assets")
 
 def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, defines, local_defines, size, timeout):
     mobile_library(
@@ -22,9 +23,22 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, lin
         defines = defines,
     )
 
+    prepare_assets(
+        name = name + "-assets",
+        data = data,
+        deps_runfiles = deps,
+        testonly = True,
+    )
+
     apple_resource_group(
         name = name + "-resources",
-        structured_resources = data,
+        structured_resources = [
+            native.package_relative_label(":" + name + "-assets"),
+        ],
+        strip_structured_resources_prefixes = [
+            name + "-assets",
+        ],
+        testonly = True,
     )
 
     # note: to run on device, use --test_arg=--destination=platform=ios_device,id=device-id --ios_multi_cpus=arm64

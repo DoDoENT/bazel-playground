@@ -13,11 +13,12 @@ def _wasm_mobile_binary_impl(name, visibility, data, threads, simd, html_shell, 
     wasm_linkopts = []
     additional_linker_inputs = []
 
-    # TODO: Create XHR file system for data files
     if len(data) > 0:
         prepare_assets(
             name = name + "-assets",
-            data = data
+            data = data,
+            testonly = kwargs.get("testonly", False),
+            deps_runfiles = kwargs.get("deps", []),
         )
         additional_linker_inputs.append(native.package_relative_label(":" + name + "-assets"))
         wasm_linkopts.append("--preload-file")

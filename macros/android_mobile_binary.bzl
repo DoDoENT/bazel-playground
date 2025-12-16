@@ -54,7 +54,9 @@ def _android_mobile_binary_impl(name, visibility, args, **kwargs):
 
     prepare_assets(
         name = name + "-assets",
-        data = data
+        data = data,
+        deps_runfiles = deps,
+        testonly = kwargs.get("testonly"),
     )
 
     android_binary(

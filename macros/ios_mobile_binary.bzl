@@ -3,7 +3,7 @@ load("@rules_apple//apple:resources.bzl", "apple_resource_group")
 
 load(":mobile_library.bzl", "mobile_library")
 load(":constants.bzl", "TAG_IOS")
-load(":test_utils.bzl", "remove_cc_binary_specific_attrs")
+load(":test_utils.bzl", "remove_cc_binary_specific_attrs", "prepare_assets")
 
 def _ios_mobile_binary_impl(name, visibility, args, **kwargs):
     deps = kwargs.pop("deps") or select({
@@ -25,9 +25,23 @@ def _ios_mobile_binary_impl(name, visibility, args, **kwargs):
         **kwargs,
     )
 
+    prepare_assets(
+        name = name + "-assets",
+        data = data,
+        deps_runfiles = deps,
+        testonly = kwargs.get("testonly"),
+    )
+
+
     apple_resource_group(
         name = name + "-resources",
-        structured_resources = data,
+        structured_resources = [
+            native.package_relative_label(":" + name + "-assets"),
+        ],
+        strip_structured_resources_prefixes = [
+            name + "-assets",
+        ],
+        testonly = kwargs.get("testonly"),
     )
 
     ios_application(

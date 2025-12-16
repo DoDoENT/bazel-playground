@@ -43,7 +43,6 @@ mobile_test(
 filegroup(
     name = "test-data",
     srcs = glob(["test-data/**"]),
-    output_group = "",
 )
 
 mobile_test(
