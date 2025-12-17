@@ -17,6 +17,16 @@ def _prepare_assets_impl(ctx):
                 target_file = file,
             )
             outputs.append(output)
+    if len(outputs) == 0 and ctx.attr.ensure_non_empty:
+        # Create an empty placeholder file to ensure the rule always has an output
+        # (this is required for WASM builds that have no data depedendencies and no
+        # deps that provide runfiles)
+        output = ctx.actions.declare_file("%s/.empty" % output_dir)
+        ctx.actions.write(
+            output = output,
+            content = "",
+        )
+        outputs.append(output)
     return DefaultInfo(files = depset(outputs))
 
 prepare_assets = rule(
@@ -24,6 +34,10 @@ prepare_assets = rule(
     attrs = {
         "data": attr.label_list(allow_files = True),
         "deps_runfiles": attr.label_list(),
+        "ensure_non_empty": attr.bool(
+            default = False,
+            doc = "If true, ensures that the output is non-empty by adding a placeholder file if necessary.",
+        ),
     }
 )
 

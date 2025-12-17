@@ -13,16 +13,16 @@ def _wasm_mobile_binary_impl(name, visibility, data, threads, simd, html_shell, 
     wasm_linkopts = []
     additional_linker_inputs = []
 
-    if len(data) > 0:
-        prepare_assets(
-            name = name + "-assets",
-            data = data,
-            testonly = kwargs.get("testonly", False),
-            deps_runfiles = kwargs.get("deps", []),
-        )
-        additional_linker_inputs.append(native.package_relative_label(":" + name + "-assets"))
-        wasm_linkopts.append("--preload-file")
-        wasm_linkopts.append("$(BINDIR)/" + native.package_name() + "/" + name + "-assets@/")
+    prepare_assets(
+        name = name + "-assets",
+        data = data,
+        testonly = kwargs.get("testonly", False),
+        deps_runfiles = kwargs.get("deps", []),
+        ensure_non_empty = True,
+    )
+    additional_linker_inputs.append(native.package_relative_label(":" + name + "-assets"))
+    wasm_linkopts.append("--preload-file")
+    wasm_linkopts.append("$(BINDIR)/" + native.package_name() + "/" + name + "-assets@/")
 
     default_conlyopts = select(resolved_flags_select_dicts["conlyopts"].flat_select_dict)
     default_copts = select(resolved_flags_select_dicts["copts"].flat_select_dict)
@@ -56,6 +56,7 @@ def _wasm_mobile_binary_impl(name, visibility, data, threads, simd, html_shell, 
     outputs = [
         name + "/" + name + "-cc.wasm",
         name + "/" + name + "-cc.js",
+        name + "/" + name + "-cc.data"
     ]
 
     if threads:
@@ -75,9 +76,6 @@ def _wasm_mobile_binary_impl(name, visibility, data, threads, simd, html_shell, 
             out = name + "/" + name + "-cc.html",
             visibility = ["//visibility:private"],
         )
-
-    if data:
-        outputs.append(name + "/" + name + "-cc.data")
 
     cc_binary(
         name = name + "-cc",
