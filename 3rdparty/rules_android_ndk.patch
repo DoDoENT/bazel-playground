@@ -42,7 +42,7 @@ index 22c8076..af6b0c6 100644
          }),
      },
 diff --git a/ndk_cc_toolchain_config.bzl b/ndk_cc_toolchain_config.bzl
-index a449a1f..a7230d7 100644
+index a449a1f..ff3ab22 100644
 --- a/ndk_cc_toolchain_config.bzl
 +++ b/ndk_cc_toolchain_config.bzl
 @@ -348,7 +348,7 @@ def ndk_cc_toolchain_config(
@@ -100,6 +100,15 @@ index a449a1f..a7230d7 100644
                          "-Woverloaded-virtual",
                      ],
                  ),
+@@ -1008,7 +1001,7 @@ def ndk_cc_toolchain_config(
+                 ),
+                 flag_set(
+                     actions = actions.all_link,
+-                    flags = ["-Wl,--icf=safe"],
++                    flags = ["-Wl,--icf=all"],
+                     features = ["opt"],
+                 ),
+ 
 @@ -1074,10 +1067,9 @@ def ndk_cc_toolchain_config(
                      actions = actions.all_compile,
                      flags = [
@@ -123,6 +132,15 @@ index a449a1f..a7230d7 100644
                      ],
                      features = ["ubsan"],
                  ),
+@@ -1370,7 +1360,7 @@ def ndk_cc_toolchain_config(
+                 # Hardcoded library link flags.
+                 flag_set(
+                     actions = actions.all_full_link,
+-                    flags = ["-Wl,--no-undefined"],
++                    flags = ["-Wl,--no-undefined", "-Wl,-z,relro", "-Wl,-z,now"],
+                     features = ["no_undefined"],
+                 ),
+                 flag_set(
 diff --git a/ndk_versions.bzl b/ndk_versions.bzl
 new file mode 100644
 index 0000000..bd801d4

@@ -138,7 +138,6 @@ wasm_mobile_binary = macro(
             allow_files = True,
             default = [],
             doc = "List of data files to be packaged with the binary.",
-            configurable = False,
         ),
         "threads": attr.bool(
             default = False,

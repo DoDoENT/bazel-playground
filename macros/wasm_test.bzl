@@ -92,7 +92,6 @@ wasm_test = macro(
             allow_files = True,
             default = [],
             doc = "Test data files",
-            configurable = False,
         ),
         "defines": attr.string_list(
             default = [],
