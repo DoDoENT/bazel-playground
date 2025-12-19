@@ -28,7 +28,7 @@ def _ios_mobile_binary_impl(name, visibility, args, **kwargs):
     prepare_assets(
         name = name + "-assets",
         data = data,
-        deps_runfiles = deps,
+        deps_runfiles = deps + kwargs.get("srcs", []),
         testonly = kwargs.get("testonly"),
     )
 

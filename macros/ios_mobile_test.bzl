@@ -26,7 +26,7 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, lin
     prepare_assets(
         name = name + "-assets",
         data = data,
-        deps_runfiles = deps,
+        deps_runfiles = deps + srcs,
         testonly = True,
     )
 

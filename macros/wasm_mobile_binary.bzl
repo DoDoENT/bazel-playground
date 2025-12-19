@@ -17,7 +17,7 @@ def _wasm_mobile_binary_impl(name, visibility, data, threads, simd, html_shell, 
         name = name + "-assets",
         data = data,
         testonly = kwargs.get("testonly", False),
-        deps_runfiles = kwargs.get("deps", []),
+        deps_runfiles = kwargs.get("deps", []) + kwargs.get("srcs", []),
         ensure_non_empty = True,
     )
     additional_linker_inputs.append(native.package_relative_label(":" + name + "-assets"))

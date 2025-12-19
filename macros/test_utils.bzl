@@ -33,7 +33,7 @@ prepare_assets = rule(
     implementation = _prepare_assets_impl,
     attrs = {
         "data": attr.label_list(allow_files = True),
-        "deps_runfiles": attr.label_list(),
+        "deps_runfiles": attr.label_list(allow_files = True),
         "ensure_non_empty": attr.bool(
             default = False,
             doc = "If true, ensures that the output is non-empty by adding a placeholder file if necessary.",

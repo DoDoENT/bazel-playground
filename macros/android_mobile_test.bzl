@@ -50,7 +50,7 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
     prepare_assets(
         name = name + "-assets",
         data = data,
-        deps_runfiles = deps,
+        deps_runfiles = deps + srcs,
         testonly = True,
     )
 
