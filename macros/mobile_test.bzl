@@ -108,6 +108,7 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
                 local_defines = local_defines,
                 size = test_size,
                 timeout = test_timeout,
+                target_compatible_with = kwargs.get("target_compatible_with", []),
             )
 
         if android:
@@ -130,6 +131,7 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
                 deploy_resources = android_deploy_resources,
                 size = test_size,
                 timeout = test_timeout,
+                target_compatible_with = kwargs.get("target_compatible_with", []),
             )
 
         if wasm_basic:
@@ -153,6 +155,7 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
                 local_defines = local_defines,
                 size = test_size,
                 timeout = test_timeout,
+                target_compatible_with = kwargs.get("target_compatible_with", []),
             )
 
         if wasm_advanced:
@@ -199,6 +202,7 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
                 local_defines = local_defines,
                 size = test_size,
                 timeout = test_timeout,
+                target_compatible_with = kwargs.get("target_compatible_with", []),
             )
 
 

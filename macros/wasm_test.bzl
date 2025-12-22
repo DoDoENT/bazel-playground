@@ -5,7 +5,7 @@ load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 load(":wasm_mobile_binary.bzl", "wasm_mobile_binary")
 load("//test-support/wasm-test/posluznik-test:posluznik_test.bzl", "posluznik_test")
 
-def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, threads, simd, args, tags, data, defines, local_defines, size, timeout):
+def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, threads, simd, args, tags, data, defines, local_defines, size, timeout, target_compatible_with):
     wasm_mobile_binary(
         name = name + "-bin",
         srcs = srcs,
@@ -40,6 +40,7 @@ def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts,
         args = args,
         size = size,
         timeout = timeout,
+        target_compatible_with = target_compatible_with,
     )
 
 
@@ -110,6 +111,10 @@ wasm_test = macro(
             default = "moderate",
             doc = "Timeout for the test: short, moderate, long, or eternal.",
             configurable = False
+        ),
+        "target_compatible_with": attr.label_list(
+            default = [],
+            doc = "List of constraints the target must be compatible with.",
         ),
     },
 )

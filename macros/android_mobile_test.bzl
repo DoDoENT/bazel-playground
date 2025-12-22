@@ -6,7 +6,7 @@ load(":constants.bzl", "TAG_ANDROID")
 load(":android_build_config.bzl", "android_build_config")
 load(":android_utils.bzl", "SANITIZER_SUPPORT_LIBS")
 
-def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, defines, local_defines, deploy_resources, size, timeout):
+def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, defines, local_defines, deploy_resources, size, timeout, target_compatible_with):
     # Always use the same package name, as this makes it easier to monitor test runs with ADB and it's not
     # possible to run multiple tests simultaneously anyway (they would conflict on the device).
     package_name = "com.example.testrunner"
@@ -94,6 +94,7 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
         tags = tags + [TAG_ANDROID, "exclusive"],  # need to be exclusive to prevent parallel invocation on the same device
         size = size,
         timeout = timeout,
+        target_compatible_with = target_compatible_with,
     )
 
 
@@ -163,6 +164,10 @@ android_mobile_test = macro(
             default = "moderate",
             doc = "Timeout for the test: short, moderate, long, or eternal.",
             configurable = False
+        ),
+        "target_compatible_with": attr.label_list(
+            default = [],
+            doc = "Compatibility constraints for the Android mobile test.",
         ),
     },
 )
