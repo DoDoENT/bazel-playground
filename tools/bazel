@@ -13,18 +13,6 @@ if [[ $OSTYPE == darwin* ]]; then
     bazelrc_lines+=("build --repo_env=XCODE_VERSION=$xcode_version")
     bazelrc_lines+=("build --repo_env=DEVELOPER_DIR=$xcode_path")
     bazelrc_lines+=("common --test_env=DEVELOPER_DIR=$xcode_path")
-elif [[ $OSTYPE == linux* ]]; then
-    # Note:
-    # Bazel hashes compiler based on path, which makes it hit cache between different versions of clang
-    # compilers installed in different dockers. To avoid that, we create a symlink with the version in the name.
-    # For example: /tmp/clang-20.1.8.
-    # Long-term, we should migrate to using toolchains.
-    #               (2025-10-10) (Nenad Mikša)
-
-    clang_version=$(clang --version | head -n1 | sed 's/.*version \([^ ]*\).*/\1/')
-    clang_path=$(which clang)
-    ln -sf $clang_path /tmp/clang-$clang_version
-    bazelrc_lines+=("common --action_env=CC=/tmp/clang-$clang_version")
 fi
 
 printf '%s\n' "${bazelrc_lines[@]}" > automatic.bazelrc

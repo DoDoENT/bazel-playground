@@ -23,6 +23,21 @@ bazel_dep(name = "rules_xcodeproj", version = "3.5.1")
 
 # Apple rules end
 
+# LLVM rules begin
+bazel_dep(name = "toolchains_llvm", version = "1.6.0")
+
+# Configure and register the toolchain.
+llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm")
+llvm.toolchain(
+   llvm_version = "21.1.2",
+)
+
+use_repo(llvm, "llvm_toolchain")
+# use_repo(llvm, "llvm_toolchain_llvm") # if you depend on specific tools in scripts
+
+register_toolchains("@llvm_toolchain//:all")
+# LLVM rules end
+
 # Python rules begin
 
 bazel_dep(name = "rules_python", version = "1.7.0")
