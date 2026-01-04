@@ -28,14 +28,24 @@ bazel_dep(name = "toolchains_llvm", version = "1.6.0")
 
 # Configure and register the toolchain.
 llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm")
+
+LLVM_VERSION = "21.1.2"
+
 llvm.toolchain(
-   llvm_version = "21.1.2",
+    name = "llvm_linux_intel",
+    llvm_version = LLVM_VERSION,
+    exec_os = "linux",
+    exec_arch = "amd64",
+)
+llvm.toolchain(
+    name = "llvm_linux_arm",
+    llvm_version = LLVM_VERSION,
+    exec_os = "linux",
+    exec_arch = "aarch64",
 )
 
-use_repo(llvm, "llvm_toolchain")
-# use_repo(llvm, "llvm_toolchain_llvm") # if you depend on specific tools in scripts
-
-register_toolchains("@llvm_toolchain//:all")
+use_repo(llvm, "llvm_linux_intel", "llvm_linux_arm")
+register_toolchains("@llvm_linux_intel//:all", "@llvm_linux_arm//:all")
 # LLVM rules end
 
 # Python rules begin
