@@ -29,19 +29,25 @@ bazel_dep(name = "toolchains_llvm", version = "1.6.0")
 # Configure and register the toolchain.
 llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm")
 
-LLVM_VERSION = "21.1.2"
+LLVM_VERSION = "21.1.8"
 
 llvm.toolchain(
     name = "llvm_linux_intel",
     llvm_version = LLVM_VERSION,
     exec_os = "linux",
     exec_arch = "amd64",
+    extra_llvm_distributions = {
+        "LLVM-21.1.8-Linux-X64.tar.xz": "b3b7f2801d15d50736acea3c73982994d025b01c2f035b91ae3b49d1b575732b",
+    }
 )
 llvm.toolchain(
     name = "llvm_linux_arm",
     llvm_version = LLVM_VERSION,
     exec_os = "linux",
     exec_arch = "aarch64",
+    extra_llvm_distributions = {
+        "LLVM-21.1.8-Linux-ARM64.tar.xz": "65ce0b329514e5643407db2d02a5bd34bf33d159055dafa82825c8385bd01993",
+    }
 )
 
 use_repo(llvm, "llvm_linux_intel", "llvm_linux_arm")
