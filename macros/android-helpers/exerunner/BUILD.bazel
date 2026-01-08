@@ -7,6 +7,14 @@ filegroup(
 )
 
 filegroup(
+    name = "LinkerVersionScript",
+    srcs = [
+        "cpp/exports.map",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
     name = "ExerunnerJavaSources",
     srcs = [
         "java/com/microblink/exerunner/RunActivity.java",

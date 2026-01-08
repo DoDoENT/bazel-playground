@@ -15,6 +15,9 @@ def _android_mobile_binary_impl(name, visibility, args, **kwargs):
     linkopts = kwargs.pop("linkopts") or select({
         Label("//conditions:default"): [],
     })
+    additional_linker_inputs = kwargs.pop("additional_linker_inputs") or select({
+        Label("//conditions:default"): [],
+    })
     deps = kwargs.pop("deps") or select({
         Label("//conditions:default"): [],
     })
@@ -31,9 +34,13 @@ def _android_mobile_binary_impl(name, visibility, args, **kwargs):
         deps = deps + [
             Label("//macros/android-helpers/exerunner/PathProvider"),
         ],
+        additional_linker_inputs = [
+            Label("//macros/android-helpers/exerunner:LinkerVersionScript"),
+        ] + additional_linker_inputs,
         linkopts = linkopts + [
             "-landroid",
             "-llog",
+            "-Wl,--version-script=$(execpath //macros/android-helpers/exerunner:LinkerVersionScript)",
         ],
         alwayslink = True,
         linkstatic = kwargs.pop("linkstatic") and False,

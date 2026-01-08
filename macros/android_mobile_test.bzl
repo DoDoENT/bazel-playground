@@ -23,9 +23,13 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
         copts = copts,
         conlyopts = conlyopts,
         cxxopts = cxxopts,
+        additional_linker_inputs = [
+            Label("//macros/android-helpers/exerunner:LinkerVersionScript"),
+        ],
         linkopts = linkopts + [
             "-landroid",
             "-llog",
+            "-Wl,--version-script=$(execpath //macros/android-helpers/exerunner:LinkerVersionScript)",
         ],
         testonly = True,
         alwayslink = True,

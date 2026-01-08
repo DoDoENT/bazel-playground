@@ -1,41 +1,40 @@
 load(":clang_flags.bzl", "clang_flags")
 
 def _calculate_emscripten_flags():
-    emscripten_flags = dict(**clang_flags)
-    emscripten_flags["compiler_lto"] = [
-        # need prebuilt cache with LTO support
-        # "-flto=thin",
+    _local_emscripten_flags = dict(**clang_flags)
+    _local_emscripten_flags["compiler_lto"] = [
+        "-flto=thin",
     ]
-    emscripten_flags["linker_lto"] = [
-        # "-flto=thin",
+    _local_emscripten_flags["linker_lto"] = [
+        "-flto=thin",
     ]
-    emscripten_flags["cxx_compiler_exceptions_off"] = emscripten_flags["cxx_compiler_exceptions_off"] + [
+    _local_emscripten_flags["cxx_compiler_exceptions_off"] = _local_emscripten_flags["cxx_compiler_exceptions_off"] + [
         "-s DISABLE_EXCEPTION_CATCHING=1"
     ]
 
-    emscripten_flags["cxx_compiler_exceptions_on"] = emscripten_flags["cxx_compiler_exceptions_on"] + [
+    _local_emscripten_flags["cxx_compiler_exceptions_on"] = _local_emscripten_flags["cxx_compiler_exceptions_on"] + [
         "-s DISABLE_EXCEPTION_CATCHING=0"
     ]
-    emscripten_flags["linker_exceptions_off"] = [
+    _local_emscripten_flags["linker_exceptions_off"] = [
         "-s DISABLE_EXCEPTION_CATCHING=1"
     ]
-    emscripten_flags["linker_exceptions_on"] = [
+    _local_emscripten_flags["linker_exceptions_on"] = [
         "-s DISABLE_EXCEPTION_CATCHING=0"
     ]
-    emscripten_flags["linker_runtime_checks"] = [
+    _local_emscripten_flags["linker_runtime_checks"] = [
         "-s ASSERTIONS=2",
         "-s STACK_OVERFLOW_CHECK=2",
         "-s GL_ASSERTIONS=1",
         "-s SAFE_HEAP=1",
     ]
-    emscripten_flags["linker_release_flags"] = [
+    _local_emscripten_flags["linker_release_flags"] = [
         "-O3",
         "-s ASSERTIONS=0",
         "-s STACK_OVERFLOW_CHECK=0",
         "--closure 1",
         "-s IGNORE_CLOSURE_COMPILER_ERRORS=1",
     ]
-    emscripten_flags["linker_common_flags"] = [
+    _local_emscripten_flags["linker_common_flags"] = [
         "-s MALLOC=emmalloc",
         "-Wno-limited-postlink-optimizations",
         # "-s STRICT=1",
@@ -49,7 +48,7 @@ def _calculate_emscripten_flags():
         "-s DYNAMIC_EXECUTION=0",
         "-s EXPORTED_FUNCTIONS=['_malloc','_main']",
     ]
-    emscripten_flags["compiler_common_flags"] = emscripten_flags["compiler_common_flags"] + [
+    _local_emscripten_flags["compiler_common_flags"] = _local_emscripten_flags["compiler_common_flags"] + [
         "-fno-PIC",
         # "-s STRICT=1",
         "-mmutable-globals",
@@ -59,6 +58,6 @@ def _calculate_emscripten_flags():
         "-msign-ext",
     ]
 
-    return emscripten_flags
+    return _local_emscripten_flags
 
 emscripten_flags = _calculate_emscripten_flags()
