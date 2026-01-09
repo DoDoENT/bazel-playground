@@ -9,6 +9,7 @@ def _calculate_android_flags():
         "-Wl,-z,nocopyreloc",
         "-Wl,--gc-sections",
         "-Wl,--icf=all",
+        "-Wl,-x",
     ]
     _local_android_flags["compiler_runtime_checks"] = []
     _local_android_flags["linker_runtime_checks"] = []
