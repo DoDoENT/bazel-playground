@@ -81,6 +81,8 @@ common:ios_simulator --config=no_sanitizers --ios_multi_cpus=sim_arm64,x86_64 --
 
 common:wasm --test_tag_filters=wasm-basic,wasm-advanced,wasm-advanced-threads --features=optimized_for_size
 
+common:linux --@opencv//:gtk3=@ubuntu-gtk-deps//:gtk3 --@opencv//:with_gtk3=True
+
 # TODO: This needs to be ported to toolchain rules
 common:linux_haswell --copt=-march=haswell --copt=-mtune=haswell --copt=-mavx --copt=-mavx2
 

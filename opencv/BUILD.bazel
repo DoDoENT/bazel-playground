@@ -1,0 +1,13 @@
+load("//macros:mobile_binary.bzl", "mobile_binary" )
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+
+mobile_binary(
+    name = "displayImage",
+    srcs = ["displayImage.cc"],
+    data = [
+        "image.png",
+    ],
+    deps = [
+        "@opencv//:highgui",
+    ],
+)
