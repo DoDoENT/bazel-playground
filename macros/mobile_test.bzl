@@ -7,14 +7,14 @@ load("@rules_cc//cc:cc_test.bzl", "cc_test")
 load(
     ":constants.bzl",
     "TAG_WASM_BASIC",
-    "TAG_WASM_ADVANCED",
-    "TAG_WASM_ADVANCED_THREADS",
+    "TAG_WASM_SIMD",
+    "TAG_WASM_SIMD_THREADS",
     "TAG_HOST",
     "TAG_IOS",
     "TAG_ANDROID",
 )
 
-def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, wasm_basic, wasm_advanced, wasm_advanced_threads, android_deploy_resources, **kwargs):
+def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, wasm_basic, wasm_simd, wasm_simd_threads, android_deploy_resources, **kwargs):
 
     mobile_library(
         name = name + "-paths",
@@ -158,9 +158,9 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
                 target_compatible_with = kwargs.get("target_compatible_with", []),
             )
 
-        if wasm_advanced:
+        if wasm_simd:
             wasm_test(
-                name = name + "-wasm-advanced",
+                name = name + "-wasm-simd",
                 visibility = visibility,
                 srcs = srcs,
                 copts = copts,
@@ -173,7 +173,7 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
                 threads = False,
                 simd = True,
                 args = args,
-                tags = tags + [TAG_WASM_ADVANCED],
+                tags = tags + [TAG_WASM_SIMD],
                 data = data,
                 defines = defines,
                 local_defines = local_defines,
@@ -181,9 +181,9 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
                 timeout = test_timeout,
             )
 
-        if wasm_advanced_threads:
+        if wasm_simd_threads:
             wasm_test(
-                name = name + "-wasm-advanced-threads",
+                name = name + "-wasm-simd-threads",
                 visibility = visibility,
                 srcs = srcs,
                 copts = copts,
@@ -196,7 +196,7 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
                 threads = True,
                 simd = True,
                 args = args,
-                tags = tags + [TAG_WASM_ADVANCED_THREADS],
+                tags = tags + [TAG_WASM_SIMD_THREADS],
                 data = data,
                 defines = defines,
                 local_defines = local_defines,
@@ -240,14 +240,14 @@ mobile_test = macro(
             doc = "Whether to define the WASM-basic version of the test.",
             configurable = False,
         ),
-        "wasm_advanced": attr.bool(
+        "wasm_simd": attr.bool(
             default = True,
-            doc = "Whether to define the WASM-advanced version of the test.",
+            doc = "Whether to define the WASM-simd version of the test.",
             configurable = False,
         ),
-        "wasm_advanced_threads": attr.bool(
+        "wasm_simd_threads": attr.bool(
             default = True,
-            doc = "Whether to define the WASM-advanced-threads version of the test.",
+            doc = "Whether to define the WASM-simd-threads version of the test.",
             configurable = False,
         ),
         "android_deploy_resources": attr.bool(
@@ -281,7 +281,7 @@ def create_transitioned_test_rule(transition):
         test = True,
     )
 
-def apply_to_all_generated_tests(test_names, func, *, host=True, ios=True, android=True, wasm_basic=True, wasm_advanced=True, wasm_advanced_threads=True, additional_tags=[]):
+def apply_to_all_generated_tests(test_names, func, *, host=True, ios=True, android=True, wasm_basic=True, wasm_simd=True, wasm_simd_threads=True, additional_tags=[]):
     for test_name in test_names:
         if host:
             func(test_name, [TAG_HOST] + additional_tags)
@@ -291,7 +291,7 @@ def apply_to_all_generated_tests(test_names, func, *, host=True, ios=True, andro
             func(test_name + "-android", [TAG_ANDROID, "exclusive"] + additional_tags)
         if wasm_basic:
             func(test_name + "-wasm-basic", [TAG_WASM_BASIC] + additional_tags)
-        if wasm_advanced:
-            func(test_name + "-wasm-advanced", [TAG_WASM_ADVANCED] + additional_tags)
-        if wasm_advanced_threads:
-            func(test_name + "-wasm-advanced-threads", [TAG_WASM_ADVANCED_THREADS] + additional_tags)
+        if wasm_simd:
+            func(test_name + "-wasm-simd", [TAG_WASM_SIMD] + additional_tags)
+        if wasm_simd_threads:
+            func(test_name + "-wasm-simd-threads", [TAG_WASM_SIMD_THREADS] + additional_tags)

@@ -4,8 +4,8 @@ TAG_HOST = "host"
 TAG_IOS = "ios"
 TAG_ANDROID = "android"
 TAG_WASM_BASIC = "wasm-basic"
-TAG_WASM_ADVANCED = "wasm-advanced"
-TAG_WASM_ADVANCED_THREADS = "wasm-advanced-threads"
+TAG_WASM_SIMD = "wasm-simd"
+TAG_WASM_SIMD_THREADS = "wasm-simd-threads"
 TAG_STARLARK = "starlark"
 
 # Use this tag on tests that require multiple CPU cores to prevent server overcomit

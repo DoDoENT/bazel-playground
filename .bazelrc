@@ -79,7 +79,7 @@ mobile-install --mode=skylark --mobile_install_aspect=@rules_android//mobile_ins
 common:ios_device --config=no_sanitizers --ios_multi_cpus=arm64 --test_tag_filters=ios
 common:ios_simulator --config=no_sanitizers --ios_multi_cpus=sim_arm64,x86_64 --test_tag_filters=ios
 
-common:wasm --test_tag_filters=wasm-basic,wasm-advanced,wasm-advanced-threads --features=optimized_for_size
+common:wasm --test_tag_filters=wasm-basic,wasm-simd,wasm-simd-threads --features=optimized_for_size
 
 common:linux --@opencv//:gtk3=@ubuntu-gtk-deps//:gtk3 --@opencv//:with_gtk3=True
 

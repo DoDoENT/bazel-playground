@@ -1,8 +1,8 @@
 load(
     ":constants.bzl",
     "TAG_WASM_BASIC",
-    "TAG_WASM_ADVANCED",
-    "TAG_WASM_ADVANCED_THREADS",
+    "TAG_WASM_SIMD",
+    "TAG_WASM_SIMD_THREADS",
     "TAG_IOS",
     "TAG_ANDROID",
     "TAG_HOST",
@@ -30,13 +30,13 @@ def _define_test_suites_impl(name, visibility):
     )
 
     native.test_suite(
-        name = TAG_WASM_ADVANCED,
-        tags = [TAG_WASM_ADVANCED],
+        name = TAG_WASM_SIMD,
+        tags = [TAG_WASM_SIMD],
     )
 
     native.test_suite(
-        name = TAG_WASM_ADVANCED_THREADS,
-        tags = [TAG_WASM_ADVANCED_THREADS],
+        name = TAG_WASM_SIMD_THREADS,
+        tags = [TAG_WASM_SIMD_THREADS],
     )
 
 define_test_suites = macro(
@@ -75,21 +75,21 @@ def _define_subpackage_test_suites_impl(name, visibility, subpackages):
     )
 
     native.test_suite(
-        name = TAG_WASM_ADVANCED,
-        tests = collect_subpackages(TAG_WASM_ADVANCED),
+        name = TAG_WASM_SIMD,
+        tests = collect_subpackages(TAG_WASM_SIMD),
     )
 
     native.test_suite(
-        name = TAG_WASM_ADVANCED_THREADS,
-        tests = collect_subpackages(TAG_WASM_ADVANCED_THREADS),
+        name = TAG_WASM_SIMD_THREADS,
+        tests = collect_subpackages(TAG_WASM_SIMD_THREADS),
     )
 
     native.test_suite(
         name = "wasm-all",
         tests =[
             native.package_relative_label(":" + TAG_WASM_BASIC),
-            native.package_relative_label(":" + TAG_WASM_ADVANCED),
-            native.package_relative_label(":" + TAG_WASM_ADVANCED_THREADS),
+            native.package_relative_label(":" + TAG_WASM_SIMD),
+            native.package_relative_label(":" + TAG_WASM_SIMD_THREADS),
         ],
     )
 

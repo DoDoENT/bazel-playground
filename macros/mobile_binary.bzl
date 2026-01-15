@@ -11,8 +11,8 @@ load(":ios_mobile_binary.bzl", "ios_mobile_binary")
 load(
     ":constants.bzl",
     "TAG_WASM_BASIC",
-    "TAG_WASM_ADVANCED",
-    "TAG_WASM_ADVANCED_THREADS",
+    "TAG_WASM_SIMD",
+    "TAG_WASM_SIMD_THREADS",
     "TAG_HOST",
 )
 
@@ -161,7 +161,7 @@ def _mobile_binary_impl(name, visibility, data, args, host_only, static_cxx_runt
             **kwargs
         )
         wasm_mobile_binary(
-            name = name + "-wasm-advanced",
+            name = name + "-wasm-simd",
             visibility = visibility,
             srcs = srcs,
             copts = copts,
@@ -181,7 +181,7 @@ def _mobile_binary_impl(name, visibility, data, args, host_only, static_cxx_runt
             **kwargs
         )
         wasm_mobile_binary(
-            name = name + "-wasm-advanced-threads",
+            name = name + "-wasm-simd-threads",
             visibility = visibility,
             srcs = srcs,
             copts = copts,
