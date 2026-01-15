@@ -133,7 +133,7 @@ ios_mobile_test = macro(
             configurable = False
         ),
         "target_compatible_with": attr.label_list(
-            default = [Label("@platforms//os:ios")],
+            default = [],
             doc = "Compatibility constraints for the iOS mobile test.",
         ),
     },

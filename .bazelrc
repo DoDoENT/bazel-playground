@@ -17,7 +17,7 @@ common --disk_cache=~/.bazel-cache/build --experimental_disk_cache_gc_max_size=2
 common:offline --remote_cache=
 
 # Build flags
-common --copt=-g --strip=never --verbose_failures --copt=-fvisibility=hidden
+common --copt=-g --strip=never --verbose_failures --copt=-fvisibility=hidden --cxxopt=-fvisibility-inlines-hidden
 
 # Treat external include paths as system includes to avoid warnings from 3rd party code
 # disabled due to issue: https://github.com/yuyawk/rules_build_error/issues/145

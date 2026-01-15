@@ -4,7 +4,7 @@ module(name = "playground")
 
 # Note: This needs to be before rules_cc in order to correctly configure the C++ toolchain.
 # See here why: https://www.smileykeith.com/2025/09/21/understanding-apple-debug-info/
-bazel_dep(name = "apple_support", version = "2.0.0")
+bazel_dep(name = "apple_support", version = "2.1.0")
 bazel_dep(name = "rules_cc", version = "0.2.16")
 bazel_dep(name = "aspect_bazel_lib", version = "2.22.0")
 bazel_dep(name = "bazel_skylib", version = "1.9.0")
@@ -112,8 +112,8 @@ use_repo(android_ndk_repository_extension, "androidndk")
 # Instead, register it with --extra_toolchains=@androidndk//:all from commandline
 # register_toolchains("@androidndk//:all")
 
-bazel_dep(name = "rules_java", version = "8.15.2")  # Note: Needs to be pinned to v8.15.2 due to issue: https://github.com/bazelbuild/rules_android/issues/410
-bazel_dep(name = "rules_android", version = "0.6.6")
+bazel_dep(name = "rules_java", version = "9.3.0")
+bazel_dep(name = "rules_android", version = "0.7.0")
 
 remote_android_extensions = use_extension("@rules_android//bzlmod_extensions:android_extensions.bzl", "remote_android_tools_extensions")
 use_repo(remote_android_extensions, "android_tools")
