@@ -13,6 +13,8 @@ common --noincompatible_auto_exec_groups
 common:remote --remote_cache=grpc://your.remote.cache:9092 --remote_cache_compression=true --guard_against_concurrent_changes=full
 common --disk_cache=~/.bazel-cache/build --experimental_disk_cache_gc_max_size=20G
 
+common --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+
 # Config that doesn't use remote cache - for offline builds
 common:offline --remote_cache=
 
@@ -42,6 +44,8 @@ common --test_tag_filters=host,starlark
 # See: https://www.smileykeith.com/2025/09/21/understanding-apple-debug-info/
 build:macos --remote_download_regex='.*\.(a|lo|o)$'
 build:macos --apple_generate_dsym --output_groups=+dsyms
+common:macos --xcode_version_config=//xcode:host
+
 
 # Bazel documentation on coverage: https://bazel.build/configure/coverage
 # export GCOV=llvm-profdata
@@ -101,5 +105,3 @@ common:ci --show_progress_rate_limit=10 --show_progress=true --test_output=error
 
 # Our repo is not large enough to need terse output, so we use short output
 test:ci --test_summary="short"
-
-import automatic.bazelrc

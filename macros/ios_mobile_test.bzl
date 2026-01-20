@@ -56,7 +56,7 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, lin
         minimum_os_version = "15.0",
         provisioning_profile = Label("//test-support/ios-test:xcode_profile"),
         test_host = Label("//test-support/ios-test/GoogleTestHost:GoogleTestHost"),
-        tags = tags + [TAG_IOS, "exclusive"], # need to be exclusive to prevent parallel invocation on the same device
+        tags = tags + [TAG_IOS, "exclusive", "no-remote-exec"], # need to be exclusive to prevent parallel invocation on the same device
         resources = [
             native.package_relative_label(":" + name + "-resources")
         ],

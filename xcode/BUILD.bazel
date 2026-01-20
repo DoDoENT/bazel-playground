@@ -53,3 +53,31 @@ xcodeproj(
         "@platforms//os:macos",
     ],
 )
+
+##### Xcode versions ######
+
+# based on instructions from here: https://www.smileykeith.com/2021/03/08/locking-xcode-in-bazel/
+# also note: https://blog.bazel.build/2020/02/26/xcode-selection.html
+# additionally: https://bazel.build/docs/bazel-and-apple#xcode-selection
+
+xcode_version(
+    name = "version26_2_0_17C52",
+    version = "26.2.0.17C52",
+    aliases = ["26.2.0.17C52", "26.2", "26.2.0", "17C52"],
+    default_ios_sdk_version = "26.2",
+    default_macos_sdk_version = "26.2",
+)
+
+available_xcodes(
+    name = "available_xcodes",
+    versions = [
+        ":version26_2_0_17C52",
+    ],
+    default = ":version26_2_0_17C52",
+)
+
+xcode_config(
+    name = "host",
+    local_versions = ":available_xcodes",
+    remote_versions = ":available_xcodes",
+)

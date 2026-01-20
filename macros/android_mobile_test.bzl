@@ -95,7 +95,7 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
         name = name,
         visibility = visibility,
         test_app = native.package_relative_label(":" + name + "-test-app"),
-        tags = tags + [TAG_ANDROID, "exclusive"],  # need to be exclusive to prevent parallel invocation on the same device
+        tags = tags + [TAG_ANDROID, "exclusive", "no-remote-exec"],  # need to be exclusive to prevent parallel invocation on the same device
         size = size,
         timeout = timeout,
         target_compatible_with = target_compatible_with,
