@@ -10,4 +10,16 @@ mobile_binary(
     deps = [
         "@opencv//:highgui",
     ],
+    host_only = True,
+)
+
+mobile_binary(
+    name = "cameraTest",
+    srcs = [
+        "cameraTest.cc",
+    ],
+    deps = [
+        "@opencv//:highgui",
+    ],
+    host_only = True,
 )
