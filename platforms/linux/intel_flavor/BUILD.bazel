@@ -1,0 +1,18 @@
+constraint_setting(
+    name = "intel_flavor",
+    visibility = ["//visibility:public"],
+)
+
+constraint_value(
+    name = "generic",
+    constraint_setting = ":intel_flavor",
+    visibility = ["//visibility:public"],
+)
+
+constraint_value(
+    name = "haswell",
+    constraint_setting = ":intel_flavor",
+    visibility = ["//visibility:public"],
+)
+
+

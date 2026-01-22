@@ -15,6 +15,10 @@ bazel_dep(name = "rules_license", version = "1.0.0")
 
 # Bazel rules end
 
+# Host platform detection
+host_platform = use_extension("//platforms:extension.bzl", "host_platform")
+use_repo(host_platform, "host_platform")
+
 # Apple rules begin
 
 bazel_dep(name = "rules_apple", version = "4.3.3")
@@ -113,7 +117,8 @@ use_repo(android_ndk_repository_extension, "androidndk")
 # register_toolchains("@androidndk//:all")
 
 bazel_dep(name = "rules_java", version = "9.3.0")
-bazel_dep(name = "rules_android", version = "0.7.0")
+bazel_dep(name = "rules_android", version = "0.7.1")
+bazel_dep(name = "protobuf", version = "33.4")  # Note: Needs to be pinned to the same version used by the rules_android. See this comment: https://github.com/bazelbuild/rules_android/issues/435#issuecomment-3753825840
 
 remote_android_extensions = use_extension("@rules_android//bzlmod_extensions:android_extensions.bzl", "remote_android_tools_extensions")
 use_repo(remote_android_extensions, "android_tools")

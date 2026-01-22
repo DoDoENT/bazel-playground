@@ -4,6 +4,10 @@ platform(
         "@platforms//cpu:wasm32",
         "@platforms//os:emscripten",
     ],
+    flags = [
+        "--features=-simd",
+        "--features=-use_pthreads",
+    ],
 )
 
 platform(
@@ -14,6 +18,7 @@ platform(
     ],
     flags = [
         "--features=simd",
+        "--features=-use_pthreads",
     ],
 )
 
