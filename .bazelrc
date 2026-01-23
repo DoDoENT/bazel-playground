@@ -135,4 +135,7 @@ test:ci --test_summary="short"
 # For coverage builds, don't use remote execution (as coverage data needs to be merged locally)
 coverage --spawn_strategy=local --remote_download_outputs=all
 
+# Also disable remote executor, but allow remote cache (otherwise `common:ci`
+#coverage --remote_executor= --remote_cache=grpc://your.remote.executor:8980
+
 import automatic.bazelrc
