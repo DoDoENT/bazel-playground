@@ -133,8 +133,8 @@ common:ci --experimental_scale_timeouts=5.0 --http_timeout_scaling=5.0
 test:ci --test_summary="short"
 
 # For coverage builds, don't use remote execution (as coverage data needs to be merged locally)
-coverage --spawn_strategy=local --remote_download_outputs=all
-coverage:ci --spawn_strategy=local --remote_download_outputs=all
+coverage --spawn_strategy=local --remote_download_outputs=toplevel
+coverage:ci --spawn_strategy=local --remote_download_outputs=toplevel
 
 # Also disable remote executor, but allow remote cache (otherwise `common:ci` re-enables both)
 #coverage --remote_executor= --remote_cache=grpc://your.remote.executor:8980
