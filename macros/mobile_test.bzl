@@ -12,6 +12,7 @@ load(
     "TAG_HOST",
     "TAG_IOS",
     "TAG_ANDROID",
+    "TAG_MULTI_CPU",
 )
 
 def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, wasm_basic, wasm_simd, wasm_simd_threads, android_deploy_resources, **kwargs):
@@ -65,6 +66,8 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
     test_size = kwargs.pop("size")
     test_timeout = kwargs.pop("timeout")
 
+    tags_without_multi_cpu = [tag for tag in tags if tag != TAG_MULTI_CPU]
+
     cc_test(
         name = name,
         srcs = srcs,
@@ -101,7 +104,7 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
                 deps = deps + [
                     native.package_relative_label(":" + name + "-paths"),
                 ],
-                tags = tags,
+                tags = tags_without_multi_cpu,
                 args = args,
                 data = data,
                 defines = defines,
@@ -123,7 +126,7 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
                 deps = deps + [
                     native.package_relative_label(":" + name + "-paths"),
                 ],
-                tags = tags,
+                tags = tags_without_multi_cpu,
                 args = args,
                 data = data,
                 defines = defines,
@@ -149,7 +152,7 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
                 threads = False,
                 simd = False,
                 args = args,
-                tags = tags + [TAG_WASM_BASIC],
+                tags = tags_without_multi_cpu + [TAG_WASM_BASIC],
                 data = data,
                 defines = defines,
                 local_defines = local_defines,
@@ -173,7 +176,7 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
                 threads = False,
                 simd = True,
                 args = args,
-                tags = tags + [TAG_WASM_SIMD],
+                tags = tags_without_multi_cpu + [TAG_WASM_SIMD],
                 data = data,
                 defines = defines,
                 local_defines = local_defines,
