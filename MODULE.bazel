@@ -28,6 +28,22 @@ bazel_dep(name = "rules_xcodeproj", version = "3.5.1")
 # Apple rules end
 
 # LLVM rules begin
+
+# TODO: Much more convenient than toolchains_llvm, but:
+#  - no support for sanitizers yet (on roadmap)
+#  - no support for choosing LLVM version yet
+# bazel_dep(name = "toolchains_llvm_bootstrapped", version = "0.4.1")
+#
+# llvm_toolchains = use_extension("@toolchains_llvm_bootstrapped//toolchain/extension:llvm.bzl", "llvm")
+#
+# llvm_toolchains.exec(arch = "x86_64", os = "linux")
+# llvm_toolchains.exec(arch = "aarch64", os = "linux")
+# llvm_toolchains.target(arch = "x86_64", os = "linux")
+# llvm_toolchains.target(arch = "aarch64", os = "linux")
+#
+# use_repo(llvm_toolchains, "llvm_toolchains")
+# register_toolchains("@toolchains_llvm_bootstrapped//toolchain:all")
+
 bazel_dep(name = "toolchains_llvm", version = "1.6.0")
 
 # Configure and register the toolchain.
@@ -211,16 +227,16 @@ http_archive(
     build_file = "//opencv:ubuntu-gtk-deps.BUILD.bazel",
 )
 
-sysroot = use_repo_rule("@toolchains_llvm//toolchain:sysroot.bzl", "sysroot")
-
-sysroot(
-    name = "org_chromium_sysroot_linux_x64",
-    sha256 = "84656a6df544ecef62169cfe3ab6e41bb4346a62d3ba2a045dc5a0a2ecea94a3",
-    urls = ["https://commondatastorage.googleapis.com/chrome-linux-sysroot/toolchain/2202c161310ffde63729f29d27fe7bb24a0bc540/debian_stretch_amd64_sysroot.tar.xz"],
-)
-
-sysroot(
-    name = "org_chromium_sysroot_linux_arm64",
-    sha256 = "84656a6df544ecef62169cfe3ab6e41bb4346a62d3ba2a045dc5a0a2ecea94a3",
-    urls = ["https://commondatastorage.googleapis.com/chrome-linux-sysroot/toolchain/2202c161310ffde63729f29d27fe7bb24a0bc540/debian_stretch_arm64_sysroot.tar.xz"],
-)
+# sysroot = use_repo_rule("@toolchains_llvm//toolchain:sysroot.bzl", "sysroot")
+#
+# sysroot(
+#     name = "org_chromium_sysroot_linux_x64",
+#     sha256 = "84656a6df544ecef62169cfe3ab6e41bb4346a62d3ba2a045dc5a0a2ecea94a3",
+#     urls = ["https://commondatastorage.googleapis.com/chrome-linux-sysroot/toolchain/2202c161310ffde63729f29d27fe7bb24a0bc540/debian_stretch_amd64_sysroot.tar.xz"],
+# )
+#
+# sysroot(
+#     name = "org_chromium_sysroot_linux_arm64",
+#     sha256 = "84656a6df544ecef62169cfe3ab6e41bb4346a62d3ba2a045dc5a0a2ecea94a3",
+#     urls = ["https://commondatastorage.googleapis.com/chrome-linux-sysroot/toolchain/2202c161310ffde63729f29d27fe7bb24a0bc540/debian_stretch_arm64_sysroot.tar.xz"],
+# )
