@@ -32,116 +32,113 @@ bazel_dep(name = "rules_xcodeproj", version = "3.5.1")
 # TODO: Much more convenient than toolchains_llvm, but:
 #  - no support for sanitizers yet (on roadmap; setting --@toolchains_llvm_bootstrapped//config:ubsan=True, does not help)
 #  - no support for choosing LLVM version yet
-# bazel_dep(name = "toolchains_llvm_bootstrapped", version = "0.4.1")
+bazel_dep(name = "toolchains_llvm_bootstrapped", version = "0.4.1")
+
+llvm_toolchains = use_extension("@toolchains_llvm_bootstrapped//toolchain/extension:llvm.bzl", "llvm")
+
+llvm_toolchains.exec(arch = "x86_64", os = "linux")
+llvm_toolchains.exec(arch = "aarch64", os = "linux")
+llvm_toolchains.target(arch = "x86_64", os = "linux")
+llvm_toolchains.target(arch = "aarch64", os = "linux")
+
+use_repo(llvm_toolchains, "llvm_toolchains")
+register_toolchains("@llvm_toolchains//:all")
+
+# bazel_dep(name = "toolchains_llvm", version = "1.6.0")
+# bazel_dep(name = "sysroot-noble-aarch64")
+# archive_override(
+#     module_name = "sysroot-noble-aarch64",
+#     integrity = "sha256-+mJ5891mJMVnMHDX+dixdD0Z8uEId5SBau2XjwFvFJU=",
+#     urls = [
+#         "https://github.com/microblink/bazel-cc-sysroot-generator/releases/download/v0.1/sysroot-noble-aarch64.tar.xz",
+#     ],
+# )
 #
-# llvm_toolchains = use_extension("@toolchains_llvm_bootstrapped//toolchain/extension:llvm.bzl", "llvm")
+# bazel_dep(name = "sysroot-noble-x86_64")
+# archive_override(
+#     module_name = "sysroot-noble-x86_64",
+#     integrity = "sha256-25OeIr2YGIKxXuYvjcxZzQa7gE1qapKC3OZz6/9Fjhw=",
+#     urls = [
+#         "https://github.com/microblink/bazel-cc-sysroot-generator/releases/download/v0.1/sysroot-noble-x86_64.tar.xz",
+#     ],
+# )
 #
-# llvm_toolchains.exec(arch = "x86_64", os = "linux")
-# llvm_toolchains.exec(arch = "aarch64", os = "linux")
-# llvm_toolchains.exec(arch = "aarch64", os = "darwin")
-# llvm_toolchains.target(arch = "x86_64", os = "linux")
-# llvm_toolchains.target(arch = "aarch64", os = "linux")
+# # Configure and register the toolchain.
+# llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm")
 #
-# use_repo(llvm_toolchains, "llvm_toolchains")
-# register_toolchains("@toolchains_llvm_bootstrapped//toolchain:all")
-
-bazel_dep(name = "toolchains_llvm", version = "1.6.0")
-
-bazel_dep(name = "sysroot-noble-aarch64")
-archive_override(
-    module_name = "sysroot-noble-aarch64",
-    integrity = "sha256-+mJ5891mJMVnMHDX+dixdD0Z8uEId5SBau2XjwFvFJU=",
-    urls = [
-        "https://github.com/microblink/bazel-cc-sysroot-generator/releases/download/v0.1/sysroot-noble-aarch64.tar.xz",
-    ],
-)
-
-bazel_dep(name = "sysroot-noble-x86_64")
-archive_override(
-    module_name = "sysroot-noble-x86_64",
-    integrity = "sha256-25OeIr2YGIKxXuYvjcxZzQa7gE1qapKC3OZz6/9Fjhw=",
-    urls = [
-        "https://github.com/microblink/bazel-cc-sysroot-generator/releases/download/v0.1/sysroot-noble-x86_64.tar.xz",
-    ],
-)
-
-# Configure and register the toolchain.
-llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm")
-
-LLVM_VERSION = "21.1.8"
-
-llvm.toolchain(
-    name = "llvm_linux_intel",
-    llvm_version = LLVM_VERSION,
-    exec_os = "linux",
-    exec_arch = "amd64",
-    extra_llvm_distributions = {
-        "LLVM-21.1.8-Linux-X64.tar.xz": "b3b7f2801d15d50736acea3c73982994d025b01c2f035b91ae3b49d1b575732b",
-    }
-)
-llvm.sysroot(
-    name = "llvm_linux_intel",
-    label = "@sysroot-noble-x86_64//sysroot:directory",
-    targets = ["linux-x86_64"]
-)
-
-use_repo(llvm, "llvm_linux_intel", "llvm_linux_intel_llvm")
-
-llvm.toolchain(
-    name = "llvm_linux_intel_haswell",
-    llvm_version = LLVM_VERSION,
-    extra_compile_flags = {
-        "": [
-            "-march=haswell",
-            "-mtune=haswell",
-            "-mavx",
-            "-mavx2",
-        ],
-    },
-)
-# Reuse the toolchain root from llvm_linux_intel to avoid downloading LLVM twice
-llvm.toolchain_root(
-    name = "llvm_linux_intel_haswell",
-    label = "@llvm_linux_intel_llvm//:BUILD",
-)
-llvm.extra_target_compatible_with(
-    name = "llvm_linux_intel_haswell",
-    constraints = [
-        "//platforms/linux/intel_flavor:haswell",
-    ],
-)
-llvm.sysroot(
-    name = "llvm_linux_intel_haswell",
-    label = "@sysroot-noble-x86_64//sysroot:directory",
-    targets = ["linux-x86_64"]
-)
-use_repo(llvm, "llvm_linux_intel_haswell")
-
-llvm.toolchain(
-    name = "llvm_linux_arm",
-    llvm_version = LLVM_VERSION,
-    exec_os = "linux",
-    exec_arch = "aarch64",
-    extra_llvm_distributions = {
-        "LLVM-21.1.8-Linux-ARM64.tar.xz": "65ce0b329514e5643407db2d02a5bd34bf33d159055dafa82825c8385bd01993",
-    }
-)
-
-llvm.sysroot(
-    name = "llvm_linux_arm",
-    label = "@sysroot-noble-aarch64//sysroot:directory",
-    targets = ["linux-aarch64"]
-)
-
-use_repo(llvm, "llvm_linux_arm")
-
-# Haswell needs to be registered first, as it is more specific than the generic intel toolchain
-register_toolchains(
-    "@llvm_linux_intel_haswell//:all",
-    "@llvm_linux_intel//:all",
-    "@llvm_linux_arm//:all",
-)
-
+# LLVM_VERSION = "21.1.8"
+#
+# llvm.toolchain(
+#     name = "llvm_linux_intel",
+#     llvm_version = LLVM_VERSION,
+#     exec_os = "linux",
+#     exec_arch = "amd64",
+#     extra_llvm_distributions = {
+#         "LLVM-21.1.8-Linux-X64.tar.xz": "b3b7f2801d15d50736acea3c73982994d025b01c2f035b91ae3b49d1b575732b",
+#     }
+# )
+# llvm.sysroot(
+#     name = "llvm_linux_intel",
+#     label = "@sysroot-noble-x86_64//sysroot:directory",
+#     targets = ["linux-x86_64"]
+# )
+#
+# use_repo(llvm, "llvm_linux_intel", "llvm_linux_intel_llvm")
+#
+# llvm.toolchain(
+#     name = "llvm_linux_intel_haswell",
+#     llvm_version = LLVM_VERSION,
+#     extra_compile_flags = {
+#         "": [
+#             "-march=haswell",
+#             "-mtune=haswell",
+#             "-mavx",
+#             "-mavx2",
+#         ],
+#     },
+# )
+# # Reuse the toolchain root from llvm_linux_intel to avoid downloading LLVM twice
+# llvm.toolchain_root(
+#     name = "llvm_linux_intel_haswell",
+#     label = "@llvm_linux_intel_llvm//:BUILD",
+# )
+# llvm.extra_target_compatible_with(
+#     name = "llvm_linux_intel_haswell",
+#     constraints = [
+#         "//platforms/linux/intel_flavor:haswell",
+#     ],
+# )
+# llvm.sysroot(
+#     name = "llvm_linux_intel_haswell",
+#     label = "@sysroot-noble-x86_64//sysroot:directory",
+#     targets = ["linux-x86_64"]
+# )
+# use_repo(llvm, "llvm_linux_intel_haswell")
+#
+# llvm.toolchain(
+#     name = "llvm_linux_arm",
+#     llvm_version = LLVM_VERSION,
+#     exec_os = "linux",
+#     exec_arch = "aarch64",
+#     extra_llvm_distributions = {
+#         "LLVM-21.1.8-Linux-ARM64.tar.xz": "65ce0b329514e5643407db2d02a5bd34bf33d159055dafa82825c8385bd01993",
+#     }
+# )
+#
+# llvm.sysroot(
+#     name = "llvm_linux_arm",
+#     label = "@sysroot-noble-aarch64//sysroot:directory",
+#     targets = ["linux-aarch64"]
+# )
+#
+# use_repo(llvm, "llvm_linux_arm")
+#
+# # Haswell needs to be registered first, as it is more specific than the generic intel toolchain
+# register_toolchains(
+#     "@llvm_linux_intel_haswell//:all",
+#     "@llvm_linux_intel//:all",
+#     "@llvm_linux_arm//:all",
+# )
 # LLVM rules end
 # Python rules begin
 

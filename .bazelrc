@@ -64,7 +64,7 @@ common --copt=-g --strip=never --verbose_failures --copt=-fvisibility=hidden --c
 common --java_runtime_version=remotejdk_21 --tool_java_runtime_version=remotejdk_21
 
 # Build features
-common --features=asan --features=ubsan
+# common --features=asan --features=ubsan
 
 # disabled as UBSAN compilation causes clang to allocate 30GB of RAM during the build, crashing the system
 # also, ASAN does not work with SAFE_HEAP
