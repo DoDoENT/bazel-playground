@@ -7,8 +7,9 @@ platform(
         "//platforms/linux/intel_flavor:generic",
     ],
     exec_properties = {
-        "Arch": "x86_64",
+        # "Arch": "x86_64",
         "OSFamily": "linux",
+        "container-image": "docker://docker.io/microblinkdev/bazel-devenv:latest",
     },
     visibility = ["//visibility:public"],
 )
@@ -20,8 +21,9 @@ platform(
         "@platforms//os:linux",
     ],
     exec_properties = {
-        "Arch": "aarch64",
+        # "Arch": "aarch64",
         "OSFamily": "linux",
+        "container-image": "docker://docker.io/microblinkdev/bazel-devenv:latest",
     },
     visibility = ["//visibility:public"],
 )

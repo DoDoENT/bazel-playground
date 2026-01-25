@@ -10,21 +10,19 @@ common --incompatible_autoload_externally="+@rules_python,+@rules_android"
 common --noincompatible_auto_exec_groups
 # Cache options
 
-common:remote --guard_against_concurrent_changes=full
-
+build --bes_results_url=https://app.buildbuddy.io/invocation/
+build --bes_backend=grpcs://remote.buildbuddy.io
+common --remote_timeout=10m
+common --remote_executor=grpcs://remote.buildbuddy.io --remote_local_fallback=true
+common --remote_cache_compression=true
 # Give Bazel enough 'slots' to actually saturate the remote executor
-common:remote --jobs=200
+common --jobs=100
 
 # Enable Dynamic Execution (Runs local and remote in parallel, takes fastest)
-common:remote --spawn_strategy=dynamic
+common --spawn_strategy=dynamic
 
 # Don't let local actions 'lock' the output if a remote action finishes first
-common:remote --experimental_local_lockfree_output
-
-common:remote --remote_executor=grpc://your.remote.executor:8980 --remote_local_fallback=true
-
-common:remote --bes_backend=grpc://yout.remote.bes.server:8082
-common:remote --bes_results_url=https://your.remote.bes.server/bazel-invocations/
+common --experimental_local_lockfree_output
 
 # Metadata (Useful for BuildBarn Browser/Dashboard)
 common --build_metadata=REPO_URL=https://github.com/DoDoENT/bazel-playground
