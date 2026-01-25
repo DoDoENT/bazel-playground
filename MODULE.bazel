@@ -52,7 +52,7 @@ archive_override(
     module_name = "sysroot-noble-aarch64",
     integrity = "sha256-+mJ5891mJMVnMHDX+dixdD0Z8uEId5SBau2XjwFvFJU=",
     urls = [
-        "https://artifactory.microblink.com:443/artifactory/bazel-prebuilt-packages/sysroots/sysroot-noble-aarch64.tar.xz",
+        "https://github.com/microblink/bazel-cc-sysroot-generator/releases/download/v0.1/sysroot-noble-aarch64.tar.xz",
     ],
 )
 
@@ -61,7 +61,7 @@ archive_override(
     module_name = "sysroot-noble-x86_64",
     integrity = "sha256-25OeIr2YGIKxXuYvjcxZzQa7gE1qapKC3OZz6/9Fjhw=",
     urls = [
-        "https://artifactory.microblink.com:443/artifactory/bazel-prebuilt-packages/sysroots/sysroot-noble-x86_64.tar.xz",
+        "https://github.com/microblink/bazel-cc-sysroot-generator/releases/download/v0.1/sysroot-noble-x86_64.tar.xz",
     ],
 )
 
