@@ -31,6 +31,7 @@ common --build_metadata=REPO_URL=https://github.com/DoDoENT/bazel-playground
 common --disk_cache=~/.bazel-cache/build --experimental_disk_cache_gc_max_size=20G
 
 common --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
+common --platforms=@host_platform//:host
 
 # if using protobuf 33.4 or newer, uncomment this
 common --@protobuf//bazel/toolchains:prefer_prebuilt_protoc=true
@@ -57,16 +58,12 @@ common --features=asan --features=ubsan
 
 common --test_tag_filters=host,starlark
 
-
-
 # Make sure object files and static libraries are downloaded from remote cache on MacOS as
 # they are required for debugger to work properly
 # See: https://www.smileykeith.com/2025/09/21/understanding-apple-debug-info/
 build:macos --remote_download_regex='.*\.(a|lo|o)$'
 build:macos --apple_generate_dsym --output_groups=+dsyms
 common:macos --xcode_version_config=//xcode:host
-common:macos --extra_execution_platforms=//platforms/macos:arm64,//platforms/macos:x86_64
-
 
 # Bazel documentation on coverage: https://bazel.build/configure/coverage
 # export GCOV=llvm-profdata
@@ -87,7 +84,7 @@ common:debug --compilation_mode=dbg
 #     (2025-10-28) (Nenad Mikša)
 
 common:android --test_tag_filters=android --config=no_sanitizers
-common:android --android_platforms=//platforms/android:arm64-v8a,//platforms/android:armeabi-v7a --host_platform=@host_platform//:host_for_crossbuild
+common:android --android_platforms=//platforms/android:arm64-v8a,//platforms/android:armeabi-v7a
 common:android --extra_toolchains=@androidndk//:all
 common:android --features=-android_unwind_tables
 
@@ -104,12 +101,11 @@ mobile-install --mode=skylark --mobile_install_aspect=@rules_android//mobile_ins
 common:ios_device --config=no_sanitizers --ios_multi_cpus=arm64 --test_tag_filters=ios
 common:ios_simulator --config=no_sanitizers --ios_multi_cpus=sim_arm64,x86_64 --test_tag_filters=ios
 
-common:wasm --test_tag_filters=wasm-basic,wasm-simd,wasm-simd-threads --host_platform=@host_platform//:host_for_crossbuild --features=optimized_for_size
+common:wasm --test_tag_filters=wasm-basic,wasm-simd,wasm-simd-threads --features=optimized_for_size
 
 common:linux --@opencv//:gtk3=@ubuntu-gtk-deps//:gtk3 --@opencv//:with_gtk3=True
-
-common:linux --host_platform=@host_platform//:host
-common:linux_generic_intel --host_platform=//platforms/linux:generic_x86_64
+common:linux_haswell --platforms=//platforms/linux:haswell_x86_64
+common:linux_generic_intel --platforms=//platforms/linux:x86_64
 
 common:rules_xcodeproj --config=no_sanitizers
 

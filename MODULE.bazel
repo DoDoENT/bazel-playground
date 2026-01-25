@@ -66,11 +66,38 @@ llvm.sysroot(
     label = "@org_chromium_sysroot_linux_x64//sysroot",
     targets = ["linux-x86_64"]
 )
-llvm.sysroot(
-    name = "llvm_linux_intel",
-    label = "@org_chromium_sysroot_linux_arm64//sysroot",
-    targets = ["linux-aarch64"]
+
+use_repo(llvm, "llvm_linux_intel", "llvm_linux_intel_llvm")
+
+llvm.toolchain(
+    name = "llvm_linux_intel_haswell",
+    llvm_version = LLVM_VERSION,
+    extra_compile_flags = {
+        "": [
+            "-march=haswell",
+            "-mtune=haswell",
+            "-mavx",
+            "-mavx2",
+        ],
+    },
 )
+# Reuse the toolchain root from llvm_linux_intel to avoid downloading LLVM twice
+llvm.toolchain_root(
+    name = "llvm_linux_intel_haswell",
+    label = "@llvm_linux_intel_llvm//:BUILD",
+)
+llvm.extra_target_compatible_with(
+    name = "llvm_linux_intel_haswell",
+    constraints = [
+        "//platforms/linux/intel_flavor:haswell",
+    ],
+)
+llvm.sysroot(
+    name = "llvm_linux_intel_haswell",
+    label = "@org_chromium_sysroot_linux_x64//sysroot",
+    targets = ["linux-x86_64"]
+)
+use_repo(llvm, "llvm_linux_intel_haswell")
 
 llvm.toolchain(
     name = "llvm_linux_arm",
@@ -82,9 +109,28 @@ llvm.toolchain(
     }
 )
 
-use_repo(llvm, "llvm_linux_intel", "llvm_linux_arm")
-register_toolchains("@llvm_linux_intel//:all", "@llvm_linux_arm//:all")
+llvm.sysroot(
+    name = "llvm_linux_arm",
+    label = "@org_chromium_sysroot_linux_arm64//sysroot",
+    targets = ["linux-aarch64"]
+)
+
+use_repo(llvm, "llvm_linux_arm")
+
+# Haswell needs to be registered first, as it is more specific than the generic intel toolchain
+register_toolchains(
+    "@llvm_linux_intel_haswell//:all",
+    "@llvm_linux_intel//:all",
+    "@llvm_linux_arm//:all",
+)
 # LLVM rules end
+
+register_execution_platforms(
+    "//platforms/linux:x86_64",
+    "//platforms/linux:arm64",
+    "//platforms/macos:arm64",
+    "//platforms/macos:x86_64",
+)
 
 # Python rules begin
 
