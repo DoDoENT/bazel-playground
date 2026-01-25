@@ -8,6 +8,7 @@ derived-data
 
 *.xcodeproj
 automatic.bazelrc
+user.bazelrc
 
 .vimspector.json
 

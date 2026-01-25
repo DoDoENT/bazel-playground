@@ -21,7 +21,7 @@ platform(
         "@platforms//os:linux",
     ],
     exec_properties = {
-        # "Arch": "aarch64",
+        "Arch": "aarch64",
         "OSFamily": "linux",
         "container-image": "docker://docker.io/microblinkdev/bazel-devenv:latest",
     },
