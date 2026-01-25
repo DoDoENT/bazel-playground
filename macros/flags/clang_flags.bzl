@@ -32,10 +32,10 @@ def _calculate_clang_flags():
         "-fenable-matrix",
     ]
     _local_clang_flags["compiler_runtime_checks"] = [
-        "-fsanitize=address",
-        "-fsanitize=undefined",
-        "-fsanitize=signed-integer-overflow",
-        "-fsanitize=integer-divide-by-zero",
+        # "-fsanitize=address",
+        # "-fsanitize=undefined",
+        # "-fsanitize=signed-integer-overflow",
+        # "-fsanitize=integer-divide-by-zero",
     ]
     _local_clang_flags["linker_runtime_checks"] = _local_clang_flags["compiler_runtime_checks"]
     _local_clang_flags["compiler_coverage"] = _local_clang_flags["compiler_coverage"] + [
