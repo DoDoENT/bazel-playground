@@ -46,5 +46,23 @@ int main(int argc, char** argv) {
 #else
     std::cout << "Hello world compiled in debug mode!" << std::endl;
 #endif
+// write whether running on Intel or ARM
+#ifdef __aarch64__
+    std::cout << "Hello world running on ARM 64-bit!" << std::endl;
+#elif __arm__
+    std::cout << "Hello world running on ARM 32-bit!" << std::endl;
+#elif __i386__
+    std::cout << "Hello world running on Intel 32-bit!" << std::endl;
+#elif __x86_64__
+    #ifdef __AVX2__
+        std::cout << "Hello world running on Intel 64-bit (x86-64-v3 with AVX2)!" << std::endl;
+    #elif __AVX__
+        std::cout << "Hello world running on Intel 64-bit (x86-64-v2 with AVX)!" << std::endl;
+    #else
+        std::cout << "Hello world running on Intel 64-bit!" << std::endl;
+    #endif
+#else
+    std::cout << "Hello world running on an unknown architecture!" << std::endl;
+#endif
   return 0;
 }

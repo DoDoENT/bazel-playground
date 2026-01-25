@@ -1,4 +1,4 @@
-# Note: documentation for all flags can be founr at: https://registry.build/flag/bazel@8.3.1
+# Note: documentation for all flags can be founr at: https://registry.build/flag/bazel@8.5.1
 
 import %workspace%/tools/preset.bazelrc
 
