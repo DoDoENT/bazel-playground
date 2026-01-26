@@ -142,13 +142,6 @@ register_toolchains(
     "@llvm_linux_arm//:all",
 )
 
-register_execution_platforms(
-    "//platforms/linux:x86_64",
-    "//platforms/linux:arm64",
-    "//platforms/macos:arm64",
-    "//platforms/macos:x86_64",
-)
-
 # LLVM rules end
 # Python rules begin
 
