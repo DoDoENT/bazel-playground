@@ -1,5 +1,5 @@
 def _host_platform_repo_impl(rctx):
-    # Use Haswell by default on Intel Linux
+    # Use Haswell by default on Intel Linux (if possible)
     if rctx.os.name.startswith("linux") and rctx.os.arch in ["amd64", "x86_64", "x64"]:
         result = rctx.execute(["lscpu"])
         has_avx2 = "avx2" in result.stdout.lower()
