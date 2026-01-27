@@ -2,6 +2,9 @@
 
 import %workspace%/tools/preset.bazelrc
 
+# Limit JVM heap size for bazel server to 4GB to avoid it using too much memory while doing analysis
+startup --host_jvm_args="-Xmx4g"
+
 # Apple iOS rules expect rules_python to be preloaded.
 # Also, without preloading rules_android, bazel complains about missing aar_import and similar rules
 # in rules_jvm_external.
@@ -13,13 +16,16 @@ common --noincompatible_auto_exec_groups
 build --bes_results_url=https://app.buildbuddy.io/invocation/
 build --bes_backend=grpcs://remote.buildbuddy.io
 common --remote_timeout=10m
-common --remote_executor=grpcs://remote.buildbuddy.io --remote_local_fallback=true
-common --remote_cache_compression=true
+common --remote_executor=grpcs://remote.buildbuddy.io --remote_local_fallback
+common --remote_cache_compression
 # Give Bazel enough 'slots' to actually saturate the remote executor
 common --jobs=100
 
 # Enable Dynamic Execution (Runs local and remote in parallel, takes fastest)
 common --spawn_strategy=dynamic
+
+# workaround for https://github.com/bazelbuild/rules_rust/issues/3307
+common:macos --strategy=Rustc=local
 
 # Some advanced tweaks to dynamic execution
 # More info here: https://bazel.build/remote/dynamic#performance
@@ -27,6 +33,7 @@ common --experimental_dynamic_local_load_factor=0.5
 
 # Don't let local actions 'lock' the output if a remote action finishes first
 common --experimental_local_lockfree_output
+common --experimental_remote_merkle_tree_cache
 
 # Metadata (Useful for BuildBarn Browser/Dashboard)
 common --build_metadata=REPO_URL=https://github.com/DoDoENT/bazel-playground
@@ -70,7 +77,7 @@ common:macos --xcode_version_config=//xcode:host
 # Bazel documentation on coverage: https://bazel.build/configure/coverage
 # export GCOV=llvm-profdata
 # export BAZEL_USE_LLVM_NATIVE_COVERAGE=1
-# example to run coverage: bazel coverage --config=release //:host  --instrument_test_targets=true --combined_report=lcov --experimental_use_llvm_covmap=true --experimental_generate_llvm_lcov=true --instrumentation_filter=//...
+# example to run coverage: bazel coverage --config=release //:host  --instrument_test_targets --combined_report=lcov --experimental_use_llvm_covmap --experimental_generate_llvm_lcov --instrumentation_filter=//...
 # To generate the profdata files from the .profraw files, use llvm-profdata tool: ```llvm-profdata merge -sparse $(find bazel-out/ | grep profraw | xargs) -o default.profdata```
 # Then run bazel run //macros/coverage:coverage_report -- -s $PWD -i '*/external/*' -o /home/build/html_coverage -p /home/build/default.profdata $PWD/bazel-out
 # Alternatively, you can use lcov's genhtml tool directly: genhtml --branch-coverage --ignore-errors category --output genhtml "$(bazel info output_path)/_coverage/_coverage_report.dat"
@@ -118,14 +125,26 @@ common:xcode_cache_warming --output_groups=compiles,resources
 # note - avoid using local disk cache in CI - it's not needed. Bazel's internal cache (~/.cache/bazel) and remote cache are sufficient.
 #        Namely, using local disk cache in CI can cause the actions to sometimes not be uploaded to the remote cache.
 
-common:ci --show_progress_rate_limit=10 --show_progress=true --test_output=errors --disk_cache=
+common:ci --show_progress_rate_limit=10 --show_progress --test_output=errors --disk_cache=
 
 # Increase timeouts in CI to avoid flakes due to slow machines / network
 common:ci --experimental_scale_timeouts=5.0 --http_timeout_scaling=5.0
 
 # In CI, don't use dynamic spawn strategy - it only slows things down there
-# (enable if using remote by default)
-# common:ci --spawn_strategy=remote,worker,sandboxed,local --remote_local_fallback=false
+common:ci --spawn_strategy=remote,worker,sandboxed,local --noremote_local_fallback
+
+# Reduce connection pressure when running many builds in parallel in CI
+build:ci --grpc_keepalive_time=60s
+build:ci --grpc_keepalive_timeout=30s
+build:ci --bes_timeout=15m
+build:ci --remote_timeout=60s
+
+# memory optimizations for CI builds
+# see: https://bazel.build/advanced/performance/memory
+common:ci --discard_analysis_cache
+common:ci --nokeep_state_after_build
+common:ci --notrack_incremental_state
+
 
 # Our repo is not large enough to need terse output, so we use short output
 test:ci --test_summary="short"
