@@ -81,6 +81,7 @@ def _android_mobile_binary_impl(name, visibility, args, **kwargs):
             "targetSdkVersion": "31",
             "package": package_name,
         },
+        incremental_dexing = 0,
         deps = [
             native.package_relative_label(":" + name + "-srcs"),
         ] + SANITIZER_SUPPORT_LIBS,

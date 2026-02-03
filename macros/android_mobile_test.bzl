@@ -73,6 +73,7 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
             "targetPackage": package_name,
             "package": package_name,
         },
+        incremental_dexing = 0,
         deps = [
             native.package_relative_label(":" + name + "-srcs"),
             Label("@android_test_deps//:junit_junit"),
