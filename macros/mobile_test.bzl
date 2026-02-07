@@ -2,7 +2,7 @@ load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 load("//macros:android_mobile_test.bzl", "android_mobile_test")
 load("//macros:ios_mobile_test.bzl", "ios_mobile_test")
 load("//macros:mobile_library.bzl", "mobile_library")
-# load("//macros:wasm_test.bzl", "wasm_test")
+load("//macros:wasm_test.bzl", "wasm_test")
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
 load("@rules_cc//cc/private/rules_impl:cc_test.bzl", _cc_test_rule = "cc_test")
 load(
@@ -139,76 +139,76 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
                 target_compatible_with = kwargs.get("target_compatible_with", []),
             )
 
-        # if wasm_basic:
-        #     wasm_test(
-        #         name = name + "-wasm-basic",
-        #         visibility = visibility,
-        #         srcs = srcs,
-        #         copts = copts,
-        #         conlyopts = conlyopts,
-        #         cxxopts = cxxopts,
-        #         linkopts = linkopts,
-        #         deps = deps + [
-        #             native.package_relative_label(":" + name + "-paths"),
-        #         ],
-        #         threads = False,
-        #         simd = False,
-        #         args = args,
-        #         tags = tags_without_multi_cpu + [TAG_WASM_BASIC],
-        #         data = data,
-        #         defines = defines,
-        #         local_defines = local_defines,
-        #         size = test_size,
-        #         timeout = test_timeout,
-        #         target_compatible_with = kwargs.get("target_compatible_with", []),
-        #     )
-        #
-        # if wasm_simd:
-        #     wasm_test(
-        #         name = name + "-wasm-simd",
-        #         visibility = visibility,
-        #         srcs = srcs,
-        #         copts = copts,
-        #         conlyopts = conlyopts,
-        #         cxxopts = cxxopts,
-        #         linkopts = linkopts,
-        #         deps = deps + [
-        #             native.package_relative_label(":" + name + "-paths"),
-        #         ],
-        #         threads = False,
-        #         simd = True,
-        #         args = args,
-        #         tags = tags_without_multi_cpu + [TAG_WASM_SIMD],
-        #         data = data,
-        #         defines = defines,
-        #         local_defines = local_defines,
-        #         size = test_size,
-        #         timeout = test_timeout,
-        #     )
-        #
-        # if wasm_simd_threads:
-        #     wasm_test(
-        #         name = name + "-wasm-simd-threads",
-        #         visibility = visibility,
-        #         srcs = srcs,
-        #         copts = copts,
-        #         conlyopts = conlyopts,
-        #         cxxopts = cxxopts,
-        #         linkopts = linkopts,
-        #         deps = deps + [
-        #             native.package_relative_label(":" + name + "-paths"),
-        #         ],
-        #         threads = True,
-        #         simd = True,
-        #         args = args,
-        #         tags = tags + [TAG_WASM_SIMD_THREADS],
-        #         data = data,
-        #         defines = defines,
-        #         local_defines = local_defines,
-        #         size = test_size,
-        #         timeout = test_timeout,
-        #         target_compatible_with = kwargs.get("target_compatible_with", []),
-        #     )
+        if wasm_basic:
+            wasm_test(
+                name = name + "-wasm-basic",
+                visibility = visibility,
+                srcs = srcs,
+                copts = copts,
+                conlyopts = conlyopts,
+                cxxopts = cxxopts,
+                linkopts = linkopts,
+                deps = deps + [
+                    native.package_relative_label(":" + name + "-paths"),
+                ],
+                threads = False,
+                simd = False,
+                args = args,
+                tags = tags_without_multi_cpu + [TAG_WASM_BASIC],
+                data = data,
+                defines = defines,
+                local_defines = local_defines,
+                size = test_size,
+                timeout = test_timeout,
+                target_compatible_with = kwargs.get("target_compatible_with", []),
+            )
+
+        if wasm_simd:
+            wasm_test(
+                name = name + "-wasm-simd",
+                visibility = visibility,
+                srcs = srcs,
+                copts = copts,
+                conlyopts = conlyopts,
+                cxxopts = cxxopts,
+                linkopts = linkopts,
+                deps = deps + [
+                    native.package_relative_label(":" + name + "-paths"),
+                ],
+                threads = False,
+                simd = True,
+                args = args,
+                tags = tags_without_multi_cpu + [TAG_WASM_SIMD],
+                data = data,
+                defines = defines,
+                local_defines = local_defines,
+                size = test_size,
+                timeout = test_timeout,
+            )
+
+        if wasm_simd_threads:
+            wasm_test(
+                name = name + "-wasm-simd-threads",
+                visibility = visibility,
+                srcs = srcs,
+                copts = copts,
+                conlyopts = conlyopts,
+                cxxopts = cxxopts,
+                linkopts = linkopts,
+                deps = deps + [
+                    native.package_relative_label(":" + name + "-paths"),
+                ],
+                threads = True,
+                simd = True,
+                args = args,
+                tags = tags + [TAG_WASM_SIMD_THREADS],
+                data = data,
+                defines = defines,
+                local_defines = local_defines,
+                size = test_size,
+                timeout = test_timeout,
+                target_compatible_with = kwargs.get("target_compatible_with", []),
+            )
 
 
 mobile_test = macro(
