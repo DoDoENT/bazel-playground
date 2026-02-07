@@ -33,7 +33,6 @@ common --experimental_dynamic_local_load_factor=0.5
 
 # Don't let local actions 'lock' the output if a remote action finishes first
 common --experimental_local_lockfree_output
-common --experimental_remote_merkle_tree_cache
 
 # Metadata (Useful for BuildBarn Browser/Dashboard)
 common --build_metadata=REPO_URL=https://github.com/DoDoENT/bazel-playground

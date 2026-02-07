@@ -71,7 +71,6 @@ def remove_cc_binary_specific_attrs(kwargs):
         "stamp",
         "linkshared",
         "env",
-        "distribs",
         "dynamic_deps",
     ]
     for attr in remove_attrs:
