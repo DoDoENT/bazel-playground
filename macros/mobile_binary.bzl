@@ -3,7 +3,7 @@ load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 load("@rules_cc//cc/private/rules_impl:cc_binary.bzl", _cc_binary_rule = "cc_binary")
 load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 
-load(":wasm_mobile_binary.bzl", "wasm_mobile_binary")
+# load(":wasm_mobile_binary.bzl", "wasm_mobile_binary")
 load(":mobile_library.bzl", "mobile_library")
 load(":android_mobile_binary.bzl", "android_mobile_binary")
 load(":ios_mobile_binary.bzl", "ios_mobile_binary")
@@ -139,66 +139,66 @@ def _mobile_binary_impl(name, visibility, data, args, host_only, static_cxx_runt
             **kwargs,
         )
 
-        wasm_mobile_binary(
-            name = name + "-wasm-basic",
-            visibility = visibility,
-            srcs = srcs,
-            copts = copts,
-            conlyopts = conlyopts,
-            cxxopts = cxxopts,
-            linkopts = linkopts,
-            deps = deps + [
-                native.package_relative_label(":" + name + "-paths"),
-            ],
-            tags = tags,
-            data = data,
-            defines = defines,
-            includes = includes,
-            local_defines = local_defines,
-            simd = False,
-            threads = False,
-            **kwargs
-        )
-        wasm_mobile_binary(
-            name = name + "-wasm-simd",
-            visibility = visibility,
-            srcs = srcs,
-            copts = copts,
-            conlyopts = conlyopts,
-            cxxopts = cxxopts,
-            linkopts = linkopts,
-            deps = deps + [
-                native.package_relative_label(":" + name + "-paths"),
-            ],
-            tags = tags,
-            data = data,
-            defines = defines,
-            includes = includes,
-            local_defines = local_defines,
-            simd = True,
-            threads = False,
-            **kwargs
-        )
-        wasm_mobile_binary(
-            name = name + "-wasm-simd-threads",
-            visibility = visibility,
-            srcs = srcs,
-            copts = copts,
-            conlyopts = conlyopts,
-            cxxopts = cxxopts,
-            linkopts = linkopts,
-            deps = deps + [
-                native.package_relative_label(":" + name + "-paths"),
-            ],
-            tags = tags,
-            data = data,
-            defines = defines,
-            includes = includes,
-            local_defines = local_defines,
-            simd = True,
-            threads = True,
-            **kwargs
-        )
+        # wasm_mobile_binary(
+        #     name = name + "-wasm-basic",
+        #     visibility = visibility,
+        #     srcs = srcs,
+        #     copts = copts,
+        #     conlyopts = conlyopts,
+        #     cxxopts = cxxopts,
+        #     linkopts = linkopts,
+        #     deps = deps + [
+        #         native.package_relative_label(":" + name + "-paths"),
+        #     ],
+        #     tags = tags,
+        #     data = data,
+        #     defines = defines,
+        #     includes = includes,
+        #     local_defines = local_defines,
+        #     simd = False,
+        #     threads = False,
+        #     **kwargs
+        # )
+        # wasm_mobile_binary(
+        #     name = name + "-wasm-simd",
+        #     visibility = visibility,
+        #     srcs = srcs,
+        #     copts = copts,
+        #     conlyopts = conlyopts,
+        #     cxxopts = cxxopts,
+        #     linkopts = linkopts,
+        #     deps = deps + [
+        #         native.package_relative_label(":" + name + "-paths"),
+        #     ],
+        #     tags = tags,
+        #     data = data,
+        #     defines = defines,
+        #     includes = includes,
+        #     local_defines = local_defines,
+        #     simd = True,
+        #     threads = False,
+        #     **kwargs
+        # )
+        # wasm_mobile_binary(
+        #     name = name + "-wasm-simd-threads",
+        #     visibility = visibility,
+        #     srcs = srcs,
+        #     copts = copts,
+        #     conlyopts = conlyopts,
+        #     cxxopts = cxxopts,
+        #     linkopts = linkopts,
+        #     deps = deps + [
+        #         native.package_relative_label(":" + name + "-paths"),
+        #     ],
+        #     tags = tags,
+        #     data = data,
+        #     defines = defines,
+        #     includes = includes,
+        #     local_defines = local_defines,
+        #     simd = True,
+        #     threads = True,
+        #     **kwargs
+        # )
 
 
 mobile_binary = macro(
