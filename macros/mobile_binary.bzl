@@ -1,5 +1,6 @@
 load("@emsdk//emscripten_toolchain:wasm_rules.bzl", "wasm_cc_binary")
 load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
+load("@rules_cc//cc/private/rules_impl:cc_binary.bzl", _cc_binary_rule = "cc_binary")
 load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 
 load(":wasm_mobile_binary.bzl", "wasm_mobile_binary")
@@ -94,7 +95,6 @@ def _mobile_binary_impl(name, visibility, data, args, host_only, static_cxx_runt
     if not host_only:
         # Note: iOS, Android, and Wasm will internally add default copts, cxxopts, and linkopts
 
-        # TODO: implement iOS and Android mobile exe runners
         ios_mobile_binary(
             name = name + "-ios",
             visibility = visibility,
@@ -203,7 +203,7 @@ def _mobile_binary_impl(name, visibility, data, args, host_only, static_cxx_runt
 
 mobile_binary = macro(
     implementation = _mobile_binary_impl,
-    inherit_attrs = native.cc_binary,
+    inherit_attrs = _cc_binary_rule,
     attrs = {
         "data": attr.label_list(
             allow_files = True,

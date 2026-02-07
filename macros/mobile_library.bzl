@@ -1,4 +1,5 @@
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("@rules_cc//cc/private/rules_impl:cc_library.bzl", _cc_library_rule = "cc_library")
 load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 
 def _mobile_library_common_impl(name, visibility, default_copts_key, **kwargs):
@@ -11,6 +12,9 @@ def _mobile_library_common_impl(name, visibility, default_copts_key, **kwargs):
         Label("//conditions:default"): [],
     })
     additional_compiler_inputs = kwargs.pop("additional_compiler_inputs") or select({
+        Label("//conditions:default"): [],
+    })
+    aspect_hints = kwargs.pop("aspect_hints") or select({
         Label("//conditions:default"): [],
     })
     linkstatic = kwargs.pop("linkstatic")
@@ -49,7 +53,7 @@ def _mobile_library_common_impl(name, visibility, default_copts_key, **kwargs):
             # so suppress resource handling in cc_library to avoid redundant packaging of
             # cc_library data.
             "@rules_apple//apple:suppress_resources",
-        ],
+        ] + aspect_hints,
         **kwargs,
     )
 
@@ -57,7 +61,7 @@ def _mobile_library_impl(name, visibility, **kwargs):
     _mobile_library_common_impl(name, visibility, "copts", **kwargs)
 
 mobile_library = macro(
-    inherit_attrs = native.cc_library,
+    inherit_attrs = _cc_library_rule,
     implementation = _mobile_library_impl,
 )
 
@@ -65,6 +69,6 @@ def _hot_mobile_library_impl(name, visibility, **kwargs):
     _mobile_library_common_impl(name, visibility, "hot_copts", **kwargs)
 
 hot_code_mobile_library = macro(
-    inherit_attrs = native.cc_library,
+    inherit_attrs = _cc_library_rule,
     implementation = _hot_mobile_library_impl,
 )

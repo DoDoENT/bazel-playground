@@ -1,6 +1,8 @@
 load("@rules_apple//apple:ios.bzl", "ios_application")
 load("@rules_apple//apple:resources.bzl", "apple_resource_group")
 
+load("@rules_cc//cc/private/rules_impl:cc_binary.bzl", _cc_binary_rule = "cc_binary")
+
 load(":mobile_library.bzl", "mobile_library")
 load(":constants.bzl", "TAG_IOS")
 load(":test_utils.bzl", "remove_cc_binary_specific_attrs", "prepare_assets")
@@ -68,7 +70,7 @@ def _ios_mobile_binary_impl(name, visibility, args, **kwargs):
 
 ios_mobile_binary = macro(
     implementation = _ios_mobile_binary_impl,
-    inherit_attrs = native.cc_binary,
+    inherit_attrs = _cc_binary_rule,
     attrs = {
         "args": attr.string_list(
             default = [],

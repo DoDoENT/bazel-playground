@@ -1,4 +1,5 @@
 load("@rules_android//android:rules.bzl", "android_binary", "android_library")
+load("@rules_cc//cc/private/rules_impl:cc_binary.bzl", _cc_binary_rule = "cc_binary")
 load(":android_build_config.bzl", "android_build_config")
 load(":android_utils.bzl", "SANITIZER_SUPPORT_LIBS")
 load(":constants.bzl", "TAG_ANDROID")
@@ -99,7 +100,7 @@ def _android_mobile_binary_impl(name, visibility, args, **kwargs):
 
 android_mobile_binary = macro(
     implementation = _android_mobile_binary_impl,
-    inherit_attrs = native.cc_binary,
+    inherit_attrs = _cc_binary_rule,
     attrs = {
         "args": attr.string_list(
             default = [],
