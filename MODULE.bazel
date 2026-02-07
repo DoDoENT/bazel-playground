@@ -4,13 +4,13 @@ module(name = "playground")
 
 # Note: This needs to be before rules_cc in order to correctly configure the C++ toolchain.
 # See here why: https://www.smileykeith.com/2025/09/21/understanding-apple-debug-info/
-bazel_dep(name = "apple_support", version = "2.1.0")
+bazel_dep(name = "apple_support", version = "2.2.0")
 bazel_dep(name = "rules_cc", version = "0.2.16")
-bazel_dep(name = "aspect_bazel_lib", version = "2.22.0")
+bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
 bazel_dep(name = "bazel_skylib", version = "1.9.0")
-bazel_dep(name = "bazelrc-preset.bzl", version = "1.8.0")
+bazel_dep(name = "bazelrc-preset.bzl", version = "1.9.2")
 bazel_dep(name = "platforms", version = "1.0.0")
-bazel_dep(name = "rules_build_error", version = "0.9.0")
+bazel_dep(name = "rules_build_error", version = "0.11.0")
 bazel_dep(name = "rules_license", version = "1.0.0")
 
 # Bazel rules end
@@ -22,7 +22,7 @@ use_repo(host_platform, "host_platform")
 # Apple rules begin
 
 bazel_dep(name = "rules_apple", version = "4.3.3")
-bazel_dep(name = "rules_swift", version = "3.4.1")
+bazel_dep(name = "rules_swift", version = "3.4.2")
 bazel_dep(name = "rules_xcodeproj", version = "3.5.1")
 
 # Apple rules end
@@ -145,7 +145,7 @@ register_toolchains(
 # LLVM rules end
 # Python rules begin
 
-bazel_dep(name = "rules_python", version = "1.7.0")
+bazel_dep(name = "rules_python", version = "1.8.3")
 
 PYTHON_VERSION = "3.14"
 
@@ -200,7 +200,7 @@ use_repo(remote_android_extensions, "android_tools")
 android_sdk_repository_extension = use_extension("@rules_android//rules/android_sdk_repository:rule.bzl", "android_sdk_repository_extension")
 use_repo(android_sdk_repository_extension, "androidsdk")
 
-bazel_dep(name = "rules_jvm_external", version = "6.9")
+bazel_dep(name = "rules_jvm_external", version = "6.10")
 
 maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
 maven.install(
