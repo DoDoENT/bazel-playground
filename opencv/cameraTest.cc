@@ -25,7 +25,7 @@ int main()
         // draw a text overlay to show that highgui is functional
         cv::putText( frame, "Hello, OpenCV!", cv::Point( 50, 50 ), cv::FONT_HERSHEY_SIMPLEX, 1.0, CV_RGB( 255, 0, 0 ), 2 );
         cv::imshow( "Camera", frame );
-        if ( cv::waitKey( 30 ) >= 0 )
+        if ( cv::waitKey( 30 ) == 27 )
         {
             break;
         }

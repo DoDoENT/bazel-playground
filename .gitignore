@@ -9,6 +9,7 @@ derived-data
 *.xcodeproj
 automatic.bazelrc
 user.bazelrc
+.bazeltargets
 
 .vimspector.json
 
