@@ -27,6 +27,9 @@ common --spawn_strategy=dynamic
 # workaround for https://github.com/bazelbuild/rules_rust/issues/3307
 common:macos --strategy=Rustc=local
 
+# missing pkg-config binary in sysroot
+common:linux --strategy=CargoBuildScriptRun=local
+
 # Some advanced tweaks to dynamic execution
 # More info here: https://bazel.build/remote/dynamic#performance
 common --experimental_dynamic_local_load_factor=0.5
