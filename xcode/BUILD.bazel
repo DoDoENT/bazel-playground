@@ -1,3 +1,6 @@
+load("@apple_support//xcode:available_xcodes.bzl", "available_xcodes")
+load("@apple_support//xcode:xcode_config.bzl", "xcode_config")
+load("@apple_support//xcode:xcode_version.bzl", "xcode_version")
 load("@rules_xcodeproj//xcodeproj:top_level_target.bzl", "top_level_target")
 load("@rules_xcodeproj//xcodeproj:xcodeproj.bzl", "xcodeproj")
 load("@rules_xcodeproj//xcodeproj:xcschemes.bzl", "xcschemes")
