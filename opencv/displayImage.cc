@@ -16,6 +16,8 @@ int main(int argc, char ** argv )
         return -1;
     }
 
+    std::cout << "Using OpenCV version " << CV_VERSION << "\n";
+
     // Read the image file
     cv::Mat image;
     image = cv::imread( argv[1], cv::IMREAD_COLOR );

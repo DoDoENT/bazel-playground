@@ -275,13 +275,13 @@ single_version_override(
     ],
 )
 
-bazel_dep(name = "opencv", version = "4.12.0.bcr.2")
+bazel_dep(name = "opencv", version = "4.13.0")
 archive_override(
     module_name = "opencv",
-    integrity = "sha256-g4O5MNpM3RUSd2CjnqjXCWXHj5eKh2kGh6LzI1Srj8Q=",
-    strip_prefix = "opencv-9061eeb690b994240a22d280a0b61ab485c86d09",
+    integrity = "sha256-gA7T6ezwRBPRjTRDa0crNS9e2oDdoqCRyH+/iFVCROA=",
+    strip_prefix = "opencv-e4d1997384f912b1c4c8680b7cedb90b82928c01",
     urls = [
-        "https://github.com/microblink/opencv/archive/9061eeb690b994240a22d280a0b61ab485c86d09.zip",
+        "https://github.com/microblink/opencv/archive/e4d1997384f912b1c4c8680b7cedb90b82928c01.zip",
     ],
 )
 

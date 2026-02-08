@@ -44,6 +44,9 @@ common --repo_contents_cache=~/.bazel-cache/repo_contents
 common --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
 common --platforms=@host_platform//:host --extra_execution_platforms=@host_platform//:host
 
+# disable platforms for info, as it fails to resolve @host_platform
+info --platforms=
+
 # if using protobuf 33.4 or newer, uncomment this
 common --incompatible_enable_proto_toolchain_resolution --@protobuf//bazel/toolchains:prefer_prebuilt_protoc=true
 
