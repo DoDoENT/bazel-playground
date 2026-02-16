@@ -32,7 +32,7 @@ bazel_dep(name = "rules_xcodeproj", version = "3.5.1")
 # TODO: Much more convenient than toolchains_llvm, but:
 #  - no support for sanitizers yet (on roadmap; setting --@toolchains_llvm_bootstrapped//config:ubsan=True, does not help)
 #  - no support for choosing LLVM version yet
-bazel_dep(name = "toolchains_llvm_bootstrapped", version = "0.4.1")
+bazel_dep(name = "toolchains_llvm_bootstrapped", version = "0.5.8")
 git_override(
     module_name = "toolchains_llvm_bootstrapped",
     remote = "https://github.com/cerisier/toolchains_llvm_bootstrapped",
