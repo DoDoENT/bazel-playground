@@ -232,7 +232,7 @@ common --incompatible_autoload_externally=""
 # have them set visibility explicitly if they'll be used anywhere outside their own package.
 #
 # See https://github.com/bazelbuild/bazel/issues/12933
-common --incompatible_config_setting_private_default_visibility
+# common --incompatible_config_setting_private_default_visibility
 # Docs: https://registry.build/flag/bazel@8.4.2?filter=incompatible_config_setting_private_default_visibility
 
 # When set to `true`, native repo rules cannot be used in WORKSPACE; their Starlark counterparts must be used. Native repo rules already can't be used in Bzlmod.
