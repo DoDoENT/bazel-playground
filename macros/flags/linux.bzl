@@ -11,9 +11,6 @@ def _calculate_linux_flags(starting_flags):
 
 def _calculate_linux_clang_flags():
     _linux_clang_flags = _calculate_linux_flags(clang_flags)
-    _linux_clang_flags["linker_runtime_checks"] = _linux_clang_flags["linker_runtime_checks"] + [
-        "-lclang_rt.ubsan_standalone_cxx",
-    ]
     _linux_clang_flags["compiler_optimize_for_speed"] = _linux_clang_flags["compiler_optimize_for_speed"] + [
         "-mllvm",
         "-polly",
