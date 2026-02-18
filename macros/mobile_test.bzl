@@ -27,6 +27,7 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
         ],
         deps = [
             Label("//test-support/paths:test-paths"),
+            Label("//test-support/paths:test-paths-impl-deps"),
         ],
         testonly = True,
     )

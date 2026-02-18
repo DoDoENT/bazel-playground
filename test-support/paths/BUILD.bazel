@@ -9,10 +9,7 @@ filegroup(
 )
 
 mobile_library(
-    name = "test-paths",
-    hdrs = [
-        "Include/Paths.h",
-    ],
+    name = "test-paths-impl-deps",
     deps = select({
         "@platforms//os:android": [
             "//macros/android-helpers/exerunner/PathProvider",
@@ -22,5 +19,13 @@ mobile_library(
         ],
         "//conditions:default": [],
     }),
+    visibility = ["//visibility:public"],
+)
+
+mobile_library(
+    name = "test-paths",
+    hdrs = [
+        "Include/Paths.h",
+    ],
     visibility = ["//visibility:public"],
 )

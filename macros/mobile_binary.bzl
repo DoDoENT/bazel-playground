@@ -25,6 +25,7 @@ def _mobile_binary_impl(name, visibility, data, args, host_only, static_cxx_runt
         ],
         deps = [
             Label("//test-support/paths:test-paths"),
+            Label("//test-support/paths:test-paths-impl-deps"),
         ],
     )
 
