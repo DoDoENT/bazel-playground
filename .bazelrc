@@ -92,7 +92,9 @@ common:macos --xcode_version_config=//xcode:host
 
 common:no_sanitizers --features=-asan --features=-ubsan --features=-wasm_asan --features=-wasm_ubsan
 
-common:release --config=no_sanitizers --compilation_mode=opt --features=thin_lto
+# Avoid using thin_lto feature as it generates a lot of LTO index tasks which have a lot of overhead and don't provide much speedup in our case.
+# Our binaries are small enough that regular ThinLTO provides faster build speeds.
+common:release --config=no_sanitizers --compilation_mode=opt --copt=-flto=thin --linkopt=-flto=thin
 common:debug --compilation_mode=dbg
 
 # ASAN on Android throws errors in code that is actually correct. It doesn't print any useful stack traces either, so even if the code was buggy
