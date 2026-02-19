@@ -223,10 +223,10 @@ use_repo(maven, "android_test_deps")
 bazel_dep(name = "emsdk", version = "5.0.0")
 archive_override(
     module_name = "emsdk",
-    integrity = "sha256-Ai2X++AG3XjTaH63sgxvpU7QiwT9NhqlJg56Br+PG9Y=",
-    strip_prefix = "emsdk-2318ee014394620b101c29f8fb799d8922c614e7/bazel",
+    integrity = "sha256-Fkpokqlj11EuKPn2lv4tshYb6Xny8TyoKtRij1dhe2U=",
+    strip_prefix = "emsdk-831b9fb2eab88565c930564a856bc13dfea7131b/bazel",
     urls = [
-        "https://github.com/DoDoENT/emsdk/archive/2318ee014394620b101c29f8fb799d8922c614e7.zip",
+        "https://github.com/DoDoENT/emsdk/archive/831b9fb2eab88565c930564a856bc13dfea7131b.zip",
     ],
 )
 # single_version_override(
