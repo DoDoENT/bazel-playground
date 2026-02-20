@@ -145,7 +145,7 @@ register_toolchains(
 # LLVM rules end
 # Python rules begin
 
-bazel_dep(name = "rules_python", version = "1.8.3")
+bazel_dep(name = "rules_python", version = "1.8.4")
 
 PYTHON_VERSION = "3.14"
 
@@ -220,13 +220,13 @@ use_repo(maven, "android_test_deps")
 # Android rules end
 
 # Emscripten rules begin
-bazel_dep(name = "emsdk", version = "5.0.0")
+bazel_dep(name = "emsdk", version = "5.0.1")
 archive_override(
     module_name = "emsdk",
-    integrity = "sha256-Fkpokqlj11EuKPn2lv4tshYb6Xny8TyoKtRij1dhe2U=",
-    strip_prefix = "emsdk-831b9fb2eab88565c930564a856bc13dfea7131b/bazel",
+    integrity = "sha256-cDlUthVxanTmT+u98wvIKnjxiaE5J4UOzMqR5Gpp5/A=",
+    strip_prefix = "emsdk-8954578c72bfe52221dffb3b614b7a235517b631/bazel",
     urls = [
-        "https://github.com/DoDoENT/emsdk/archive/831b9fb2eab88565c930564a856bc13dfea7131b.zip",
+        "https://github.com/DoDoENT/emsdk/archive/8954578c72bfe52221dffb3b614b7a235517b631.zip",
     ],
 )
 # single_version_override(

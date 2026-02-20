@@ -41,7 +41,7 @@ common --experimental_local_lockfree_output
 common --build_metadata=REPO_URL=https://github.com/DoDoENT/bazel-playground
 common --disk_cache=~/.bazel-cache/build --experimental_disk_cache_gc_max_size=20G
 common --repository_cache=~/.bazel-cache/repo
-common --repo_contents_cache=~/.bazel-cache/repo_contents
+common --repo_contents_cache=~/.bazel-cache/repo-contents
 startup --experimental_remote_repo_contents_cache
 
 common --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
