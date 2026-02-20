@@ -147,6 +147,16 @@ register_toolchains(
 
 bazel_dep(name = "rules_python", version = "1.8.4")
 
+# needed for emsdk
+archive_override(
+    module_name = "rules_python",
+    integrity = "sha256-wKbEpHkciajxi0tS/6mPUtKcNu98bRaVJQiP5d7RUTI=",
+    strip_prefix = "rules_python-19d2f8da05a4dd008a96d6108b06d19ab75b4884",
+    urls = [
+        "https://github.com/DoDoENT/rules_python/archive/19d2f8da05a4dd008a96d6108b06d19ab75b4884.zip",
+    ],
+)
+
 PYTHON_VERSION = "3.14"
 
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
@@ -223,14 +233,12 @@ use_repo(maven, "android_test_deps")
 bazel_dep(name = "emsdk", version = "5.0.1")
 archive_override(
     module_name = "emsdk",
-    integrity = "sha256-Fkpokqlj11EuKPn2lv4tshYb6Xny8TyoKtRij1dhe2U=",
-    strip_prefix = "emsdk-831b9fb2eab88565c930564a856bc13dfea7131b/bazel",
+    integrity = "sha256-p0B4a3UdAEegDkG7OW3ur8Ew0GO6K8gTzQ8Z1xVXyVY=",
+    strip_prefix = "emsdk-c0dc09283f99b81bd205dad8c7164eda1c7289c7/bazel",
     urls = [
-        "https://github.com/DoDoENT/emsdk/archive/831b9fb2eab88565c930564a856bc13dfea7131b.zip",
+        "https://github.com/DoDoENT/emsdk/archive/c0dc09283f99b81bd205dad8c7164eda1c7289c7.zip",
     ],
 )
-emscripten_deps = use_extension("@emsdk//:emscripten_deps.bzl", "emscripten_deps")
-emscripten_deps.config(version = "4.0.16")
 # single_version_override(
 #     module_name = "emsdk",
 #     patch_strip = 1,
