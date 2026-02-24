@@ -7,6 +7,236 @@ index 378977b..afc5028 100644
  
  *.swp
 +Session.vim
+diff --git a/BUILD.ndk_clang.tpl b/BUILD.ndk_clang.tpl
+index 76b1b9c..9fa3cab 100644
+--- a/BUILD.ndk_clang.tpl
++++ b/BUILD.ndk_clang.tpl
+@@ -1,5 +1,6 @@
+ """Declarations for the NDK's Clang directory."""
+ 
++load("@rules_cc//cc/toolchains:cc_toolchain.bzl", "cc_toolchain")
+ load("@@{repository_name}//:ndk_cc_toolchain_config.bzl", "ndk_cc_toolchain_config_rule")
+ load("//:target_systems.bzl", "TARGET_SYSTEM_NAMES")
+ 
+diff --git a/BUILD.ndk_sysroot.tpl b/BUILD.ndk_sysroot.tpl
+index e5613ac..f14942f 100644
+--- a/BUILD.ndk_sysroot.tpl
++++ b/BUILD.ndk_sysroot.tpl
+@@ -16,7 +16,7 @@ filegroup(
+         "usr/lib/{target_system_name}/{api_level}/*".format(
+             target_system_name = target_system_name,
+         ),
+-    ]),
++    ], allow_empty = True),
+ ) for target_system_name in TARGET_SYSTEM_NAMES]
+ 
+ [filegroup(
+diff --git a/MODULE.bazel b/MODULE.bazel
+index 2d8e941..63b46f3 100644
+--- a/MODULE.bazel
++++ b/MODULE.bazel
+@@ -5,5 +5,5 @@ module(
+     repo_name = "rules_android_ndk",
+ )
+ 
+-bazel_dep(name = "platforms", version = "0.0.10")
+-bazel_dep(name = "rules_cc", version = "0.0.17")
++bazel_dep(name = "platforms", version = "1.0.0")
++bazel_dep(name = "rules_cc", version = "0.2.14")
+diff --git a/README.md b/README.md
+index a73f65f..fe80903 100644
+--- a/README.md
++++ b/README.md
+@@ -3,36 +3,111 @@
+ ## Overview
+ 
+ This repository contains Starlark rules for integrating Bazel with the
+-Android NDK. These rules currently work with Android NDK version 25b.
++Android NDK. These rules currently work with Android NDK version 25b or later.
+ 
+-NOTE: This is a development preview of the Starlark Android NDK Bazel
+-rules. These rules are not guaranteed to be complete or work for every
+-NDK use case. Bazel versions up to and including 7.0.0 contain a
+-built-in ("native") version of `android_ndk_repository` described at
+-https://bazel.build/reference/be/android#android_ndk_repository. Over
+-time, these Starlark rules will replace the native version of
+-`android_ndk_repository`.
++The recommended Bazel version for these rules is **7.4.0 or later**.
++
++For use cases where an older NDK or older Bazel version is required, the legacy
++Android native rules in Bazel 7 or earlier are a suitable alternative.
+ 
+ ## Getting Started
+ 
++### Bzlmod setup (recommended)
++
++To use the Android NDK rules, add the following to your `MODULE.bazel` file:
++
++```starlark
++# Or a later version of the following bazel_dep()s
++bazel_dep(name = "platforms", version = "0.0.10")
++bazel_dep(name = "rules_cc", version = "0.0.17")
++bazel_dep(name = "rules_android_ndk", version = "0.1.2")
++
++android_ndk_repository_extension = use_extension("@rules_android_ndk//:extension.bzl", "android_ndk_repository_extension")
++use_repo(android_ndk_repository_extension, "androidndk")
++
++register_toolchains("@androidndk//:all")
++```
++
++### Legacy WORKSPACE setup
++
+ To use the Android NDK rules, add the following to your `WORKSPACE` file:
+ 
+-    # Or a later commit
+-    RULES_ANDROID_NDK_COMMIT= "81ec8b79dc50ee97e336a25724fdbb28e33b8d41"
+-    RULES_ANDROID_NDK_SHA = "b29409496439cdcdb50a8e161c4953ca78a548e16d3ee729a1b5cd719ffdacbf"
++```
++http_archive(
++    name = "rules_android_ndk",
++    sha256 = "89bf5012567a5bade4c78eac5ac56c336695c3bfd281a9b0894ff6605328d2d5",
++    strip_prefix = "rules_android_ndk-0.1.3",
++    url = "https://github.com/bazelbuild/rules_android_ndk/releases/download/v0.1.3/rules_android_ndk-v0.1.3.tar.gz",
++)
++
++http_archive(
++    name = "rules_android",
++    sha256 = "af84b69ab3d16dd1a41056286e6511f147a94ccea995603e13e934c915c1631c",
++    strip_prefix = "rules_android-0.6.0",
++    url = "https://github.com/bazelbuild/rules_android/releases/download/v0.6.0/rules_android-v0.6.0.tar.gz",
++)
++
++# Android rules dependencies
++load("@rules_android//:prereqs.bzl", "rules_android_prereqs")
++
++rules_android_prereqs()
++
++##### rules_java setup for rules_android #####
++load("@rules_java//java:rules_java_deps.bzl", "rules_java_dependencies")
++
++rules_java_dependencies()
++
++# note that the following line is what is minimally required from protobuf for the java rules
++# consider using the protobuf_deps() public API from @com_google_protobuf//:protobuf_deps.bzl
++load("@com_google_protobuf//bazel/private:proto_bazel_features.bzl", "proto_bazel_features")  # buildifier: disable=bzl-visibility
++
++proto_bazel_features(name = "proto_bazel_features")
++
++# register toolchains
++load("@rules_java//java:repositories.bzl", "rules_java_toolchains")
+ 
+-    load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+-    http_archive(
+-        name = "rules_android_ndk",
+-        url = "https://github.com/bazelbuild/rules_android_ndk/archive/%s.zip" % RULES_ANDROID_NDK_COMMIT,
+-        sha256 = RULES_ANDROID_NDK_SHA,
+-        strip_prefix = "rules_android_ndk-%s" % RULES_ANDROID_NDK_COMMIT,
+-    )
+-    load("@rules_android_ndk//:rules.bzl", "android_ndk_repository")
++rules_java_toolchains()
+ 
+-    android_ndk_repository(name = "androidndk")
++##### rules_jvm_external setup for rules_android #####
++load("@rules_jvm_external//:repositories.bzl", "rules_jvm_external_deps")
+ 
+-    register_toolchains("@androidndk//:all")
++rules_jvm_external_deps()
++
++load("@rules_jvm_external//:setup.bzl", "rules_jvm_external_setup")
++
++rules_jvm_external_setup()
++
++##### rules_android setup #####
++load("@rules_android//:defs.bzl", "rules_android_workspace")
++
++rules_android_workspace()
++
++# Android SDK setup
++load("@rules_android//rules:rules.bzl", "android_sdk_repository")
++
++android_sdk_repository(
++    name = "androidsdk",
++)
++
++register_toolchains(
++    "@rules_android//toolchains/android:android_default_toolchain",
++    "@rules_android//toolchains/android_sdk:android_sdk_tools",
++)
++
++##### rules_cc setup #####
++http_archive(
++    name = "rules_cc",
++    sha256 = "abc605dd850f813bb37004b77db20106a19311a96b2da1c92b789da529d28fe1",
++    strip_prefix = "rules_cc-0.0.17",
++    urls = ["https://github.com/bazelbuild/rules_cc/releases/download/0.0.17/rules_cc-0.0.17.tar.gz"],
++)
++
++load("@rules_android_ndk//:rules.bzl", "android_ndk_repository")
++
++android_ndk_repository(name = "androidndk")
++
++register_toolchains("@androidndk//:all")
++```
+ 
+ Then, set the `ANDROID_NDK_HOME` environment variable or the `path` attribute of
+ `android_ndk_repository` to the path of the local Android NDK installation
+@@ -45,19 +120,31 @@ against.
+ Finally, when building an Android app with native dependencies (e.g.
+ `cc_library` targets), add
+ 
+-    --fat_apk_cpu=<cpus> --android_crosstool_top=@androidndk//:toolchain
+-
+-to your Bazel invocation. `<cpus>` is a comma-separated list of the available
+-CPUs:
+-
+-    armeabi-v7a
+-    arm64-v8a
+-    x86
+-    x86_64
+-
+-e.g. `--fat_apk_cpu=arm64-v8a` or `--fat_apk_cpu=arm64-v8a,x86`.
+-
+-These flags may also be added to the your project's `.bazelrc` file so that they
+-don't have to be specified on the command line.
++    --android_platforms=<platforms>
++
++to your Bazel invocation. `<platforms>` is a comma-separated list of the available
++platforms. See https://bazel.build/extending/platforms for more details.
++Some common platforms can be constructed as follows:
++
++```starlark
++platform(
++    name = "arm64-v8a",
++    constraint_values = [
++        "@platforms//cpu:arm64",
++        "@platforms//os:android",
++    ],
++)
++
++platform(
++    name = "x86",
++    constraint_values = [
++        "@platforms//cpu:x86_32",
++        "@platforms//os:android",
++    ],
++)
++```
++
++The `--android_platforms` flag may also be added to the your project's
++`.bazelrc` file so that it doesn't have to be specified on the command line.
+ 
+ See the example in https://github.com/bazelbuild/rules_android_ndk/tree/main/examples/basic.
+diff --git a/examples/basic/README.md b/examples/basic/README.md
+index 5808669..e44788e 100644
+--- a/examples/basic/README.md
++++ b/examples/basic/README.md
+@@ -1,5 +1,5 @@
+ To build, run:
+ 
+-    bazel build java/com/app --fat_apk_cpu=arm64-v8a,x86 --android_crosstool_top=@androidndk//:toolchain
++    bazel build java/com/app --android_platforms=//:arm64-v8a,//:x86
+ 
+ in this directory.
 diff --git a/extension.bzl b/extension.bzl
 index 22c8076..af6b0c6 100644
 --- a/extension.bzl
@@ -42,10 +272,18 @@ index 22c8076..af6b0c6 100644
          }),
      },
 diff --git a/ndk_cc_toolchain_config.bzl b/ndk_cc_toolchain_config.bzl
-index a449a1f..ff3ab22 100644
+index f668c3e..ff3ab22 100644
 --- a/ndk_cc_toolchain_config.bzl
 +++ b/ndk_cc_toolchain_config.bzl
-@@ -348,7 +348,7 @@ def ndk_cc_toolchain_config(
+@@ -27,6 +27,7 @@ load(
+     "with_feature_set",
+     flag_set_ = "flag_set",
+ )
++load("@rules_cc//cc/common:cc_common.bzl", "cc_common")
+ 
+ def ndk_cc_toolchain_config(
+         api_level,
+@@ -347,7 +348,7 @@ def ndk_cc_toolchain_config(
          ),
          feature(
              name = "crosstool_has_neon",
@@ -54,7 +292,7 @@ index a449a1f..ff3ab22 100644
          ),
          feature(
              name = "crosstool_needs_stackrealign",
-@@ -437,7 +437,7 @@ def ndk_cc_toolchain_config(
+@@ -436,7 +437,7 @@ def ndk_cc_toolchain_config(
                          action.cpp_link_executable,
                      ],
                      flag_groups = [
@@ -63,7 +301,7 @@ index a449a1f..ff3ab22 100644
                          flag_group(
                              expand_if_available = "lto_indexing_bitcode_file",
                              flags = [
-@@ -644,7 +644,6 @@ def ndk_cc_toolchain_config(
+@@ -643,7 +644,6 @@ def ndk_cc_toolchain_config(
                          "-std=gnu++17",
                          "-Wc++2a-extensions",
                          "-Woverloaded-virtual",
@@ -71,7 +309,7 @@ index a449a1f..ff3ab22 100644
                          "-Wno-deprecated",
                          "-fshow-overloads=best",
                          "-Wdeprecated-increment-bool",
-@@ -750,18 +749,13 @@ def ndk_cc_toolchain_config(
+@@ -749,18 +749,13 @@ def ndk_cc_toolchain_config(
                  ),
                  flag_set(
                      actions = actions.all_compile,
@@ -92,7 +330,7 @@ index a449a1f..ff3ab22 100644
                  ),
                  flag_set(
                      actions = actions.all_link,
-@@ -862,7 +856,6 @@ def ndk_cc_toolchain_config(
+@@ -861,7 +856,6 @@ def ndk_cc_toolchain_config(
                      flags = [
                          "-Wno-deprecated",
                          "-Wdeprecated-increment-bool",
@@ -100,7 +338,7 @@ index a449a1f..ff3ab22 100644
                          "-Woverloaded-virtual",
                      ],
                  ),
-@@ -1008,7 +1001,7 @@ def ndk_cc_toolchain_config(
+@@ -1007,7 +1001,7 @@ def ndk_cc_toolchain_config(
                  ),
                  flag_set(
                      actions = actions.all_link,
@@ -109,7 +347,7 @@ index a449a1f..ff3ab22 100644
                      features = ["opt"],
                  ),
  
-@@ -1074,10 +1067,9 @@ def ndk_cc_toolchain_config(
+@@ -1073,10 +1067,9 @@ def ndk_cc_toolchain_config(
                      actions = actions.all_compile,
                      flags = [
                          "-fsanitize=undefined",
@@ -123,7 +361,7 @@ index a449a1f..ff3ab22 100644
                      ],
                      features = ["ubsan"],
                  ),
-@@ -1085,8 +1077,6 @@ def ndk_cc_toolchain_config(
+@@ -1084,8 +1077,6 @@ def ndk_cc_toolchain_config(
                      actions = actions.all_link,
                      flags = [
                          "-fsanitize=undefined",
@@ -132,7 +370,7 @@ index a449a1f..ff3ab22 100644
                      ],
                      features = ["ubsan"],
                  ),
-@@ -1370,7 +1360,7 @@ def ndk_cc_toolchain_config(
+@@ -1369,7 +1360,7 @@ def ndk_cc_toolchain_config(
                  # Hardcoded library link flags.
                  flag_set(
                      actions = actions.all_full_link,

@@ -4,6 +4,7 @@ load("//macros:ios_mobile_test.bzl", "ios_mobile_test")
 load("//macros:mobile_library.bzl", "mobile_library")
 load("//macros:wasm_test.bzl", "wasm_test")
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
+load("@rules_cc//cc/private/rules_impl:cc_test.bzl", _cc_test_rule = "cc_test")
 load(
     ":constants.bzl",
     "TAG_WASM_BASIC",
@@ -212,7 +213,7 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
 
 mobile_test = macro(
     implementation = _mobile_test_impl,
-    inherit_attrs = native.cc_test,
+    inherit_attrs = _cc_test_rule,
     attrs = {
         "args": attr.string_list(
             default = [],

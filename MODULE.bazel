@@ -4,8 +4,8 @@ module(name = "playground")
 
 # Note: This needs to be before rules_cc in order to correctly configure the C++ toolchain.
 # See here why: https://www.smileykeith.com/2025/09/21/understanding-apple-debug-info/
-bazel_dep(name = "apple_support", version = "2.2.0")
-bazel_dep(name = "rules_cc", version = "0.2.16")
+bazel_dep(name = "apple_support", version = "2.3.0")
+bazel_dep(name = "rules_cc", version = "0.2.17")
 bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
 bazel_dep(name = "bazel_skylib", version = "1.9.0")
 bazel_dep(name = "bazelrc-preset.bzl", version = "1.9.2")
@@ -145,7 +145,7 @@ register_toolchains(
 # LLVM rules end
 # Python rules begin
 
-bazel_dep(name = "rules_python", version = "1.8.3")
+bazel_dep(name = "rules_python", version = "1.8.4")
 
 PYTHON_VERSION = "3.14"
 
@@ -220,14 +220,22 @@ use_repo(maven, "android_test_deps")
 # Android rules end
 
 # Emscripten rules begin
-bazel_dep(name = "emsdk", version = "4.0.16")
-single_version_override(
+bazel_dep(name = "emsdk", version = "5.0.1")
+archive_override(
     module_name = "emsdk",
-    patch_strip = 1,
-    patches = [
-        "//3rdparty:emsdk.patch",
+    integrity = "sha256-YWk2/HvQznCVxPICOrU9ZuCtcLDztsfvm0VtaUhqlXM=",
+    strip_prefix = "emsdk-dae73970c0b516a107197ad6d822fbed58ddb7f1/bazel",
+    urls = [
+        "https://github.com/DoDoENT/emsdk/archive/dae73970c0b516a107197ad6d822fbed58ddb7f1.zip",
     ],
 )
+# single_version_override(
+#     module_name = "emsdk",
+#     patch_strip = 1,
+#     patches = [
+#         "//3rdparty:emsdk.patch",
+#     ],
+# )
 
 emscripten_cache = use_extension(
     "@emsdk//:emscripten_cache.bzl",
