@@ -338,6 +338,24 @@
   },
   "selectedYankedVersions": {},
   "moduleExtensions": {
+    "@@rules_android+//bzlmod_extensions:com_android_dex.bzl%com_android_dex_extension": {
+      "general": {
+        "bzlTransitiveDigest": "WYXjwqaZbEnV+ZWsKE3oDMpF5XVw8hxzet83NtyT8TM=",
+        "usagesDigest": "c1Y/KGGjUYCyd8zNIVTUh1bynVXRFz6xGKaSCBpQANM=",
+        "recordedInputs": [
+          "REPO_MAPPING:rules_android+,bazel_tools bazel_tools"
+        ],
+        "generatedRepoSpecs": {
+          "com_android_dex": {
+            "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
+            "attributes": {
+              "url": "https://android.googlesource.com/platform/dalvik/+archive/5a81c499a569731e2395f7c8d13c0e0d4e17a2b6.tar.gz",
+              "build_file": "@@rules_android+//bzlmod_extensions:com_android_dex.BUILD"
+            }
+          }
+        }
+      }
+    },
     "@@rules_android+//rules/android_sdk_repository:rule.bzl%android_sdk_repository_extension": {
       "general": {
         "bzlTransitiveDigest": "+rMrzIrv7sImYmkbXJYv+gFpTJQ79X3MpwwMLI2A+oA=",
@@ -347,6 +365,22 @@
           "androidsdk": {
             "repoRuleId": "@@rules_android+//rules/android_sdk_repository:rule.bzl%_android_sdk_repository",
             "attributes": {}
+          }
+        }
+      }
+    },
+    "@@rules_android_ndk+//:extension.bzl%android_ndk_repository_extension": {
+      "general": {
+        "bzlTransitiveDigest": "YsPKn1O2e/VSimulujbIG30CoCXvmpM0z8N+MtunDto=",
+        "usagesDigest": "lr0dmAPJFdk1yRzDKzvyCyIN1ObTMsqdqQSbxdggJNw=",
+        "recordedInputs": [],
+        "generatedRepoSpecs": {
+          "androidndk": {
+            "repoRuleId": "@@rules_android_ndk+//:rules.bzl%android_ndk_repository",
+            "attributes": {
+              "api_level": 21,
+              "version": "r29"
+            }
           }
         }
       }
