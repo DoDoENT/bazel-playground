@@ -60,9 +60,6 @@ def _mobile_binary_impl(name, visibility, data, args, host_only, static_cxx_runt
     defines = kwargs.pop("defines") or select({
         Label("//conditions:default"): [],
     })
-    includes = kwargs.pop("includes") or select({
-        Label("//conditions:default"): [],
-    })
     local_defines = kwargs.pop("local_defines") or select({
         Label("//conditions:default"): [],
     })
@@ -75,14 +72,13 @@ def _mobile_binary_impl(name, visibility, data, args, host_only, static_cxx_runt
         srcs = srcs,
         visibility = visibility,
         linkopts = default_linkopts + linkopts,
-        copts = default_copts + copts,
+        copts = default_copts + copts + [
+            "-I" + native.package_name() + "/Source",
+        ],
         cxxopts = default_cxxopts + cxxopts,
         conlyopts = default_conlyopts + conlyopts,
         deps = deps + [
             native.package_relative_label(":" + name + "-paths"),
-        ],
-        includes = includes + [
-            "Source",
         ],
         tags = tags + [TAG_HOST],
         data = data,
@@ -106,9 +102,6 @@ def _mobile_binary_impl(name, visibility, data, args, host_only, static_cxx_runt
             deps = deps + [
                 native.package_relative_label(":" + name + "-paths"),
             ],
-            includes = includes + [
-                "Source",
-            ],
             tags = tags,
             args = args,
             data = data,
@@ -127,9 +120,6 @@ def _mobile_binary_impl(name, visibility, data, args, host_only, static_cxx_runt
             linkopts = linkopts,
             deps = deps + [
                 native.package_relative_label(":" + name + "-paths"),
-            ],
-            includes = includes + [
-                "Source",
             ],
             tags = tags,
             args = args,
@@ -153,7 +143,6 @@ def _mobile_binary_impl(name, visibility, data, args, host_only, static_cxx_runt
             tags = tags,
             data = data,
             defines = defines,
-            includes = includes,
             local_defines = local_defines,
             simd = False,
             threads = False,
@@ -173,7 +162,6 @@ def _mobile_binary_impl(name, visibility, data, args, host_only, static_cxx_runt
             tags = tags,
             data = data,
             defines = defines,
-            includes = includes,
             local_defines = local_defines,
             simd = True,
             threads = False,
@@ -193,7 +181,6 @@ def _mobile_binary_impl(name, visibility, data, args, host_only, static_cxx_runt
             tags = tags,
             data = data,
             defines = defines,
-            includes = includes,
             local_defines = local_defines,
             simd = True,
             threads = True,

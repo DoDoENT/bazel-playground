@@ -44,9 +44,6 @@ def _wasm_mobile_binary_impl(name, visibility, data, threads, simd, html_shell, 
     defines = kwargs.pop("defines") or select({
         Label("//conditions:default"): [],
     })
-    includes = kwargs.pop("includes") or select({
-        Label("//conditions:default"): [],
-    })
     local_defines = kwargs.pop("local_defines") or select({
         Label("//conditions:default"): [],
     })
@@ -84,13 +81,12 @@ def _wasm_mobile_binary_impl(name, visibility, data, threads, simd, html_shell, 
             Label("//macros/wasm-helpers:wasm_thread_limit_helper"),
         ],
         linkopts = default_linkopts + wasm_linkopts + linkopts,
-        copts = default_copts + copts,
+        copts = default_copts + copts + [
+            "-I" + native.package_name() + "/Source",
+        ],
         cxxopts = default_cxxopts + cxxopts,
         conlyopts = default_conlyopts + conlyopts,
         defines = defines,
-        includes = includes + [
-            "Source",
-        ],
         local_defines = local_defines + [
             "EMSCRIPTEN_EMRUN_MAX_NUMBER_OF_WORKERS=" + str(max_number_of_wasm_workers),
         ],

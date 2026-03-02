@@ -42,7 +42,9 @@ def _mobile_library_common_impl(name, visibility, default_copts_key, **kwargs):
     cc_library(
         name = name,
         visibility = visibility,
-        copts = default_copts + copts + force_include_copts,
+        copts = default_copts + copts + force_include_copts + [
+            "-I" + native.package_name() + "/Source",
+        ],
         additional_compiler_inputs = additional_compiler_inputs + banned_compiler_inputs,
         cxxopts = default_cxxopts + cxxopts,
         linkstatic = linkstatic,

@@ -75,7 +75,9 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
         srcs = srcs,
         visibility = visibility,
         linkopts = default_linkopts + linkopts,
-        copts = default_copts + copts,
+        copts = default_copts + copts + [
+            "-I" + native.package_name() + "/Source",
+        ],
         cxxopts = default_cxxopts + cxxopts,
         conlyopts = default_conlyopts + conlyopts,
         deps = deps + [
