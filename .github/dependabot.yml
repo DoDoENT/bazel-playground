@@ -8,4 +8,4 @@ updates:
   - package-ecosystem: "bazel"
     directory: "/" # Location of package manifests
     schedule:
-      interval: "weekly"
+      interval: "daily"
