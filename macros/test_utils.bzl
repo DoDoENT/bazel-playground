@@ -3,7 +3,7 @@ def _prepare_assets_impl(ctx):
     outputs = []
     for dep in ctx.attr.data:
         for file in dep.files.to_list():
-            output = ctx.actions.declare_file("%s/%s" % (output_dir, file.path))
+            output = ctx.actions.declare_file("%s/%s" % (output_dir, file.short_path))
             ctx.actions.symlink(
                 output = output,
                 target_file = file,
