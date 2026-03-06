@@ -4,7 +4,11 @@ def _calculate_clang_flags():
     _local_clang_flags = dict(**gcc_compat_flags)
     _local_clang_flags["compiler_lto"] = [
         "-flto=thin",
-        # "-fwhole-program-vtables", # needs toolchain support
+        "-fwhole-program-vtables",
+    ]
+    _local_clang_flags["compiler_disable_lto"] = [
+        "-fno-lto",
+        "-fno-whole-program-vtables",
     ]
     _local_clang_flags["linker_lto"] = [
         "-flto=thin",
