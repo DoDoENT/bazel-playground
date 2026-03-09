@@ -10,7 +10,7 @@ load(":test_utils.bzl", "prepare_assets", "collect_dependencies")
 
 max_number_of_wasm_workers = 16
 
-def _wasm_mobile_binary_impl(name, visibility, data, threads, simd, html_shell, **kwargs):
+def _wasm_mobile_binary_impl(name, visibility, data, skip_packaging_deps_runfiles, threads, simd, html_shell, **kwargs):
     wasm_linkopts = []
     additional_linker_inputs = []
 
@@ -18,7 +18,7 @@ def _wasm_mobile_binary_impl(name, visibility, data, threads, simd, html_shell, 
         name = name + "-assets",
         data = data,
         testonly = kwargs.get("testonly", False),
-        deps_runfiles = kwargs.get("deps", []) + kwargs.get("srcs", []),
+        deps_runfiles = [] if skip_packaging_deps_runfiles else kwargs.get("deps", []) + kwargs.get("srcs", []),
         ensure_non_empty = True,
     )
     additional_linker_inputs.append(native.package_relative_label(":" + name + "-assets"))
@@ -135,6 +135,11 @@ wasm_mobile_binary = macro(
             allow_files = True,
             default = [],
             doc = "List of data files to be packaged with the binary.",
+        ),
+        "skip_packaging_deps_runfiles": attr.bool(
+            default = False,
+            configurable = False,
+            doc = "If true, runfiles from dependencies will not be automatically included in the generated ios/android/WASM packages. This is useful if `collect_resources` has been used to repackage all necessary runfiles into a single target that is then added as a data dependency.",
         ),
         "threads": attr.bool(
             default = False,

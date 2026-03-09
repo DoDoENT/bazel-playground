@@ -15,7 +15,7 @@ load(
     "TAG_HOST",
 )
 
-def _mobile_binary_impl(name, visibility, data, args, host_only, static_cxx_runtime, **kwargs):
+def _mobile_binary_impl(name, visibility, data, skip_packaging_deps_runfiles, args, host_only, static_cxx_runtime, **kwargs):
     mobile_library(
         name = name + "-paths",
         srcs = [
@@ -102,6 +102,7 @@ def _mobile_binary_impl(name, visibility, data, args, host_only, static_cxx_runt
             deps = deps + [
                 native.package_relative_label(":" + name + "-paths"),
             ],
+            skip_packaging_deps_runfiles = skip_packaging_deps_runfiles,
             tags = tags,
             args = args,
             data = data,
@@ -121,6 +122,7 @@ def _mobile_binary_impl(name, visibility, data, args, host_only, static_cxx_runt
             deps = deps + [
                 native.package_relative_label(":" + name + "-paths"),
             ],
+            skip_packaging_deps_runfiles = skip_packaging_deps_runfiles,
             tags = tags,
             args = args,
             data = data,
@@ -140,6 +142,7 @@ def _mobile_binary_impl(name, visibility, data, args, host_only, static_cxx_runt
             deps = deps + [
                 native.package_relative_label(":" + name + "-paths"),
             ],
+            skip_packaging_deps_runfiles = skip_packaging_deps_runfiles,
             tags = tags,
             data = data,
             defines = defines,
@@ -159,6 +162,7 @@ def _mobile_binary_impl(name, visibility, data, args, host_only, static_cxx_runt
             deps = deps + [
                 native.package_relative_label(":" + name + "-paths"),
             ],
+            skip_packaging_deps_runfiles = skip_packaging_deps_runfiles,
             tags = tags,
             data = data,
             defines = defines,
@@ -178,6 +182,7 @@ def _mobile_binary_impl(name, visibility, data, args, host_only, static_cxx_runt
             deps = deps + [
                 native.package_relative_label(":" + name + "-paths"),
             ],
+            skip_packaging_deps_runfiles = skip_packaging_deps_runfiles,
             tags = tags,
             data = data,
             defines = defines,
@@ -197,6 +202,11 @@ mobile_binary = macro(
             default = [],
             doc = "Test data files",
             configurable = False,
+        ),
+        "skip_packaging_deps_runfiles": attr.bool(
+            default = False,
+            configurable = False,
+            doc = "If true, runfiles from dependencies will not be automatically included in the generated ios/android/WASM packages. This is useful if `collect_resources` has been used to repackage all necessary runfiles into a single target that is then added as a data dependency.",
         ),
         "args": attr.string_list(
             default = [],

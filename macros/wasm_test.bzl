@@ -5,11 +5,12 @@ load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
 load(":wasm_mobile_binary.bzl", "wasm_mobile_binary")
 load("//test-support/wasm-test/posluznik-test:posluznik_test.bzl", "posluznik_test")
 
-def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, threads, simd, args, tags, data, defines, local_defines, size, timeout, target_compatible_with):
+def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, threads, simd, args, tags, data, skip_packaging_deps_runfiles, defines, local_defines, size, timeout, target_compatible_with):
     wasm_mobile_binary(
         name = name + "-bin",
         srcs = srcs,
         data = data,
+        skip_packaging_deps_runfiles = skip_packaging_deps_runfiles,
         simd = simd,
         threads = threads,
         tags = ["manual"],
@@ -93,6 +94,11 @@ wasm_test = macro(
             allow_files = True,
             default = [],
             doc = "Test data files",
+        ),
+        "skip_packaging_deps_runfiles": attr.bool(
+            default = False,
+            configurable = False,
+            doc = "If true, runfiles from dependencies will not be automatically included in the generated ios/android/WASM packages. This is useful if `collect_resources` has been used to repackage all necessary runfiles into a single target that is then added as a data dependency.",
         ),
         "defines": attr.string_list(
             default = [],

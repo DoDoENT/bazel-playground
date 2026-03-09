@@ -16,7 +16,7 @@ load(
     "TAG_MULTI_CPU",
 )
 
-def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, wasm_basic, wasm_simd, wasm_simd_threads, android_deploy_resources, **kwargs):
+def _mobile_test_impl(name, visibility, args, data, skip_packaging_deps_runfiles, host_only, android, ios, wasm_basic, wasm_simd, wasm_simd_threads, android_deploy_resources, **kwargs):
 
     mobile_library(
         name = name + "-paths",
@@ -108,6 +108,7 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
                 deps = deps + [
                     native.package_relative_label(":" + name + "-paths"),
                 ],
+                skip_packaging_deps_runfiles = skip_packaging_deps_runfiles,
                 tags = tags_without_multi_cpu,
                 args = args,
                 data = data,
@@ -130,6 +131,7 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
                 deps = deps + [
                     native.package_relative_label(":" + name + "-paths"),
                 ],
+                skip_packaging_deps_runfiles = skip_packaging_deps_runfiles,
                 tags = tags_without_multi_cpu,
                 args = args,
                 data = data,
@@ -153,6 +155,7 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
                 deps = deps + [
                     native.package_relative_label(":" + name + "-paths"),
                 ],
+                skip_packaging_deps_runfiles = skip_packaging_deps_runfiles,
                 threads = False,
                 simd = False,
                 args = args,
@@ -177,6 +180,7 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
                 deps = deps + [
                     native.package_relative_label(":" + name + "-paths"),
                 ],
+                skip_packaging_deps_runfiles = skip_packaging_deps_runfiles,
                 threads = False,
                 simd = True,
                 args = args,
@@ -200,6 +204,7 @@ def _mobile_test_impl(name, visibility, args, data, host_only, android, ios, was
                 deps = deps + [
                     native.package_relative_label(":" + name + "-paths"),
                 ],
+                skip_packaging_deps_runfiles = skip_packaging_deps_runfiles,
                 threads = True,
                 simd = True,
                 args = args,
@@ -226,6 +231,11 @@ mobile_test = macro(
             allow_files = True,
             default = [],
             doc = "Test data files",
+        ),
+        "skip_packaging_deps_runfiles": attr.bool(
+            default = False,
+            configurable = False,
+            doc = "If true, runfiles from dependencies will not be automatically included in the generated ios/android/WASM packages. This is useful if `collect_resources` has been used to repackage all necessary runfiles into a single target that is then added as a data dependency.",
         ),
         "host_only": attr.bool(
             default = False,

@@ -7,7 +7,7 @@ load(":mobile_library.bzl", "mobile_library")
 load(":constants.bzl", "TAG_IOS")
 load(":test_utils.bzl", "remove_cc_binary_specific_attrs", "prepare_assets")
 
-def _ios_mobile_binary_impl(name, visibility, args, **kwargs):
+def _ios_mobile_binary_impl(name, visibility, args, skip_packaging_deps_runfiles, **kwargs):
     deps = kwargs.pop("deps") or select({
         Label("//conditions:default"): [],
     })
@@ -30,7 +30,7 @@ def _ios_mobile_binary_impl(name, visibility, args, **kwargs):
     prepare_assets(
         name = name + "-assets",
         data = data,
-        deps_runfiles = deps + kwargs.get("srcs", []),
+        deps_runfiles = [] if skip_packaging_deps_runfiles else deps + kwargs.get("srcs", []),
         testonly = kwargs.get("testonly"),
     )
 
@@ -75,6 +75,11 @@ ios_mobile_binary = macro(
         "args": attr.string_list(
             default = [],
             configurable = False,
+        ),
+        "skip_packaging_deps_runfiles": attr.bool(
+            default = False,
+            configurable = False,
+            doc = "If true, runfiles from dependencies will not be automatically included in the generated ios/android/WASM packages. This is useful if `collect_resources` has been used to repackage all necessary runfiles into a single target that is then added as a data dependency.",
         ),
     },
 )

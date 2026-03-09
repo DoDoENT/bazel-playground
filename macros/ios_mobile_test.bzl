@@ -5,7 +5,7 @@ load("//macros:mobile_library.bzl", "mobile_library")
 load(":constants.bzl", "TAG_IOS")
 load(":test_utils.bzl", "prepare_assets")
 
-def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, defines, local_defines, size, timeout, target_compatible_with):
+def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, skip_packaging_deps_runfiles, defines, local_defines, size, timeout, target_compatible_with):
     mobile_library(
         name = name + "-srcs",
         srcs = srcs,
@@ -26,7 +26,7 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, lin
     prepare_assets(
         name = name + "-assets",
         data = data,
-        deps_runfiles = deps + srcs,
+        deps_runfiles = [] if skip_packaging_deps_runfiles else deps + srcs,
         testonly = True,
     )
 
@@ -113,6 +113,11 @@ ios_mobile_test = macro(
             allow_files = True,
             default = [],
             doc = "Test data files",
+        ),
+        "skip_packaging_deps_runfiles": attr.bool(
+            default = False,
+            configurable = False,
+            doc = "If true, runfiles from dependencies will not be automatically included in the generated ios/android/WASM packages. This is useful if `collect_resources` has been used to repackage all necessary runfiles into a single target that is then added as a data dependency.",
         ),
         "defines": attr.string_list(
             default = [],

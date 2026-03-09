@@ -6,7 +6,7 @@ load(":constants.bzl", "TAG_ANDROID")
 load(":android_build_config.bzl", "android_build_config")
 load(":android_utils.bzl", "SANITIZER_SUPPORT_LIBS")
 
-def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, defines, local_defines, deploy_resources, size, timeout, target_compatible_with):
+def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, skip_packaging_deps_runfiles, defines, local_defines, deploy_resources, size, timeout, target_compatible_with):
     # Always use the same package name, as this makes it easier to monitor test runs with ADB and it's not
     # possible to run multiple tests simultaneously anyway (they would conflict on the device).
     package_name = "com.example.testrunner"
@@ -54,7 +54,7 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
     prepare_assets(
         name = name + "-assets",
         data = data,
-        deps_runfiles = deps + srcs,
+        deps_runfiles = [] if skip_packaging_deps_runfiles else deps + srcs,
         testonly = True,
     )
 
@@ -146,6 +146,11 @@ android_mobile_test = macro(
             allow_files = True,
             default = [],
             doc = "Test data files",
+        ),
+        "skip_packaging_deps_runfiles": attr.bool(
+            default = False,
+            configurable = False,
+            doc = "If true, runfiles from dependencies will not be automatically included in the generated ios/android/WASM packages. This is useful if `collect_resources` has been used to repackage all necessary runfiles into a single target that is then added as a data dependency.",
         ),
         "defines": attr.string_list(
             default = [],
