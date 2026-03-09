@@ -192,7 +192,7 @@ use_repo(android_ndk_repository_extension, "androidndk")
 
 bazel_dep(name = "rules_java", version = "9.3.0")
 bazel_dep(name = "rules_android", version = "0.7.1")
-bazel_dep(name = "protobuf", version = "34.0.bcr.1") # Note: needed for apple_support, but not yet compatible with rules_android 0.7.1
+bazel_dep(name = "protobuf", version = "34.0.bcr.1")
 
 remote_android_extensions = use_extension("@rules_android//bzlmod_extensions:android_extensions.bzl", "remote_android_tools_extensions")
 use_repo(remote_android_extensions, "android_tools")
@@ -217,6 +217,33 @@ maven.install(
 )
 use_repo(maven, "android_test_deps")
 
+# override protobuf for rules_android
+maven.install(
+    name = "android_ide_common_30_1_3",
+    artifacts = [
+        "com.google.protobuf:protobuf-java:4.34.0",
+        "com.google.protobuf:protobuf-java-util:4.34.0",
+    ],
+    repositories = [
+        "https://maven.google.com",
+        "https://repo1.maven.org/maven2",
+    ],
+    use_starlark_android_rules = True,
+    known_contributing_modules = ["rules_android"]
+)
+maven.install(
+    name = "rules_android_maven",
+    artifacts = [
+        "com.google.protobuf:protobuf-java:4.34.0",
+        "com.google.protobuf:protobuf-java-util:4.34.0",
+    ],
+    repositories = [
+        "https://maven.google.com",
+        "https://repo1.maven.org/maven2",
+    ],
+    use_starlark_android_rules = True,
+    known_contributing_modules = ["rules_android"]
+)
 # Android rules end
 
 # Emscripten rules begin
