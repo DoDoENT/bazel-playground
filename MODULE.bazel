@@ -23,7 +23,7 @@ use_repo(host_platform, "host_platform")
 
 bazel_dep(name = "rules_apple", version = "4.4.0")
 bazel_dep(name = "rules_swift", version = "3.5.0")
-bazel_dep(name = "rules_xcodeproj", version = "3.5.1")
+bazel_dep(name = "rules_xcodeproj", version = "3.6.0")
 
 # Apple rules end
 
