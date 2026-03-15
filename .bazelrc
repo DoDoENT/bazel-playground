@@ -167,6 +167,6 @@ coverage:ci --spawn_strategy=local --remote_download_outputs=toplevel
 #coverage --remote_executor= --remote_cache=grpc://your.remote.executor:8980
 #coverage:ci --remote_executor= --remote_cache=grpc://your.remote.executor:8980
 
-try-import automatic.bazelrc
+import automatic.bazelrc
 
 try-import user.bazelrc
