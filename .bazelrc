@@ -25,10 +25,10 @@ common --jobs=100
 common --spawn_strategy=dynamic
 
 # workaround for https://github.com/bazelbuild/rules_rust/issues/3307
-common:macos --strategy=Rustc=local
+common:macos --strategy=Rustc=sandboxed,local
 
 # missing pkg-config binary in sysroot
-common:linux --strategy=CargoBuildScriptRun=local
+common:linux --strategy=CargoBuildScriptRun=sandboxed,local
 
 # Some advanced tweaks to dynamic execution
 # More info here: https://bazel.build/remote/dynamic#performance
@@ -117,8 +117,8 @@ mobile-install --mode=skylark --mobile_install_aspect=@rules_android//mobile_ins
 # For these reasons, we disable sanitizers on iOS builds.
 #     (2025-10-28) (Nenad Mikša)
 
-common:ios_device --config=no_sanitizers --ios_multi_cpus=arm64 --test_tag_filters=ios --strategy=FindProvisioningProfile=local
-common:ios_simulator --config=no_sanitizers --ios_multi_cpus=sim_arm64,x86_64 --test_tag_filters=ios --strategy=FindProvisioningProfile=local
+common:ios_device --config=no_sanitizers --ios_multi_cpus=arm64 --test_tag_filters=ios --strategy=FindProvisioningProfile=sandboxed,local
+common:ios_simulator --config=no_sanitizers --ios_multi_cpus=sim_arm64,x86_64 --test_tag_filters=ios --strategy=FindProvisioningProfile=sandboxed,local
 
 common:wasm --test_tag_filters=wasm-basic,wasm-simd,wasm-simd-threads --features=optimized_for_size
 
