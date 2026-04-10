@@ -36,12 +36,12 @@ def _android_mobile_binary_impl(name, visibility, args, skip_packaging_deps_runf
             Label("//macros/android-helpers/exerunner/PathProvider"),
         ],
         additional_linker_inputs = [
-            Label("//macros/android-helpers/exerunner:LinkerVersionScript"),
+            Label("@playground//macros/android-helpers/exerunner:LinkerVersionScript"),
         ] + additional_linker_inputs,
         linkopts = linkopts + [
             "-landroid",
             "-llog",
-            "-Wl,--version-script=$(execpath //macros/android-helpers/exerunner:LinkerVersionScript)",
+            "-Wl,--version-script=$(execpath @playground//macros/android-helpers/exerunner:LinkerVersionScript)",
         ],
         alwayslink = True,
         linkstatic = kwargs.pop("linkstatic") and False,
