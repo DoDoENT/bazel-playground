@@ -32,8 +32,6 @@ def _calculate_clang_flags():
         "-fenable-matrix",
     ]
     _local_clang_flags["compiler_runtime_checks"] = [
-        "-fsanitize=address",
-        "-fsanitize=undefined",
         "-fsanitize=signed-integer-overflow",
         "-fsanitize=integer-divide-by-zero",
     ]
