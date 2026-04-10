@@ -1,5 +1,6 @@
 load("@rules_apple//apple:apple.bzl", "local_provisioning_profile")
 load("@rules_apple//apple/testing/default_runner:ios_test_runner.bzl", "ios_test_runner")
+load("@rules_apple//apple/testing/default_runner:ios_xctestrun_runner.bzl", "ios_xctestrun_runner")
 
 load("@rules_xcodeproj//xcodeproj:xcode_provisioning_profile.bzl", "xcode_provisioning_profile")
 
@@ -23,8 +24,22 @@ xcode_provisioning_profile(
 )
 
 ios_test_runner(
-    name = "test_runner",
-    device_type = "iPhone 16",
-    os_version = "18.5",
+    name = "ios_device_test_runner",
+    visibility = ["//visibility:public"],
+)
+
+config_setting(
+    name = "building_for_device",
+    values = {
+        "ios_multi_cpus": "arm64",
+    },
+    visibility = ["//visibility:public"],
+)
+
+# This only supports running on simulator
+ios_xctestrun_runner(
+    name = "ios_simulator_test_runner",
+    device_type = "iPhone 17",
+    os_version = "26.4",
     visibility = ["//visibility:public"],
 )

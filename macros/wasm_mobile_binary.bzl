@@ -61,9 +61,9 @@ def _wasm_mobile_binary_impl(name, visibility, data, skip_packaging_deps_runfile
         wasm_linkopts.append("-s PTHREAD_POOL_SIZE='Math.min( navigator.hardwareConcurrency, " + str(max_number_of_wasm_workers) + ")'")
 
     if html_shell:
-        additional_linker_inputs.append(Label("//macros/wasm-helpers:wasm_worker_init"))
+        additional_linker_inputs.append(Label("@playground//macros/wasm-helpers:wasm_worker_init"))
         wasm_linkopts.append("--pre-js")
-        wasm_linkopts.append("$(execpath //macros/wasm-helpers:wasm_worker_init)")
+        wasm_linkopts.append("$(execpath @playground//macros/wasm-helpers:wasm_worker_init)")
 
         expand_template_rule(
             name = name + "-html-shell",

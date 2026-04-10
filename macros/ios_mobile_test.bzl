@@ -54,13 +54,19 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, lin
             "TEST_ARGC": str(len(args)),
         },
         minimum_os_version = "15.0",
-        provisioning_profile = Label("//test-support/ios-test:xcode_profile"),
+        provisioning_profile = select({
+            Label("//test-support/ios-test:building_for_device"): Label("//test-support/ios-test:xcode_profile"),
+            Label("//conditions:default"): None
+        }),
         test_host = Label("//test-support/ios-test/GoogleTestHost:GoogleTestHost"),
         tags = tags + [TAG_IOS, "exclusive", "no-remote-exec"], # need to be exclusive to prevent parallel invocation on the same device
         resources = [
             native.package_relative_label(":" + name + "-resources")
         ],
-        runner = Label("//test-support/ios-test:test_runner"),
+        runner = select({
+            Label("//test-support/ios-test:building_for_device"): Label("//test-support/ios-test:ios_device_test_runner"),
+            Label("//conditions:default"): Label("//test-support/ios-test:ios_simulator_test_runner"),
+        }),
         target_compatible_with = [
             # note: this target needs to run on macOS and introduces transition to iOS
             Label("@platforms//os:macos"),

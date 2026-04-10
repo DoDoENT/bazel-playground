@@ -27,11 +27,11 @@ def _mobile_library_common_impl(name, visibility, default_copts_key, **kwargs):
     if not testonly:
         banned_compiler_inputs = select({
             Label("//conditions:default"): [
-                Label("//build-helper:banned-header"),
+                Label("@playground//build-helper:banned-header"),
             ],
         })
         force_include_copts = [
-            "-include", "$(location //build-helper:banned-header)",
+            "-include", "$(location @playground//build-helper:banned-header)",
         ]
     else:
         banned_compiler_inputs = select({
@@ -62,7 +62,7 @@ def _mobile_library_common_impl(name, visibility, default_copts_key, **kwargs):
             # ios_mobile_test and ios_mobile_binary know how to handle resources correctly,
             # so suppress resource handling in cc_library to avoid redundant packaging of
             # cc_library data.
-            "@rules_apple//apple:suppress_resources",
+            Label("@rules_apple//apple:suppress_resources"),
         ] + aspect_hints,
         **kwargs,
     )
