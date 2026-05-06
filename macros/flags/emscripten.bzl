@@ -7,6 +7,7 @@ def _calculate_emscripten_flags():
     ]
     _local_emscripten_flags["linker_lto"] = [
         "-flto=thin",
+        "-Wl,--thinlto-jobs=4",
     ]
     _local_emscripten_flags["cxx_compiler_exceptions_off"] = _local_emscripten_flags["cxx_compiler_exceptions_off"] + [
         "-s DISABLE_EXCEPTION_CATCHING=1"

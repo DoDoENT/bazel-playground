@@ -7,6 +7,10 @@ def _calculate_apple_flags():
         "-Wl,-x",
     ]
 
+    _local_apple_flags["linker_lto"] = _local_apple_flags["linker_lto"] + [
+        "-Wl,-mllvm,-threads=4",
+    ]
+
     return _local_apple_flags
 
 apple_flags = _calculate_apple_flags()

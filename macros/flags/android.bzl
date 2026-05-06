@@ -14,6 +14,10 @@ def _calculate_android_flags():
         "-mllvm",
         "-polly",
     ]
+
+    _local_android_flags["linker_lto"] = _local_android_flags["linker_lto"] + [
+        "-Wl,--thinlto-jobs=4",
+    ]
     return _local_android_flags
 
 android_flags = _calculate_android_flags()

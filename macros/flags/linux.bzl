@@ -27,8 +27,8 @@ def _calculate_linux_clang_flags():
         "-lm",
     ]
 
-    _linux_clang_flags["linker_runtime_checks"] = _linux_clang_flags["linker_runtime_checks"] + [
-        "-lclang_rt.ubsan_standalone_cxx",
+    _linux_clang_flags["linker_lto"] = _linux_clang_flags["linker_lto"] + [
+        "-Wl,--thinlto-jobs=4",
     ]
 
     return _linux_clang_flags
