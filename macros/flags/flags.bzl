@@ -95,10 +95,7 @@ resolved_flags_select_dicts = {
     "linker_cxx_static_runtime": concat_select_dicts(
         "linker_cxx_static_runtime_conditions",
         "//macros/flags",
-        {
-            Label(":release"): flags_dicts["linker_cxx_static_runtime"],
-            Label("//conditions:default"): [],
-        }
+        flags_dicts["linker_cxx_static_runtime"],
     ),
     "conlyopts": concat_select_dicts(
         "conlyopts_conditions",
