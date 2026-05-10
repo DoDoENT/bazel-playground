@@ -8,6 +8,7 @@
   "onboarding": true,
   "platform": "github",
   "requireConfig": "optional",
+  "allowedUnsafeExecutions": ["bazelModDeps"],
   "repositories": [
       "DoDoENT/bazel-playground"
   ]
