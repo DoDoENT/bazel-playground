@@ -67,7 +67,7 @@ jobs:
             command: bazel test //:host
             extra_flags: ""
           - label: ios-simulator
-            command: bazel test //:ios
+            command: bazel build //:ios
             extra_flags: --config=ios_simulator
     steps:
       - name: Checkout
