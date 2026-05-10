@@ -1,0 +1,100 @@
+name: Build and test
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [master]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  linux:
+    name: Linux (${{ matrix.build_mode }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        build_mode: [default, release]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Bazel
+        uses: bazel-contrib/setup-bazel@0.9.1
+        with:
+          bazelisk-cache: true
+          repository-cache: true
+          bazelrc: |
+            common --remote_header=x-buildbuddy-api-key=${{ secrets.BUILDBUDDY_API_KEY }}
+
+      - name: Set release flag
+        id: flags
+        run: |
+          if [ "${{ matrix.build_mode }}" = "release" ]; then
+            echo "release_flag=--config=release" >> "$GITHUB_OUTPUT"
+          else
+            echo "release_flag=" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Test host
+        run: >
+          bazel test //:host
+          --config=ci
+          ${{ steps.flags.outputs.release_flag }}
+
+      - name: Test WebAssembly
+        run: >
+          bazel test //:wasm-all
+          --config=wasm
+          --config=ci
+          ${{ steps.flags.outputs.release_flag }}
+
+      - name: Build Android
+        run: >
+          bazel build //:android
+          --config=android
+          --config=ci
+          ${{ steps.flags.outputs.release_flag }}
+
+  macos:
+    name: macOS (${{ matrix.build_mode }})
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        build_mode: [default, release]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Bazel
+        uses: bazel-contrib/setup-bazel@0.9.1
+        with:
+          bazelisk-cache: true
+          repository-cache: true
+          bazelrc: |
+            common --remote_header=x-buildbuddy-api-key=${{ secrets.BUILDBUDDY_API_KEY }}
+
+      - name: Set release flag
+        id: flags
+        run: |
+          if [ "${{ matrix.build_mode }}" = "release" ]; then
+            echo "release_flag=--config=release" >> "$GITHUB_OUTPUT"
+          else
+            echo "release_flag=" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Test macOS host
+        run: >
+          bazel test //:host
+          --config=ci
+          ${{ steps.flags.outputs.release_flag }}
+
+      - name: Test iOS simulator
+        run: >
+          bazel test //:ios
+          --config=ios_simulator
+          --config=ci
+          ${{ steps.flags.outputs.release_flag }}
