@@ -190,7 +190,7 @@ use_repo(android_ndk_repository_extension, "androidndk")
 # Instead, register it with --extra_toolchains=@androidndk//:all from commandline
 # register_toolchains("@androidndk//:all")
 
-bazel_dep(name = "rules_java", version = "9.3.0")
+bazel_dep(name = "rules_java", version = "9.6.1")
 bazel_dep(name = "rules_android", version = "0.7.1")
 bazel_dep(name = "protobuf", version = "34.0.bcr.1")
 
