@@ -18,6 +18,7 @@ build --bes_backend=grpcs://remote.buildbuddy.io
 common --remote_timeout=10m
 common --remote_executor=grpcs://remote.buildbuddy.io --remote_local_fallback
 common --remote_cache_compression
+common --experimental_remote_downloader=grpcs://remote.buildbuddy.io
 # Give Bazel enough 'slots' to actually saturate the remote executor
 common --jobs=100
 
