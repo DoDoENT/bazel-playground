@@ -11,12 +11,22 @@ concurrency:
 
 jobs:
   linux:
-    name: Linux (${{ matrix.build_mode }})
+    name: Linux ${{ matrix.target.label }} (${{ matrix.build_mode }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         build_mode: [default, release]
+        target:
+          - label: host
+            command: bazel test //:host
+            extra_flags: ""
+          - label: wasm
+            command: bazel test //:wasm-all
+            extra_flags: --config=wasm
+          - label: android
+            command: bazel build //:android
+            extra_flags: --config=android
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -38,33 +48,27 @@ jobs:
             echo "release_flag=" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Test host
+      - name: ${{ matrix.target.label }}
         run: >
-          bazel test //:host
-          --config=ci
-          ${{ steps.flags.outputs.release_flag }}
-
-      - name: Test WebAssembly
-        run: >
-          bazel test //:wasm-all
-          --config=wasm
-          --config=ci
-          ${{ steps.flags.outputs.release_flag }}
-
-      - name: Build Android
-        run: >
-          bazel build //:android
-          --config=android
+          ${{ matrix.target.command }}
+          ${{ matrix.target.extra_flags }}
           --config=ci
           ${{ steps.flags.outputs.release_flag }}
 
   macos:
-    name: macOS (${{ matrix.build_mode }})
+    name: macOS ${{ matrix.target.label }} (${{ matrix.build_mode }})
     runs-on: macos-latest
     strategy:
       fail-fast: false
       matrix:
         build_mode: [default, release]
+        target:
+          - label: host
+            command: bazel test //:host
+            extra_flags: ""
+          - label: ios-simulator
+            command: bazel test //:ios
+            extra_flags: --config=ios_simulator
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -86,15 +90,9 @@ jobs:
             echo "release_flag=" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Test macOS host
+      - name: ${{ matrix.target.label }}
         run: >
-          bazel test //:host
-          --config=ci
-          ${{ steps.flags.outputs.release_flag }}
-
-      - name: Test iOS simulator
-        run: >
-          bazel test //:ios
-          --config=ios_simulator
+          ${{ matrix.target.command }}
+          ${{ matrix.target.extra_flags }}
           --config=ci
           ${{ steps.flags.outputs.release_flag }}
