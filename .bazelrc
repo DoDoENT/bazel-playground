@@ -145,7 +145,7 @@ common:ci --show_progress_rate_limit=10 --show_progress --test_output=errors --d
 common:ci --experimental_scale_timeouts=5.0 --http_timeout_scaling=5.0
 
 # In CI, don't use dynamic spawn strategy - it only slows things down there
-common:ci --spawn_strategy=remote,worker,sandboxed,local --noremote_local_fallback
+common:ci --spawn_strategy=remote,worker,sandboxed,local
 
 # Reduce connection pressure when running many builds in parallel in CI
 build:ci --grpc_keepalive_time=60s
