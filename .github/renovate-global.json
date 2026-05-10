@@ -2,6 +2,8 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "branchPrefix": "renovate/",
   "dependencyDashboardTitle": "Dependency Dashboard self-hosted",
+  "dependencyDashboard": true,
+  "dependencyDashboardApproval": true,
   "gitAuthor": "Renovate Bot <bot@renovateapp.com>",
   "onboardingBranch": "renovate/configure",
   "onboarding": true,
