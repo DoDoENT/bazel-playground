@@ -63,6 +63,15 @@ xcodeproj(
 # also note: https://blog.bazel.build/2020/02/26/xcode-selection.html
 # additionally: https://bazel.build/docs/bazel-and-apple#xcode-selection
 
+# Still used on GHActions
+xcode_version(
+    name = "version16_4_0_16F6",
+    version = "16.4.0.16F6",
+    aliases = ["16.4.0.16F6", "16.4", "16.4.0", "16F6"],
+    default_ios_sdk_version = "16.4",
+    default_macos_sdk_version = "16.4",
+)
+
 xcode_version(
     name = "version26_2_0_17C52",
     version = "26.2.0.17C52",
@@ -82,6 +91,7 @@ xcode_version(
 available_xcodes(
     name = "available_xcodes",
     versions = [
+        ":version16_4_0_16F6",
         ":version26_2_0_17C52",
         ":version26_3_0_17C529",
     ],
