@@ -3,8 +3,8 @@
   "branchPrefix": "renovate/",
   "dependencyDashboardTitle": "Dependency Dashboard self-hosted",
   "gitAuthor": "Renovate Bot <bot@renovateapp.com>",
+  "onboardingBranch": "renovate/configure",
   "onboarding": true,
-  "onboardingBranch": "github-renovate/configure",
   "platform": "github",
-  "repositories": []
+  "requireConfig": "optional"
 }
