@@ -200,7 +200,7 @@ use_repo(remote_android_extensions, "android_tools")
 android_sdk_repository_extension = use_extension("@rules_android//rules/android_sdk_repository:rule.bzl", "android_sdk_repository_extension")
 use_repo(android_sdk_repository_extension, "androidsdk")
 
-bazel_dep(name = "rules_jvm_external", version = "6.10")
+bazel_dep(name = "rules_jvm_external", version = "7.0")
 
 maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
 maven.install(
