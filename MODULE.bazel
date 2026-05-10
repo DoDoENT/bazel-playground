@@ -45,7 +45,7 @@ bazel_dep(name = "rules_xcodeproj", version = "4.0.0")
 # use_repo(llvm_toolchains, "llvm_toolchains")
 # register_toolchains("@toolchains_llvm_bootstrapped//toolchain:all")
 
-bazel_dep(name = "toolchains_llvm", version = "1.6.0")
+bazel_dep(name = "toolchains_llvm", version = "1.7.0")
 
 bazel_dep(name = "sysroot-noble-aarch64")
 archive_override(
