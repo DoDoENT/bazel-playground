@@ -4,12 +4,12 @@ module(name = "playground")
 
 # Note: This needs to be before rules_cc in order to correctly configure the C++ toolchain.
 # See here why: https://www.smileykeith.com/2025/09/21/understanding-apple-debug-info/
-bazel_dep(name = "apple_support", version = "2.5.2")
-bazel_dep(name = "rules_cc", version = "0.2.17")
+bazel_dep(name = "apple_support", version = "2.5.4")
+bazel_dep(name = "rules_cc", version = "0.2.18")
 bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
 bazel_dep(name = "bazel_skylib", version = "1.9.0")
 bazel_dep(name = "bazelrc-preset.bzl", version = "1.9.2")
-bazel_dep(name = "platforms", version = "1.0.0")
+bazel_dep(name = "platforms", version = "1.1.0")
 bazel_dep(name = "rules_build_error", version = "0.11.0")
 bazel_dep(name = "rules_license", version = "1.0.0")
 
@@ -21,9 +21,9 @@ use_repo(host_platform, "host_platform")
 
 # Apple rules begin
 
-bazel_dep(name = "rules_apple", version = "4.5.2")
-bazel_dep(name = "rules_swift", version = "3.5.0")
-bazel_dep(name = "rules_xcodeproj", version = "4.0.0")
+bazel_dep(name = "rules_apple", version = "4.5.3")
+bazel_dep(name = "rules_swift", version = "3.6.1")
+bazel_dep(name = "rules_xcodeproj", version = "4.1.0")
 
 # Apple rules end
 
@@ -45,7 +45,7 @@ bazel_dep(name = "rules_xcodeproj", version = "4.0.0")
 # use_repo(llvm_toolchains, "llvm_toolchains")
 # register_toolchains("@toolchains_llvm_bootstrapped//toolchain:all")
 
-bazel_dep(name = "toolchains_llvm", version = "1.6.0")
+bazel_dep(name = "toolchains_llvm", version = "1.7.0")
 
 bazel_dep(name = "sysroot-noble-aarch64")
 archive_override(
@@ -68,7 +68,7 @@ archive_override(
 # Configure and register the toolchain.
 llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm")
 
-LLVM_VERSION = "21.1.8"
+LLVM_VERSION = "22.1.5"
 
 llvm.toolchain(
     name = "llvm_linux_intel",
@@ -76,7 +76,7 @@ llvm.toolchain(
     exec_os = "linux",
     exec_arch = "amd64",
     extra_llvm_distributions = {
-        "LLVM-21.1.8-Linux-X64.tar.xz": "b3b7f2801d15d50736acea3c73982994d025b01c2f035b91ae3b49d1b575732b",
+        "LLVM-22.1.5-Linux-X64.tar.xz": "sha256:04dfa3ab6f1c332dd73a057daeb8f48cdaacdef24178f8eccddf2cbfa8944aa4",
     }
 )
 llvm.sysroot(
@@ -123,7 +123,7 @@ llvm.toolchain(
     exec_os = "linux",
     exec_arch = "aarch64",
     extra_llvm_distributions = {
-        "LLVM-21.1.8-Linux-ARM64.tar.xz": "65ce0b329514e5643407db2d02a5bd34bf33d159055dafa82825c8385bd01993",
+        "LLVM-22.1.5-Linux-ARM64.tar.xz": "sha256:05e303cf01a97ca2a11e42e75ade839e85af274f84573554c5e5c05f714be989",
     }
 )
 
@@ -145,7 +145,7 @@ register_toolchains(
 # LLVM rules end
 # Python rules begin
 
-bazel_dep(name = "rules_python", version = "1.9.0")
+bazel_dep(name = "rules_python", version = "2.0.0")
 
 PYTHON_VERSION = "3.14"
 
@@ -168,7 +168,7 @@ use_repo(pip, "coverage_pip_deps")
 # Python rules end
 
 # Android rules begin
-bazel_dep(name = "rules_android_ndk", version = "0.1.3")
+bazel_dep(name = "rules_android_ndk", version = "0.1.5")
 
 # Patch to allow downloading NDK and additionally define some custom build flags
 single_version_override(
@@ -190,9 +190,9 @@ use_repo(android_ndk_repository_extension, "androidndk")
 # Instead, register it with --extra_toolchains=@androidndk//:all from commandline
 # register_toolchains("@androidndk//:all")
 
-bazel_dep(name = "rules_java", version = "9.3.0")
-bazel_dep(name = "rules_android", version = "0.7.1")
-bazel_dep(name = "protobuf", version = "34.0.bcr.1")
+bazel_dep(name = "rules_java", version = "9.6.1")
+bazel_dep(name = "rules_android", version = "0.7.2")
+bazel_dep(name = "protobuf", version = "34.1")
 
 remote_android_extensions = use_extension("@rules_android//bzlmod_extensions:android_extensions.bzl", "remote_android_tools_extensions")
 use_repo(remote_android_extensions, "android_tools")
@@ -200,7 +200,7 @@ use_repo(remote_android_extensions, "android_tools")
 android_sdk_repository_extension = use_extension("@rules_android//rules/android_sdk_repository:rule.bzl", "android_sdk_repository_extension")
 use_repo(android_sdk_repository_extension, "androidsdk")
 
-bazel_dep(name = "rules_jvm_external", version = "6.10")
+bazel_dep(name = "rules_jvm_external", version = "7.0")
 
 maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
 maven.install(
@@ -221,8 +221,8 @@ use_repo(maven, "android_test_deps")
 maven.install(
     name = "android_ide_common_30_1_3",
     artifacts = [
-        "com.google.protobuf:protobuf-java:4.34.0",
-        "com.google.protobuf:protobuf-java-util:4.34.0",
+        "com.google.protobuf:protobuf-java:4.34.1",
+        "com.google.protobuf:protobuf-java-util:4.34.1",
     ],
     repositories = [
         "https://maven.google.com",
@@ -234,8 +234,8 @@ maven.install(
 maven.install(
     name = "rules_android_maven",
     artifacts = [
-        "com.google.protobuf:protobuf-java:4.34.0",
-        "com.google.protobuf:protobuf-java-util:4.34.0",
+        "com.google.protobuf:protobuf-java:4.34.1",
+        "com.google.protobuf:protobuf-java-util:4.34.1",
     ],
     repositories = [
         "https://maven.google.com",
@@ -247,13 +247,13 @@ maven.install(
 # Android rules end
 
 # Emscripten rules begin
-bazel_dep(name = "emsdk", version = "5.0.1")
+bazel_dep(name = "emsdk", version = "5.0.7")
 archive_override(
     module_name = "emsdk",
-    integrity = "sha256-YWk2/HvQznCVxPICOrU9ZuCtcLDztsfvm0VtaUhqlXM=",
-    strip_prefix = "emsdk-dae73970c0b516a107197ad6d822fbed58ddb7f1/bazel",
+    integrity = "sha256-P3J3APCIz6AhZNDCJGVS8+VXZGAAwTPxOGZiwd7gQ40=",
+    strip_prefix = "emsdk-bfd508bdeb0379e80bfce0edd1e0d337c9e9174d/bazel",
     urls = [
-        "https://github.com/DoDoENT/emsdk/archive/dae73970c0b516a107197ad6d822fbed58ddb7f1.zip",
+        "https://github.com/DoDoENT/emsdk/archive/bfd508bdeb0379e80bfce0edd1e0d337c9e9174d.zip",
     ],
 )
 # single_version_override(
