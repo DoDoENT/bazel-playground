@@ -6,5 +6,8 @@
   "onboardingBranch": "renovate/configure",
   "onboarding": true,
   "platform": "github",
-  "requireConfig": "optional"
+  "requireConfig": "optional",
+  "repositories": [
+      "DoDoENT/bazel-playground"
+  ]
 }
