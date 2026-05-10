@@ -168,7 +168,7 @@ use_repo(pip, "coverage_pip_deps")
 # Python rules end
 
 # Android rules begin
-bazel_dep(name = "rules_android_ndk", version = "0.1.3")
+bazel_dep(name = "rules_android_ndk", version = "0.1.5")
 
 # Patch to allow downloading NDK and additionally define some custom build flags
 single_version_override(
