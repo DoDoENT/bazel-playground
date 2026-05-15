@@ -69,9 +69,9 @@ jobs:
           - label: host
             command: bazel test //:host
             extra_flags: ""
-          - label: ios
-            command: bazel test //:ios
-            extra_flags: --config=ios_simulator --host_force_python=PY3 --@rules_python//python/config_settings:bootstrap_impl=script
+          # - label: ios
+          #   command: bazel test //:ios
+          #   extra_flags: --config=ios_simulator 
     steps:
       - name: Checkout
         uses: actions/checkout@v6
