@@ -71,7 +71,7 @@ jobs:
             extra_flags: ""
           - label: ios
             command: bazel test //:ios
-            extra_flags: --config=ios_simulator
+            extra_flags: --config=ios_simulator --host_force_python=PY3 --@rules_python//python/config_settings:bootstrap_impl=script
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -83,7 +83,6 @@ jobs:
           repository-cache: true
           bazelrc: |
             common --remote_header=x-buildbuddy-api-key=${{ secrets.BUILDBUDDY_API_KEY }} --config=ci
-            common --spawn_strategy=standalone
 
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
