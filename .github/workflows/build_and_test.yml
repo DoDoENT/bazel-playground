@@ -59,7 +59,7 @@ jobs:
           ${{ steps.flags.outputs.release_flag }}
 
   macos:
-    name: macOS host (${{ matrix.build_mode }})
+    name: macOS ${{ matrix.target.label }} (${{ matrix.build_mode }})
     runs-on: macos-26
     strategy:
       fail-fast: false
@@ -98,7 +98,7 @@ jobs:
             echo "release_flag=" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: host
+      - name: ${{ matrix.target.label }}
         run: >
           ${{ matrix.target.command }}
           ${{ matrix.target.extra_flags }}
