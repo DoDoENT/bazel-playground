@@ -30,9 +30,6 @@ common --spawn_strategy=dynamic
 
 # workaround for https://github.com/bazelbuild/rules_rust/issues/3307
 common:macos --strategy=Rustc=sandboxed,local
-common:macos --strategy=CompileDSYMInfoPlist=local
-common:macos --strategy=ProcessInfoPlist=local
-common:macos --@rules_python//python/config_settings:bootstrap_impl=script
 
 # missing pkg-config binary in sysroot
 common:linux --strategy=CargoBuildScriptRun=sandboxed,local
@@ -88,7 +85,6 @@ common --test_tag_filters=host,starlark
 build:macos --remote_download_regex='.*\.(a|lo|o)$'
 build:macos --apple_generate_dsym --output_groups=+dsyms
 common:macos --xcode_version_config=//xcode:host
-common:macos --build_runfile_links
 
 # Bazel documentation on coverage: https://bazel.build/configure/coverage
 # export GCOV=llvm-profdata

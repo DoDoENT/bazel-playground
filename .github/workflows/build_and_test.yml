@@ -83,6 +83,8 @@ jobs:
           repository-cache: true
           bazelrc: |
             common --remote_header=x-buildbuddy-api-key=${{ secrets.BUILDBUDDY_API_KEY }} --config=ci
+            common --build_runfile_links
+            common --@rules_python//python/config_settings:bootstrap_impl=script
 
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
