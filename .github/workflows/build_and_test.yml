@@ -41,7 +41,7 @@ jobs:
           bazelisk-cache: true
           repository-cache: true
           bazelrc: |
-            common --remote_header=x-buildbuddy-api-key=${{ secrets.BUILDBUDDY_API_KEY }}
+            common --remote_header=x-buildbuddy-api-key=${{ secrets.BUILDBUDDY_API_KEY }} --config=ci
 
       - name: Set release flag
         id: flags
@@ -56,16 +56,22 @@ jobs:
         run: >
           ${{ matrix.target.command }}
           ${{ matrix.target.extra_flags }}
-          --config=ci
           ${{ steps.flags.outputs.release_flag }}
 
   macos:
-    name: macOS host (${{ matrix.build_mode }})
-    runs-on: macos-latest
+    name: macOS ${{ matrix.target.label }} (${{ matrix.build_mode }})
+    runs-on: macos-26
     strategy:
       fail-fast: false
       matrix:
         build_mode: [default, release]
+        target:
+          - label: host
+            command: bazel test //:host
+            extra_flags: ""
+          # - label: ios
+          #   command: bazel test //:ios
+          #   extra_flags: --config=ios_simulator 
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -76,7 +82,12 @@ jobs:
           bazelisk-cache: true
           repository-cache: true
           bazelrc: |
-            common --remote_header=x-buildbuddy-api-key=${{ secrets.BUILDBUDDY_API_KEY }}
+            common --remote_header=x-buildbuddy-api-key=${{ secrets.BUILDBUDDY_API_KEY }} --config=ci
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '26.3' # Options: 'latest-stable', 'latest-beta', or specific version like '14.2'
 
       - name: Set release flag
         id: flags
@@ -87,8 +98,8 @@ jobs:
             echo "release_flag=" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: host
+      - name: ${{ matrix.target.label }}
         run: >
-          bazel test //:host
-          --config=ci
+          ${{ matrix.target.command }}
+          ${{ matrix.target.extra_flags }}
           ${{ steps.flags.outputs.release_flag }}
