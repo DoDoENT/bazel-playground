@@ -60,6 +60,13 @@ jobs:
           ${{ matrix.target.extra_flags }}
           ${{ steps.flags.outputs.release_flag }}
 
+      - name: OpenCV build
+        if: matrix.target.label == 'host'
+        run: >
+          bazel build //opencv:all
+          ${{ matrix.target.extra_flags }}
+          ${{ steps.flags.outputs.release_flag }}
+
   macos:
     name: macOS ${{ matrix.target.label }} (${{ matrix.build_mode }})
     runs-on: macos-26
@@ -71,6 +78,7 @@ jobs:
           - label: host
             command: bazel test //:host
             extra_flags: ""
+          # flaky
           # - label: ios
           #   command: bazel test //:ios
           #   extra_flags: --config=ios_simulator 
@@ -105,3 +113,10 @@ jobs:
           ${{ matrix.target.command }}
           ${{ matrix.target.extra_flags }}
           ${{ steps.flags.outputs.release_flag }}
+
+      - name: OpenCV build
+        if: matrix.target.label == 'host'
+        run: >
+          bazel build //opencv:all
+          ${{ matrix.target.extra_flags }}
+          ${{ steps.flags.outputs.
