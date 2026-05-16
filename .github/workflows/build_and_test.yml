@@ -119,4 +119,4 @@ jobs:
         run: >
           bazel build //opencv:all
           ${{ matrix.target.extra_flags }}
-          ${{ steps.flags.outputs.
+          ${{ steps.flags.outputs.release_flag }}
