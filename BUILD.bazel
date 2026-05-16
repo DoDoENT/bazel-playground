@@ -6,3 +6,8 @@ define_subpackage_test_suites(
         "main",
     ],
 )
+
+alias(
+    name = "doom",
+    actual = "@rules_doom//examples/launch:freedoom2",
+)

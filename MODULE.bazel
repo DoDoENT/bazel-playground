@@ -327,3 +327,7 @@ http_archive(
     urls = ["https://commondatastorage.googleapis.com/chrome-linux-sysroot/toolchain/2202c161310ffde63729f29d27fe7bb24a0bc540/debian_stretch_amd64_sysroot.tar.xz"],
     build_file = "//opencv:ubuntu-gtk-deps.BUILD.bazel",
 )
+
+# details: https://github.com/finn-ball/rules_doom
+bazel_dep(name = "rules_doom", version = "0.1.0", dev_dependency = True)
+
