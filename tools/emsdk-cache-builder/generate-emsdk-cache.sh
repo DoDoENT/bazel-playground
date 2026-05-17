@@ -31,7 +31,7 @@ cp -r sysroot sysroot_install.stamp "$output_dir/"
 
 popd
 
-tar czf emsdk-cache.tar.gz emsdk-cache
+tar cafv emsdk-cache.tar.gz emsdk-cache
 
 rm -rf emsdk-cache
 bazel clean

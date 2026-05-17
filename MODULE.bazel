@@ -250,12 +250,14 @@ maven.install(
 
 # Emscripten rules begin
 bazel_dep(name = "emsdk", version = "5.0.7")
+
+# Use version that supports prebuilt caches from [this PR](https://github.com/emscripten-core/emsdk/pull/1620)
 archive_override(
     module_name = "emsdk",
-    integrity = "sha256-P3J3APCIz6AhZNDCJGVS8+VXZGAAwTPxOGZiwd7gQ40=",
-    strip_prefix = "emsdk-bfd508bdeb0379e80bfce0edd1e0d337c9e9174d/bazel",
+    integrity = "sha256-Dc4H8w0VoCOr3UFL7luLxb5pxQoRyJFS/cTBmtnFez8=",
+    strip_prefix = "emsdk-1aba52730fc60ac6b82f9c58c6eb956de88a8968/bazel",
     urls = [
-        "https://github.com/DoDoENT/emsdk/archive/bfd508bdeb0379e80bfce0edd1e0d337c9e9174d.zip",
+        "https://github.com/DoDoENT/emsdk/archive/1aba52730fc60ac6b82f9c58c6eb956de88a8968.zip",
     ],
 )
 # single_version_override(
@@ -272,11 +274,11 @@ emscripten_cache = use_extension(
 )
 
 # NOTE: See tools/emsdk-cache-builder/README.md for instructions on how to build emsdk cache tarball and upload it to the artifactory
-# emscripten_cache.prebuilt_cache(
-#     http_archive_url = "https://artifactory.yourserver.com:443/artifactory/bazel-prebuilt-packages/emsdk-caches/emsdk-cache-4.0.16.tar.gz",
-#     sha256 = "3e88abcbd22bac7b05af416c8f1859d12572c8e9356db604a2768fcfda863da8",
-#     strip_prefix = "emsdk-cache",
-# )
+emscripten_cache.prebuilt_cache(
+    http_archive_url = "https://github.com/DoDoENT/bazel-playground/releases/download/emsdk-cache/emsdk-cache-5.0.7.tar.gz",
+    sha256 = "bbfdab09ae64769c4aa977b1d88f776490c459c87e7ed7e31fe00190cd56b14a",
+    strip_prefix = "emsdk-cache",
+)
 
 bazel_dep(name = "posluznik", version = "1.3.5")
 git_override(

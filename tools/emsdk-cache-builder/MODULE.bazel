@@ -10,7 +10,7 @@ emscripten_cache = use_extension(
 
 emscripten_cache.configuration(flags = ["--lto=thin"])
 emscripten_cache.targets(targets = [
-    "crtbegin",
+    "crtbegin-mt",
     "libal",
     "libc-mt",
     "libc-mt-debug",

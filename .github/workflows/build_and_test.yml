@@ -29,10 +29,6 @@ jobs:
           - label: android
             command: bazel build //:android
             extra_flags: --config=android
-        exclude:
-          - build_mode: release
-            target:
-              label: wasm
     steps:
       - name: Checkout
         uses: actions/checkout@v6
