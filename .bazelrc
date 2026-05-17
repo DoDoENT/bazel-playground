@@ -167,6 +167,8 @@ test:ci --test_summary="short"
 coverage --spawn_strategy=local --remote_download_outputs=toplevel
 coverage:ci --spawn_strategy=local --remote_download_outputs=toplevel
 
+common:macos --@rules_python//python/config_settings:venvs_use_declare_symlink=no
+
 # Also disable remote executor, but allow remote cache (otherwise `common:ci` re-enables both)
 #coverage --remote_executor= --remote_cache=grpc://your.remote.executor:8980
 #coverage:ci --remote_executor= --remote_cache=grpc://your.remote.executor:8980
