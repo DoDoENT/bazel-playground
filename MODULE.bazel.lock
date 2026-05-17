@@ -443,8 +443,8 @@
   "moduleExtensions": {
     "@@emsdk+//:emscripten_cache.bzl%emscripten_cache": {
       "general": {
-        "bzlTransitiveDigest": "p1A0kIHv+P6HohjzYKXcZfW5H/lyBXFa9aAZ7tiYTWE=",
-        "usagesDigest": "9IP6UnRvHu27Y/QMT10ISLxZsem88w/8UW/h++umN3A=",
+        "bzlTransitiveDigest": "6MxxRhfJU6rGc2wHWNhmR4UQR0h2U+moBD92X6CFvfE=",
+        "usagesDigest": "SxupCIbn5AC0qMRxGlEeTuWOS3NztkxvTkJs2Un1VTc=",
         "recordedInputs": [],
         "generatedRepoSpecs": {
           "emscripten_cache": {
@@ -452,9 +452,9 @@
             "attributes": {
               "configuration": [],
               "targets": [],
-              "prebuilt_cache_url": "",
-              "prebuilt_cache_sha256": "",
-              "prebuilt_cache_strip_prefix": ""
+              "prebuilt_cache_url": "https://github.com/DoDoENT/bazel-playground/releases/download/emsdk-cache/emsdk-cache-5.0.7.tar.gz",
+              "prebuilt_cache_sha256": "bbfdab09ae64769c4aa977b1d88f776490c459c87e7ed7e31fe00190cd56b14a",
+              "prebuilt_cache_strip_prefix": "emsdk-cache"
             }
           }
         }
