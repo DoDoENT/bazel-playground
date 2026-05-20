@@ -194,7 +194,7 @@ use_repo(android_ndk_repository_extension, "androidndk")
 
 bazel_dep(name = "rules_java", version = "9.6.1")
 bazel_dep(name = "rules_android", version = "0.7.2")
-bazel_dep(name = "protobuf", version = "34.1")
+bazel_dep(name = "protobuf", version = "35.0")
 
 remote_android_extensions = use_extension("@rules_android//bzlmod_extensions:android_extensions.bzl", "remote_android_tools_extensions")
 use_repo(remote_android_extensions, "android_tools")
