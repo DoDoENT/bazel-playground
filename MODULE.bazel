@@ -147,7 +147,7 @@ register_toolchains(
 
 # iOS simulator build fails on GHA with rules_python >= 2.0.0
 # see: https://bazelbuild.slack.com/archives/CD3QY5C2X/p1779011917152079?thread_ts=1778943876.549149&cid=CD3QY5C2X
-bazel_dep(name = "rules_python", version = "1.9.1")
+bazel_dep(name = "rules_python", version = "2.0.2")
 
 PYTHON_VERSION = "3.14"
 
@@ -280,12 +280,16 @@ emscripten_cache.prebuilt_cache(
     strip_prefix = "emsdk-cache",
 )
 
-bazel_dep(name = "posluznik", version = "1.3.5")
+bazel_dep(name = "posluznik", version = "1.3.6")
 git_override(
     module_name = "posluznik",
-    commit = "41af6ef76a60d6adb8e8dd0066f2ac8386badc56",
+    commit = "f53a17b1e31153fed1851fc7dd485e2d821af5f4",
     remote = "https://github.com/microblink/posluznik",
 )
+# local_path_override(
+#     module_name = "posluznik",
+#     path = "/home/dodo/CloneOuts/posluznik",
+# )
 
 
 # Chrome to run WASM tests on

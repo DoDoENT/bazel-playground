@@ -47,6 +47,7 @@ common --disk_cache=~/.bazel-cache/build --experimental_disk_cache_gc_max_size=2
 common --repository_cache=~/.bazel-cache/repo
 common --repo_contents_cache=~/.bazel-cache/repo-contents
 startup --experimental_remote_repo_contents_cache
+# common --@rules_python//python/config_settings:venvs_use_declare_symlink=no
 
 common --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
 common --platforms=@host_platform//:host --extra_execution_platforms=@host_platform//:host
@@ -98,7 +99,7 @@ common:no_sanitizers --features=-asan --features=-ubsan --features=-wasm_asan --
 
 # Avoid using thin_lto feature as it generates a lot of LTO index tasks which have a lot of overhead and don't provide much speedup in our case.
 # Our binaries are small enough that regular ThinLTO provides faster build speeds.
-common:release --config=no_sanitizers --compilation_mode=opt --copt=-Oz --copt=-flto=thin --copt=-fwhole-program-vtables --linkopt=-flto=thin
+common:release --config=no_sanitizers --compilation_mode=opt --copt=-Oz --copt=-flto=thin --linkopt=-flto=thin
 common:debug --compilation_mode=dbg
 
 # ASAN on Android throws errors in code that is actually correct. It doesn't print any useful stack traces either, so even if the code was buggy
