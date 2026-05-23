@@ -40,7 +40,10 @@ common --build_metadata=REPO_URL=https://github.com/DoDoENT/bazel-playground
 common --disk_cache=~/.bazel-cache/build --experimental_disk_cache_gc_max_size=20G
 common --repository_cache=~/.bazel-cache/repo
 common --repo_contents_cache=~/.bazel-cache/repo-contents
-startup --experimental_remote_repo_contents_cache
+
+# Problems with rules_python (used by both rules_apple and emscripten)
+# see: https://github.com/bazel-contrib/rules_python/issues/3791
+# startup --experimental_remote_repo_contents_cache
 
 common --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
 common --platforms=@host_platform//:host --extra_execution_platforms=@host_platform//:host
