@@ -28,12 +28,6 @@ common:ci --build_metadata=ROLE=CI
 # Enable Dynamic Execution (Runs local and remote in parallel, takes fastest)
 common --spawn_strategy=dynamic
 
-# workaround for https://github.com/bazelbuild/rules_rust/issues/3307
-common:macos --strategy=Rustc=sandboxed,local
-
-# missing pkg-config binary in sysroot
-common:linux --strategy=CargoBuildScriptRun=sandboxed,local
-
 # Some advanced tweaks to dynamic execution
 # More info here: https://bazel.build/remote/dynamic#performance
 common --experimental_dynamic_slow_remote_time=10s
@@ -47,7 +41,6 @@ common --disk_cache=~/.bazel-cache/build --experimental_disk_cache_gc_max_size=2
 common --repository_cache=~/.bazel-cache/repo
 common --repo_contents_cache=~/.bazel-cache/repo-contents
 startup --experimental_remote_repo_contents_cache
-common --@rules_python//python/config_settings:venvs_use_declare_symlink=no
 
 common --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
 common --platforms=@host_platform//:host --extra_execution_platforms=@host_platform//:host
