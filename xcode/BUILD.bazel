@@ -88,12 +88,21 @@ xcode_version(
     default_macos_sdk_version = "26.2",
 )
 
+xcode_version(
+    name = "version26_5_0_17F42",
+    version = "26.5.0.17F42",
+    aliases = ["26.5.0.17F42", "26.5", "26.5.0", "17F42"],
+    default_ios_sdk_version = "26.5",
+    default_macos_sdk_version = "26.5",
+)
+
 available_xcodes(
     name = "available_xcodes",
     versions = [
         ":version16_4_0_16F6",
         ":version26_2_0_17C52",
         ":version26_3_0_17C529",
+        ":version26_5_0_17F42",
     ],
     default = ":version26_3_0_17C529",
 )

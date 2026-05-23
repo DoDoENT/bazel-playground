@@ -28,12 +28,6 @@ common:ci --build_metadata=ROLE=CI
 # Enable Dynamic Execution (Runs local and remote in parallel, takes fastest)
 common --spawn_strategy=dynamic
 
-# workaround for https://github.com/bazelbuild/rules_rust/issues/3307
-common:macos --strategy=Rustc=sandboxed,local
-
-# missing pkg-config binary in sysroot
-common:linux --strategy=CargoBuildScriptRun=sandboxed,local
-
 # Some advanced tweaks to dynamic execution
 # More info here: https://bazel.build/remote/dynamic#performance
 common --experimental_dynamic_slow_remote_time=10s
@@ -46,7 +40,10 @@ common --build_metadata=REPO_URL=https://github.com/DoDoENT/bazel-playground
 common --disk_cache=~/.bazel-cache/build --experimental_disk_cache_gc_max_size=20G
 common --repository_cache=~/.bazel-cache/repo
 common --repo_contents_cache=~/.bazel-cache/repo-contents
-startup --experimental_remote_repo_contents_cache
+
+# Problems with rules_python (used by both rules_apple and emscripten)
+# see: https://github.com/bazel-contrib/rules_python/issues/3791
+# startup --experimental_remote_repo_contents_cache
 
 common --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
 common --platforms=@host_platform//:host --extra_execution_platforms=@host_platform//:host
@@ -98,7 +95,7 @@ common:no_sanitizers --features=-asan --features=-ubsan --features=-wasm_asan --
 
 # Avoid using thin_lto feature as it generates a lot of LTO index tasks which have a lot of overhead and don't provide much speedup in our case.
 # Our binaries are small enough that regular ThinLTO provides faster build speeds.
-common:release --config=no_sanitizers --compilation_mode=opt --copt=-flto=thin --linkopt=-flto=thin
+common:release --config=no_sanitizers --compilation_mode=opt --copt=-Oz --copt=-flto=thin --linkopt=-flto=thin
 common:debug --compilation_mode=dbg
 
 # ASAN on Android throws errors in code that is actually correct. It doesn't print any useful stack traces either, so even if the code was buggy

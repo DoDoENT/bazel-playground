@@ -145,9 +145,7 @@ register_toolchains(
 # LLVM rules end
 # Python rules begin
 
-# iOS simulator build fails on GHA with rules_python >= 2.0.0
-# see: https://bazelbuild.slack.com/archives/CD3QY5C2X/p1779011917152079?thread_ts=1778943876.549149&cid=CD3QY5C2X
-bazel_dep(name = "rules_python", version = "1.9.0")
+bazel_dep(name = "rules_python", version = "2.0.2")
 
 PYTHON_VERSION = "3.14"
 
@@ -194,7 +192,7 @@ use_repo(android_ndk_repository_extension, "androidndk")
 
 bazel_dep(name = "rules_java", version = "9.6.1")
 bazel_dep(name = "rules_android", version = "0.7.2")
-bazel_dep(name = "protobuf", version = "34.1")
+bazel_dep(name = "protobuf", version = "35.0")
 
 remote_android_extensions = use_extension("@rules_android//bzlmod_extensions:android_extensions.bzl", "remote_android_tools_extensions")
 use_repo(remote_android_extensions, "android_tools")
@@ -223,8 +221,8 @@ use_repo(maven, "android_test_deps")
 maven.install(
     name = "android_ide_common_30_1_3",
     artifacts = [
-        "com.google.protobuf:protobuf-java:4.34.1",
-        "com.google.protobuf:protobuf-java-util:4.34.1",
+        "com.google.protobuf:protobuf-java:4.35.0",
+        "com.google.protobuf:protobuf-java-util:4.35.0",
     ],
     repositories = [
         "https://maven.google.com",
@@ -236,8 +234,8 @@ maven.install(
 maven.install(
     name = "rules_android_maven",
     artifacts = [
-        "com.google.protobuf:protobuf-java:4.34.1",
-        "com.google.protobuf:protobuf-java-util:4.34.1",
+        "com.google.protobuf:protobuf-java:4.35.0",
+        "com.google.protobuf:protobuf-java-util:4.35.0",
     ],
     repositories = [
         "https://maven.google.com",
@@ -280,10 +278,10 @@ emscripten_cache.prebuilt_cache(
     strip_prefix = "emsdk-cache",
 )
 
-bazel_dep(name = "posluznik", version = "1.3.5")
+bazel_dep(name = "posluznik", version = "1.3.6")
 git_override(
     module_name = "posluznik",
-    commit = "41af6ef76a60d6adb8e8dd0066f2ac8386badc56",
+    commit = "b6fff95f36b1656d7d4e59bafdc70eda8297f017",
     remote = "https://github.com/microblink/posluznik",
 )
 
