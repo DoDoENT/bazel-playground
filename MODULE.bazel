@@ -147,7 +147,7 @@ register_toolchains(
 
 # iOS simulator build fails on GHA with rules_python >= 2.0.0
 # see: https://bazelbuild.slack.com/archives/CD3QY5C2X/p1779011917152079?thread_ts=1778943876.549149&cid=CD3QY5C2X
-bazel_dep(name = "rules_python", version = "1.9.0")
+bazel_dep(name = "rules_python", version = "1.9.1")
 
 PYTHON_VERSION = "3.14"
 
