@@ -92,7 +92,7 @@ jobs:
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '26.3' # Options: 'latest-stable', 'latest-beta', or specific version like '14.2'
+          xcode-version: '26.5' # Options: 'latest-stable', 'latest-beta', or specific version like '14.2'
 
       - name: Set release flag
         id: flags
