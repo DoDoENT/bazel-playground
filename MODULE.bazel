@@ -68,7 +68,7 @@ archive_override(
 # Configure and register the toolchain.
 llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm")
 
-LLVM_VERSION = "22.1.5"
+LLVM_VERSION = "22.1.6"
 
 llvm.toolchain(
     name = "llvm_linux_intel",
@@ -77,6 +77,7 @@ llvm.toolchain(
     exec_arch = "amd64",
     extra_llvm_distributions = {
         "LLVM-22.1.5-Linux-X64.tar.xz": "sha256:04dfa3ab6f1c332dd73a057daeb8f48cdaacdef24178f8eccddf2cbfa8944aa4",
+        "LLVM-22.1.6-Linux-X64.tar.xz": "sha256:c5ac8ef89ca39d30cb32e9b83772f995dd891c685ebc188d593c943a64d5f8b5",
     }
 )
 llvm.sysroot(
@@ -124,6 +125,7 @@ llvm.toolchain(
     exec_arch = "aarch64",
     extra_llvm_distributions = {
         "LLVM-22.1.5-Linux-ARM64.tar.xz": "sha256:05e303cf01a97ca2a11e42e75ade839e85af274f84573554c5e5c05f714be989",
+        "LLVM-22.1.6-Linux-ARM64.tar.xz": "sha256:b67817634e8e1c2632dfc056af14d61b94f8e6502f4e557560eea227aa22ce37",
     }
 )
 
