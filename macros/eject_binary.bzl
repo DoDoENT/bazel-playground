@@ -14,6 +14,7 @@ def _eject_binary_impl(ctx):
             "%(FILES_TO_EJECT)a": " ".join(all_paths),
             "%(STRIP_PREFIX)s": ctx.attr.strip_prefix,
             "%(OUTPUT_DIR)s": ctx.attr.output_dir,
+            "%(UNPACK_ARCHIVES)s": "True" if ctx.attr.unpack_archives else "False",
         },
     )
 
@@ -37,6 +38,10 @@ eject_binary = rule(
         "output_dir": attr.string(
             mandatory = True,
             doc = "The directory to which the outputs will be ejected. This is a relative path from the workspace root.",
+        ),
+        "unpack_archives": attr.bool(
+            default = False,
+            doc = "Whether to unpack .zip files and eject their contents instead of the .zip files themselves.",
         ),
         "_eject_script_template": attr.label(
             default = ":eject_binary.sh.tpl",
