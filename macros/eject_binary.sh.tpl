@@ -47,7 +47,12 @@ for file in "${files[@]}"; do
         fi
     else
         mkdir -p "$(dirname "$dest")"
-        cp "$file" "$dest"
+        if [[ -d "$file" ]]; then
+            cp -r "$file" "$dest"
+        else
+            cp "$file" "$dest"
+            chmod 644 "$dest"
+        fi
         chmod 644 "$dest"
     fi
 done
