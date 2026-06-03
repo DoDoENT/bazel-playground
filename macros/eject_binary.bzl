@@ -36,8 +36,8 @@ eject_binary = rule(
             doc = "A prefix to strip from the paths of the files to be ejected. This is a relative path from the workspace root.",
         ),
         "output_dir": attr.string(
-            mandatory = True,
-            doc = "The directory to which the outputs will be ejected. This is a relative path from the workspace root.",
+            default = "",
+            doc = "The directory to which the outputs will be ejected. This is a relative path from the workspace root. Used only if parameter is not given to the script invocation.",
         ),
         "unpack_archives": attr.bool(
             default = False,

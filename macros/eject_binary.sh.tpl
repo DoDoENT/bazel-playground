@@ -2,7 +2,9 @@
 
 set -e
 
-mkdir -p "$BUILD_WORKSPACE_DIRECTORY/%(OUTPUT_DIR)s"
+OUTPUT_DIR="${1:-%(OUTPUT_DIR)s}"
+
+mkdir -p "$BUILD_WORKSPACE_DIRECTORY/$OUTPUT_DIR"
 
 files=( %(FILES_TO_EJECT)a )
 
@@ -33,10 +35,10 @@ for file in "${files[@]}"; do
     fi
 
     # 3. Resolve the final destination
-    dest="$BUILD_WORKSPACE_DIRECTORY/%(OUTPUT_DIR)s/$file_path"
+    dest="$BUILD_WORKSPACE_DIRECTORY/$OUTPUT_DIR/$file_path"
 
     if [[ "$should_unpack_archives" == "True" && ("$file" == *.zip || "$file" == *.tar.gz) ]]; then
-        dest_dir="$BUILD_WORKSPACE_DIRECTORY/%(OUTPUT_DIR)s/$file_path"
+        dest_dir="$BUILD_WORKSPACE_DIRECTORY/$OUTPUT_DIR/$file_path"
         dest_dir="${dest_dir%.tar.gz}"
         dest_dir="${dest_dir%.zip}"
         mkdir -p "$dest_dir"
@@ -53,6 +55,5 @@ for file in "${files[@]}"; do
             cp "$file" "$dest"
             chmod 644 "$dest"
         fi
-        chmod 644 "$dest"
     fi
 done
