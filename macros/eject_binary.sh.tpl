@@ -3,8 +3,10 @@
 set -e
 
 OUTPUT_DIR="${1:-%(OUTPUT_DIR)s}"
-
-mkdir -p "$BUILD_WORKSPACE_DIRECTORY/$OUTPUT_DIR"
+if [[ "$OUTPUT_DIR" != /* ]]; then
+    OUTPUT_DIR="$BUILD_WORKSPACE_DIRECTORY/$OUTPUT_DIR"
+fi
+mkdir -p "$OUTPUT_DIR"
 
 files=( %(FILES_TO_EJECT)a )
 
@@ -35,10 +37,10 @@ for file in "${files[@]}"; do
     fi
 
     # 3. Resolve the final destination
-    dest="$BUILD_WORKSPACE_DIRECTORY/$OUTPUT_DIR/$file_path"
+    dest="$OUTPUT_DIR/$file_path"
 
     if [[ "$should_unpack_archives" == "True" && ("$file" == *.zip || "$file" == *.tar.gz) ]]; then
-        dest_dir="$BUILD_WORKSPACE_DIRECTORY/$OUTPUT_DIR/$file_path"
+        dest_dir="$OUTPUT_DIR/$file_path"
         dest_dir="${dest_dir%.tar.gz}"
         dest_dir="${dest_dir%.zip}"
         mkdir -p "$dest_dir"
