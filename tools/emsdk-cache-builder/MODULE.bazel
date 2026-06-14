@@ -1,7 +1,7 @@
 module(name = "emsdk-cache-builder")
 
 bazel_dep(name = "rules_cc", version = "0.2.19")
-bazel_dep(name = "emsdk", version = "5.0.7")
+bazel_dep(name = "emsdk", version = "6.0.0")
 
 emscripten_cache = use_extension(
     "@emsdk//:emscripten_cache.bzl",
