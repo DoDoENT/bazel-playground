@@ -143,8 +143,8 @@
     "https://bcr.bazel.build/modules/libffi/3.4.7.bcr.3/MODULE.bazel": "2aaa0e32669002a26ffe421e98913ed70fa5ee21c36fc51d2d51053a5ed07420",
     "https://bcr.bazel.build/modules/libffi/3.4.7.bcr.4/MODULE.bazel": "adece04128b95bdfe7811a25f48341c11fdf1705a9e59c98ca007f8fc46a0822",
     "https://bcr.bazel.build/modules/libffi/3.4.7.bcr.4/source.json": "dd63be13678c61409cbc3e821e92b78e252399618759aabbf413515c8782dfb9",
-    "https://bcr.bazel.build/modules/libjpeg_turbo/3.1.3.bcr.4/MODULE.bazel": "f272f4453096f819cd1be3608811fed79a0fe45d13e9232b4e6f96325bbe16a9",
-    "https://bcr.bazel.build/modules/libjpeg_turbo/3.1.3.bcr.4/source.json": "6b60c8a74dc3b98792f4631fc1acfaf679ce9dcfccc8b8d7f0d354db2fb3cd54",
+    "https://bcr.bazel.build/modules/libjpeg_turbo/3.1.3.bcr.5/MODULE.bazel": "3ff34cfe01aef1288188200ce5ac6dfa3d08502390c35d76c7a80408dc8f9d07",
+    "https://bcr.bazel.build/modules/libjpeg_turbo/3.1.3.bcr.5/source.json": "1389535090a8ee89a2e16a86cb71e73f68bbad85ae76978a7ed8b0ce5150ce14",
     "https://bcr.bazel.build/modules/libpfm/4.11.0/MODULE.bazel": "45061ff025b301940f1e30d2c16bea596c25b176c8b6b3087e92615adbd52902",
     "https://bcr.bazel.build/modules/libpng/1.6.54/MODULE.bazel": "cf5f59921a82e705c4faaee7d61a3892733e7029c5aa7af1e68458a3d9e2f8a1",
     "https://bcr.bazel.build/modules/libpng/1.6.54/source.json": "5a5158d1e62d73ad102d0e36af5e7f79113c91aa387d3ec1796454d857c3c0bf",
@@ -181,8 +181,8 @@
     "https://bcr.bazel.build/modules/nlohmann_json/3.12.0.bcr.1/MODULE.bazel": "a1c8bb07b5b91d971727c635f449d05623ac9608f6fe4f5f04254ea12f08e349",
     "https://bcr.bazel.build/modules/nlohmann_json/3.12.0.bcr.1/source.json": "93f82a5ae985eb935c539bfee95e04767187818189241ac956f3ccadbdb8fb02",
     "https://bcr.bazel.build/modules/nlohmann_json/3.6.1/MODULE.bazel": "6f7b417dcc794d9add9e556673ad25cb3ba835224290f4f848f8e2db1e1fca74",
-    "https://bcr.bazel.build/modules/opencv/4.13.0.bcr.5/MODULE.bazel": "0e5f3fc02a23c1c9153de235fc88a136aa7eea7de52db0324afc9876f167255b",
-    "https://bcr.bazel.build/modules/opencv/4.13.0.bcr.5/source.json": "e31666bdb682e504dfb9326d7fe997b35d0964bb119f2d22dde30bce524ab98a",
+    "https://bcr.bazel.build/modules/opencv/5.0.0/MODULE.bazel": "0bc7faa2db2740f28329197b155a856ef9a44787ff9cfd2e01f44726957e4253",
+    "https://bcr.bazel.build/modules/opencv/5.0.0/source.json": "4ca1dac4f4f4d216195211464aeb86d90c5e5e1f89f03d603137a5ad1baa1618",
     "https://bcr.bazel.build/modules/opengl-registry/0.0.0-20250707/MODULE.bazel": "43d6c06a450cdf9f6cf44d22f377e0b25f6dbeb861481ea7bdd2987035f33704",
     "https://bcr.bazel.build/modules/opengl-registry/0.0.0-20250707/source.json": "ca3bb3815a3d8ebf6e436eec5867471f05eaa56a1508a3b51a361a143cc398e8",
     "https://bcr.bazel.build/modules/openssl/3.5.5.bcr.4/MODULE.bazel": "b3f35b53c6c73bd3a7c8efbf9b7e79e92566d189e64d313aede69f608ac6dd77",
@@ -243,7 +243,6 @@
     "https://bcr.bazel.build/modules/rules_android/0.7.1/MODULE.bazel": "a806fc382a774252f228a40e3b11b9fcc6276f8778c7fb33e9f72937c6258363",
     "https://bcr.bazel.build/modules/rules_android/0.7.3/MODULE.bazel": "1fbc49fb397d31d74be83fe63eb0a5dc1a79df172ca90772166c35ab4cd67e7b",
     "https://bcr.bazel.build/modules/rules_android/0.7.3/source.json": "80ffccd224a7f9b665f32360a64ba4228ba85c75fd0f6af43e290660147bb151",
-    "https://bcr.bazel.build/modules/rules_android_ndk/0.1.3/MODULE.bazel": "3ca2a6bf93e33c696e0393ef86698d155f1b8c6f72e7418b782690a75bc1ab99",
     "https://bcr.bazel.build/modules/rules_android_ndk/0.1.5/MODULE.bazel": "ab43d418846060de6396e3f1b515a692e945bcd92a9d4541fddcddc8589004ce",
     "https://bcr.bazel.build/modules/rules_android_ndk/0.1.5/source.json": "2950fc77b8e1f1e3874c4e073776f2258ce46926b43c236620c93517fd2e5865",
     "https://bcr.bazel.build/modules/rules_apple/3.16.0/MODULE.bazel": "0d1caf0b8375942ce98ea944be754a18874041e4e0459401d925577624d3a54a",
@@ -380,6 +379,7 @@
     "https://bcr.bazel.build/modules/rules_python/1.6.3/MODULE.bazel": "a7b80c42cb3de5ee2a5fa1abc119684593704fcd2fec83165ebe615dec76574f",
     "https://bcr.bazel.build/modules/rules_python/1.7.0/MODULE.bazel": "d01f995ecd137abf30238ad9ce97f8fc3ac57289c8b24bd0bf53324d937a14f8",
     "https://bcr.bazel.build/modules/rules_python/1.8.4/MODULE.bazel": "33e3971e66161a3e955f7a0d411a8d1f291c4ce4c561851512466f3c77ff8ece",
+    "https://bcr.bazel.build/modules/rules_python/2.0.2/MODULE.bazel": "9d26ecb43f248c2663fb29f3c9b833aa86c31e736096e58c7077f80038f8d32f",
     "https://bcr.bazel.build/modules/rules_python/2.0.3/MODULE.bazel": "19679690907c56be16fe992643e618400be778605d373a386dbe5474313b8e60",
     "https://bcr.bazel.build/modules/rules_python/2.0.3/source.json": "bca9b3ddd8fc8c8cab08be3cfaa011fefc3d5b48d7695624e7f536e64def57e0",
     "https://bcr.bazel.build/modules/rules_robolectric/4.14.1.2/MODULE.bazel": "d44fec647d0aeb67b9f3b980cf68ba634976f3ae7ccd6c07d790b59b87a4f251",
@@ -617,7 +617,7 @@
     "@@rules_android_ndk+//:extension.bzl%android_ndk_repository_extension": {
       "general": {
         "bzlTransitiveDigest": "YsPKn1O2e/VSimulujbIG30CoCXvmpM0z8N+MtunDto=",
-        "usagesDigest": "lr0dmAPJFdk1yRzDKzvyCyIN1ObTMsqdqQSbxdggJNw=",
+        "usagesDigest": "mSCS+baZWnBfo25h80mKAsAN+ZLd7HCK56hP8fr4vNs=",
         "recordedInputs": [],
         "generatedRepoSpecs": {
           "androidndk": {
