@@ -51,32 +51,90 @@ else
     device="-s $device_id"
 fi
 
+# Use an array for the ADB command to prevent quoting/word-splitting issues
+adb_cmd=("$adb")
+if [[ -z "$device_id" ]]; then
+    echo "Warning: --device_id not given. Will expect only a single Android device is visible."
+else
+    adb_cmd+=("-s" "$device_id")
+fi
+
 
 if [[ "$have_test_host_apk" = true ]]; then
     test_host_app_id=$($aapt2 dump packagename "$test_host_apk")
 fi
 instrumentation_app_id=$($aapt2 dump packagename "$instrumentation_apk")
 
-# install both APKs
+# --- REUSABLE CLEANUP FUNCTION ---
+cleanup_package() {
+    local pkg_id="$1"
+    "${adb_cmd[@]}" shell am force-stop "$pkg_id" || true
+    "${adb_cmd[@]}" shell pm uninstall --user all "$pkg_id" || true
+    "${adb_cmd[@]}" uninstall "$pkg_id" || true
+
+    # Verify removal to prevent UID ghosting on subsequent runs
+    if "${adb_cmd[@]}" shell pm path "$pkg_id" | grep -q "package:"; then
+        echo "Warning: $pkg_id still exists in PackageManager database. Forcing deep clear..."
+        "${adb_cmd[@]}" shell pm clear "$pkg_id" || true
+        "${adb_cmd[@]}" shell pm uninstall --user all "$pkg_id" || true
+    fi
+}
+
+# uninstall the previous installations, if they existed. This should avoid errors like "package could not be assigned a valid UID"
 if [[ "$have_test_host_apk" = true ]]; then
-    "$adb" $device install-multi-package -r -t -g "$test_host_apk" "$instrumentation_apk"
-else
-    "$adb" $device install -r -t -g "$instrumentation_apk"
+    cleanup_package "$test_host_app_id"
+fi
+cleanup_package "$instrumentation_app_id"
+
+# --- INSTALLATION WITH RETRY LOGIC ---
+install_success=false
+max_retries=3
+retry_count=0
+
+# Turn off exit-on-error temporarily so a locked PackageManager doesn't kill the CI job
+set +e
+
+while [ $retry_count -lt $max_retries ]; do
+    if [[ "$have_test_host_apk" = true ]]; then
+        "${adb_cmd[@]}" install-multi-package -r -t -g "$test_host_apk" "$instrumentation_apk"
+    else
+        "${adb_cmd[@]}" install -r -t -g "$instrumentation_apk"
+    fi
+
+    if [ $? -eq 0 ]; then
+        install_success=true
+        break
+    fi
+
+    echo "Install failed (likely PackageManager contention). Retrying in 5s... ($((max_retries - retry_count - 1)) attempts left)"
+    sleep 5
+    ((retry_count++))
+done
+
+# Turn exit-on-error back on
+set -e
+
+if [ "$install_success" = false ]; then
+    echo "Error: Installation failed after $max_retries attempts. Aborting."
+    exit 1
 fi
 
+# Give the PackageManager a moment to sync the new UID to the kernel before testing
+sleep 1
+
 # clear the logcat
-"$adb" $device logcat -c
+"${adb_cmd[@]}" logcat -c
 
 # run the instrumentation test
-output=$("$adb" $device shell am instrument -r -w $instrumentation_app_id/androidx.test.runner.AndroidJUnitRunner)
+output=$("${adb_cmd[@]}" shell am instrument -r -w "$instrumentation_app_id/androidx.test.runner.AndroidJUnitRunner")
 
-log_output=$($adb $device logcat -d)
+log_output=$("${adb_cmd[@]}" logcat -d)
 
 # uninstall the APKs
 if [[ "$have_test_host_apk" = true ]]; then
-    "$adb" $device uninstall "$test_host_app_id"
+    cleanup_package "$test_host_app_id"
 fi
-"$adb" $device uninstall "$instrumentation_app_id" || true # Ignore if uninstall fails, as some devices immediately remove the app after the test run
+cleanup_package "$instrumentation_app_id"
 
 # check if outputs contains errors
 if echo "$output" | grep -q "FAILURES"; then
