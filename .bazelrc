@@ -69,6 +69,7 @@ common --java_runtime_version=remotejdk_21 --tool_java_runtime_version=remotejdk
 
 # Build features
 common --features=asan --features=ubsan
+common --@llvm//config:asan=True --@llvm//config:ubsan=True
 
 # disabled as UBSAN compilation causes clang to allocate 30GB of RAM during the build, crashing the system
 # also, ASAN does not work with SAFE_HEAP
@@ -92,10 +93,10 @@ common:macos --xcode_version_config=//xcode:host
 # Alternatively, you can use lcov's genhtml tool directly: genhtml --branch-coverage --ignore-errors category --output genhtml "$(bazel info output_path)/_coverage/_coverage_report.dat"
 
 common:no_sanitizers --features=-asan --features=-ubsan --features=-wasm_asan --features=-wasm_ubsan
+common:no_sanitizers --@llvm//config:asan=False --@llvm//config:ubsan=False
 
-# Avoid using thin_lto feature as it generates a lot of LTO index tasks which have a lot of overhead and don't provide much speedup in our case.
-# Our binaries are small enough that regular ThinLTO provides faster build speeds.
-common:release --config=no_sanitizers --compilation_mode=opt --copt=-Oz --copt=-flto=thin --linkopt=-flto=thin
+# Need to provide both --features=thin_lto and --copt=-flto=thin for thin LTO to work properly as some toolchains (e.g. rules_apple, emscripten) don't propagate the --features=thin_lto flag to the C++ toolchain, which is required for thin LTO to work properly.
+common:release --config=no_sanitizers --compilation_mode=opt --copt=-Oz --copt=-flto=thin --linkopt=-flto=thin --features=thin_lto
 common:debug --compilation_mode=dbg
 
 # ASAN on Android throws errors in code that is actually correct. It doesn't print any useful stack traces either, so even if the code was buggy
@@ -107,6 +108,9 @@ common:android --test_tag_filters=android --config=no_sanitizers
 common:android --android_platforms=//platforms/android:arm64-v8a,//platforms/android:armeabi-v7a
 common:android --extra_toolchains=@androidndk//:all
 common:android --features=-android_unwind_tables
+
+# Some issue with rules_android_ndk prevents LTO index files from being generated, so we will rely only on --copt=-flto=thin and --linkopt=-flto=thin for now.
+common:android --features=-thin_lto
 
 # This enables the use of mobile-install command with rules_android
 # Based on instructions from https://docs.google.com/document/d/1PAANxcHNnKMI6k5hdKIlFyx_rHaV7WkJjDi15XrZSnM/edit?tab=t.0
@@ -124,8 +128,12 @@ common:ios_simulator --config=no_sanitizers --ios_multi_cpus=sim_arm64,x86_64 --
 common:wasm --test_tag_filters=wasm-basic,wasm-simd,wasm-simd-threads --features=optimized_for_size
 
 common:linux --@opencv//:gtk3=@ubuntu-gtk-deps//:gtk3 --@opencv//:with_gtk3=True
+
+#common:linux --@llvm//toolchain:bootstrap_stage=stage1_from_source
+# common:linux --@llvm//toolchain:source=bootstrapped
+
 common:linux_haswell --platforms=//platforms/linux:haswell_x86_64 --extra_execution_platforms=//platforms/linux:haswell_x86_64
-common:linux_generic_intel --platforms=//platforms/linux:x86_64
+common:linux_generic_intel --platforms=//platforms/linux:x86_64 --extra_execution_platforms=//platforms/linux:x86_64
 
 common:rules_xcodeproj --config=no_sanitizers
 

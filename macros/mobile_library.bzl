@@ -1,9 +1,9 @@
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
 load("@rules_cc//cc/private/rules_impl:cc_library.bzl", _cc_library_rule = "cc_library")
-load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
+load("//macros/flags:flags.bzl", "resolved_flags_select_dicts", "CPU_SPECIFIC_COPTS")
 
 def _mobile_library_common_impl(name, visibility, default_copts_key, **kwargs):
-    default_copts = select(resolved_flags_select_dicts[default_copts_key].flat_select_dict)
+    default_copts = select(resolved_flags_select_dicts[default_copts_key].flat_select_dict) + select(CPU_SPECIFIC_COPTS)
     default_cxxopts = select(resolved_flags_select_dicts["cxxopts"].flat_select_dict)
     copts = kwargs.pop("copts") or select({
         Label("//conditions:default"): [],
