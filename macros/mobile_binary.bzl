@@ -1,7 +1,7 @@
 load("@emsdk//emscripten_toolchain:wasm_rules.bzl", "wasm_cc_binary")
 load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 load("@rules_cc//cc/private/rules_impl:cc_binary.bzl", _cc_binary_rule = "cc_binary")
-load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
+load("//macros/flags:flags.bzl", "resolved_flags_select_dicts", "CPU_SPECIFIC_COPTS")
 
 load(":wasm_mobile_binary.bzl", "wasm_mobile_binary")
 load(":mobile_library.bzl", "mobile_library")
@@ -38,7 +38,7 @@ def _mobile_binary_impl(name, visibility, data, skip_packaging_deps_runfiles, ar
     })
     tags = kwargs.pop("tags") or []
     default_conlyopts = select(resolved_flags_select_dicts["conlyopts"].flat_select_dict)
-    default_copts = select(resolved_flags_select_dicts["copts"].flat_select_dict)
+    default_copts = select(resolved_flags_select_dicts["copts"].flat_select_dict) + select(CPU_SPECIFIC_COPTS)
     default_cxxopts = select(resolved_flags_select_dicts["cxxopts"].flat_select_dict)
 
     default_linkopts = select(resolved_flags_select_dicts["linkopts"].flat_select_dict)

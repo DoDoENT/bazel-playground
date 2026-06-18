@@ -1,4 +1,4 @@
-load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
+load("//macros/flags:flags.bzl", "resolved_flags_select_dicts", "CPU_SPECIFIC_COPTS")
 load("//macros:android_mobile_test.bzl", "android_mobile_test")
 load("//macros:ios_mobile_test.bzl", "ios_mobile_test")
 load("//macros:mobile_library.bzl", "mobile_library")
@@ -41,7 +41,7 @@ def _mobile_test_impl(name, visibility, args, data, skip_packaging_deps_runfiles
     })
     tags = kwargs.pop("tags") or []
     default_conlyopts = select(resolved_flags_select_dicts["conlyopts"].flat_select_dict)
-    default_copts = select(resolved_flags_select_dicts["copts"].flat_select_dict)
+    default_copts = select(resolved_flags_select_dicts["copts"].flat_select_dict) + select(CPU_SPECIFIC_COPTS)
     default_cxxopts = select(resolved_flags_select_dicts["cxxopts"].flat_select_dict)
     default_linkopts = select(resolved_flags_select_dicts["linkopts"].flat_select_dict)
     conlyopts = kwargs.pop("conlyopts") or select({

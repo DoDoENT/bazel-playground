@@ -77,6 +77,17 @@ _common_copts = [
     },
 ]
 
+CPU_SPECIFIC_COPTS = {
+    Label("//platforms/linux:is_haswell"): [
+        "-march=haswell",
+        "-mtune=haswell",
+        "-mavx",
+        "-mavx2",
+    ],
+    Label("//conditions:default"): [],
+}
+
+
 resolved_flags_select_dicts = {
     "linkopts": concat_select_dicts(
         "linkopts_conditions",

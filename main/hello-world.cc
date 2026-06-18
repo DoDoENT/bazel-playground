@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
     std::cout << "Hello world compiled for Apple platform!" << std::endl;
 #endif
 #ifdef __clang_major__
-    std::cout << "Clang version is: " << __clang_major__ << std::endl;
+    std::cout << "Clang version is: " << __clang_major__ << "." << __clang_minor__ << '.' << __clang_patchlevel__ << '\n';
 #endif
 #ifdef _LIBCPP_VERSION
     std::cout << "libcxx version is: " << _LIBCPP_VERSION << std::endl;
