@@ -124,7 +124,7 @@ common:ios_simulator --config=no_sanitizers --ios_multi_cpus=sim_arm64,x86_64 --
 common:wasm --test_tag_filters=wasm-basic,wasm-simd,wasm-simd-threads --features=optimized_for_size
 
 common:linux --@opencv//:gtk3=@ubuntu-gtk-deps//:gtk3 --@opencv//:with_gtk3=True
-common:linux_haswell --platforms=//platforms/linux:haswell_x86_64
+common:linux_haswell --platforms=//platforms/linux:haswell_x86_64 --extra_execution_platforms=//platforms/linux:haswell_x86_64
 common:linux_generic_intel --platforms=//platforms/linux:x86_64
 
 common:rules_xcodeproj --config=no_sanitizers
