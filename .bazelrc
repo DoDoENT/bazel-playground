@@ -137,7 +137,7 @@ common:wasm --test_tag_filters=wasm-basic,wasm-simd,wasm-simd-threads --features
 common:linux --@opencv//:gtk3=@ubuntu-gtk-deps//:gtk3 --@opencv//:with_gtk3=True
 
 #common:linux --@llvm//toolchain:bootstrap_stage=stage1_from_source
-# common:linux --@llvm//toolchain:source=bootstrapped
+common:linux --@llvm//toolchain:source=bootstrapped
 
 common:linux_haswell --platforms=//platforms/linux:haswell_x86_64 --extra_execution_platforms=//platforms/linux:haswell_x86_64
 common:linux_generic_intel --platforms=//platforms/linux:x86_64 --extra_execution_platforms=//platforms/linux:x86_64
