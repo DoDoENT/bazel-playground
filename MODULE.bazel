@@ -154,11 +154,11 @@ maven.install(
 # Android rules end
 
 # Emscripten rules begin
-bazel_dep(name = "emsdk", version = "6.0.0")
+bazel_dep(name = "emsdk", version = "6.0.1")
 
 emscripten_deps = use_extension("@emsdk//:emscripten_deps.bzl", "emscripten_deps")
 emscripten_deps.config(
-    version = "6.0.0", # Must match the cache
+    version = "6.0.1", # Must match the cache
 )
 
 emscripten_cache = use_extension(
@@ -168,8 +168,8 @@ emscripten_cache = use_extension(
 
 # NOTE: See tools/emsdk-cache-builder/README.md for instructions on how to build emsdk cache tarball and upload it to the artifactory
 emscripten_cache.prebuilt_cache(
-    http_archive_url = "https://github.com/DoDoENT/bazel-playground/releases/download/emsdk-cache/emsdk-cache-6.0.0.tar.gz",
-    sha256 = "52047d7098fe224a91c3e52420a14d334b3ca868b434e003f4ef3ee459fc176e",
+    http_archive_url = "https://github.com/DoDoENT/bazel-playground/releases/download/emsdk-cache/emsdk-cache-6.0.1.tar.gz",
+    sha256 = "7975fa18da9868f08cc2b8ec9b47e9a65aec060982ed3015a133809abec335e7",
     strip_prefix = "emsdk-cache",
 )
 
@@ -186,7 +186,7 @@ git_override(
 chrome_extension = use_extension("//macros/wasm-helpers:chrome_repo.bzl", "chrome_extension")
 chrome_extension.install_chrome(
     name = "chrome",
-    version = "141",
+    version = "150",
 )
 use_repo(chrome_extension, "chrome")
 

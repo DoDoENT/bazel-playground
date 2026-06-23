@@ -1,7 +1,7 @@
 module(name = "emsdk-cache-builder")
 
 bazel_dep(name = "rules_cc", version = "0.2.20")
-bazel_dep(name = "emsdk", version = "6.0.0")
+bazel_dep(name = "emsdk", version = "6.0.1")
 
 emscripten_cache = use_extension(
     "@emsdk//:emscripten_cache.bzl",
@@ -23,8 +23,8 @@ emscripten_cache.targets(targets = [
     "libc++abi-mt-noexcept",
     "libc++abi-debug-mt-noexcept",
     "libc++abi-debug-noexcept",
-    "libcompiler_rt-mt",
-    "libcompiler_rt",
+    "libclang_rt.builtins-mt",
+    "libclang_rt.builtins",
     "libembind-rtti",
     "libembind-mt-rtti",
     "libemmalloc-mt",
