@@ -84,6 +84,9 @@ CPU_SPECIFIC_COPTS = {
         "-mavx",
         "-mavx2",
     ],
+    Label("//platforms/android:is_armeabi-v7a"): [
+        "-mfpu=neon-vfpv4",
+    ],
     Label("//conditions:default"): [],
 }
 

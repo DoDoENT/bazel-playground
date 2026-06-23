@@ -75,38 +75,27 @@ use_repo(pip, "coverage_pip_deps")
 # Python rules end
 
 # Android rules begin
-bazel_dep(name = "rules_android_ndk", version = "0.1.5")
+bazel_dep(name = "hermetic_android_toolchains", version = "0.1.1")
+bazel_dep(name = "rules_android", version = "0.7.3")
 
-# Patch to allow downloading NDK and additionally define some custom build flags
-single_version_override(
-    module_name = "rules_android_ndk",
-    patch_strip = 1,
-    patches = [
-        "//3rdparty:rules_android_ndk.patch",
-    ],
+android = use_extension("@hermetic_android_toolchains//:extensions.bzl", "android")
+android.sdk(
+    build_tools_version = "37.0.0",
+    version = "37.0",
 )
+android.ndk(version = "r29")
+use_repo(android, "androidsdk", "androidndk")
 
-android_ndk_repository_extension = use_extension("@rules_android_ndk//:extension.bzl", "android_ndk_repository_extension")
-android_ndk_repository_extension.configure(
-    api_level = 21,
-    version = "r29",
-)
-use_repo(android_ndk_repository_extension, "androidndk")
+# Make @rules_android's @androidsdk labels resolve to the hermetic SDK.
+rules_android_sdk = use_extension("@rules_android//rules/android_sdk_repository:rule.bzl", "android_sdk_repository_extension")
+override_repo(rules_android_sdk, "androidsdk")
 
 # Don't register the Android toolchain here, as it will trigger NDK download even when not needed (e.g. on Linux arm64)
 # Instead, register it with --extra_toolchains=@androidndk//:all from commandline
 # register_toolchains("@androidndk//:all")
 
 bazel_dep(name = "rules_java", version = "9.6.1")
-bazel_dep(name = "rules_android", version = "0.7.3")
 bazel_dep(name = "protobuf", version = "35.1")
-
-remote_android_extensions = use_extension("@rules_android//bzlmod_extensions:android_extensions.bzl", "remote_android_tools_extensions")
-use_repo(remote_android_extensions, "android_tools")
-
-android_sdk_repository_extension = use_extension("@rules_android//rules/android_sdk_repository:rule.bzl", "android_sdk_repository_extension")
-use_repo(android_sdk_repository_extension, "androidsdk")
-
 bazel_dep(name = "rules_jvm_external", version = "7.0")
 
 maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")

@@ -14,6 +14,15 @@ def _calculate_android_flags():
         "-mllvm",
         "-polly",
     ]
+    _local_android_flags["linker_common_flags"] = [
+        "-Wl,--no-undefined",
+        "-Wl,-z,relro",
+        "-Wl,-z,now",
+    ]
+
+    _local_android_flags["compiler_default_warnings"] = _local_android_flags["compiler_default_warnings"] + [
+        "-Wno-non-virtual-dtor",
+    ]
 
     _local_android_flags["linker_lto"] = _local_android_flags["linker_lto"] + [
         "-Wl,--thinlto-jobs=4",
