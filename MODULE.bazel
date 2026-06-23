@@ -77,6 +77,7 @@ use_repo(pip, "coverage_pip_deps")
 # Android rules begin
 bazel_dep(name = "hermetic_android_toolchains", version = "0.1.1")
 bazel_dep(name = "rules_android", version = "0.7.3")
+bazel_dep(name = "rules_android_ndk", version = "0.1.5")
 
 android = use_extension("@hermetic_android_toolchains//:extensions.bzl", "android")
 android.sdk(
@@ -89,6 +90,11 @@ use_repo(android, "androidsdk", "androidndk")
 # Make @rules_android's @androidsdk labels resolve to the hermetic SDK.
 rules_android_sdk = use_extension("@rules_android//rules/android_sdk_repository:rule.bzl", "android_sdk_repository_extension")
 override_repo(rules_android_sdk, "androidsdk")
+
+# Make @rules_android_ndk's @androidndk labels resolve to the hermetic SDK.
+rules_android_ndk = use_extension("@rules_android_ndk//:extension.bzl", "android_ndk_repository_extension")
+override_repo(rules_android_ndk, "androidndk")
+
 
 # Don't register the Android toolchain here, as it will trigger NDK download even when not needed (e.g. on Linux arm64)
 # Instead, register it with --extra_toolchains=@androidndk//:all from commandline
