@@ -104,6 +104,9 @@ common:debug --compilation_mode=dbg
 # in CMake builds.
 #     (2025-10-28) (Nenad Mikša)
 
+common:android --repo_env=ACCEPTED_ANDROID_SDK_LICENSE_VERSION=37.0
+common:android --repo_env=ACCEPTED_ANDROID_NDK_LICENSE_VERSION=r29
+
 common:android --test_tag_filters=android --config=no_sanitizers
 common:android --android_platforms=//platforms/android:arm64-v8a,//platforms/android:armeabi-v7a
 common:android --extra_toolchains=@androidndk//:all
@@ -115,6 +118,10 @@ common:android --features=-thin_lto
 # This enables the use of mobile-install command with rules_android
 # Based on instructions from https://docs.google.com/document/d/1PAANxcHNnKMI6k5hdKIlFyx_rHaV7WkJjDi15XrZSnM/edit?tab=t.0
 mobile-install --mode=skylark --mobile_install_aspect=@rules_android//mobile_install:mi.bzl --mobile_install_supported_rules=android_binary --tool_java_runtime_version=remotejdk_21
+
+mobile-install:linux --adb=external/+android+androidsdk_linux/platform-tools/linux/adb
+mobile-install:macos --adb=external/+android+androidsdk_darwin/platform-tools/darwin/adb
+mobile-install:windows --adb=external/+android+androidsdk_windows/platform-tools/windows/adb.exe
 
 # ASAN on iOS throws bogus errors, causing "container overflow" errors on bening code (which works correctly on other sanitized platforms).
 # This is likely due to iOS build using libc++ without sanitization support. Also, the ASAN reports are not useful on iOS because the stack
