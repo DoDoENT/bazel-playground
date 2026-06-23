@@ -104,8 +104,8 @@ common:debug --compilation_mode=dbg
 # in CMake builds.
 #     (2025-10-28) (Nenad Mikša)
 
-common:android --repo_env=ACCEPTED_ANDROID_SDK_LICENSE_VERSION=37.0
-common:android --repo_env=ACCEPTED_ANDROID_NDK_LICENSE_VERSION=r29
+common --repo_env=ACCEPTED_ANDROID_SDK_LICENSE_VERSION=37.0
+common --repo_env=ACCEPTED_ANDROID_NDK_LICENSE_VERSION=r29
 
 common:android --test_tag_filters=android --config=no_sanitizers
 common:android --android_platforms=//platforms/android:arm64-v8a,//platforms/android:armeabi-v7a
