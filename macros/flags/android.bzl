@@ -15,6 +15,7 @@ def _calculate_android_flags():
         "-polly",
     ]
     _local_android_flags["linker_common_flags"] = [
+        "-Wl,-z,max-page-size=16384",  # 16KB page size for Android
         "-Wl,--no-undefined",
         "-Wl,-z,relro",
         "-Wl,-z,now",
