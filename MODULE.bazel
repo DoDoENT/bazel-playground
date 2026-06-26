@@ -84,7 +84,10 @@ android.sdk(
     build_tools_version = "37.0.0",
     version = "37.0",
 )
-android.ndk(version = "r29")
+android.ndk(
+    version = "r29",
+    api_level = 21,
+)
 use_repo(android, "androidsdk", "androidndk")
 
 # Make @rules_android's @androidsdk labels resolve to the hermetic SDK.
