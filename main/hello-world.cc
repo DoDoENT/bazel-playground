@@ -25,6 +25,9 @@ int main(int argc, char** argv) {
   std::cout << "Helloworld compiled with Emscripten!" << std::endl;
 #ifdef __wasm_simd128__
   std::cout << "Running in WebAssembly SIMD mode!" << std::endl;
+#ifdef __wasm_relaxed_simd__
+  std::cout << "Running in WebAssembly Relaxed SIMD mode!" << std::endl;
+#endif
 #endif
 #ifdef __EMSCRIPTEN_PTHREADS__
   std::cout << "Running in WebAssembly Threads mode!" << std::endl;

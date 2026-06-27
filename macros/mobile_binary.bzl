@@ -147,7 +147,7 @@ def _mobile_binary_impl(name, visibility, data, skip_packaging_deps_runfiles, ar
             data = data,
             defines = defines,
             local_defines = local_defines,
-            simd = False,
+            simd = "off",
             threads = False,
             **kwargs
         )
@@ -167,7 +167,7 @@ def _mobile_binary_impl(name, visibility, data, skip_packaging_deps_runfiles, ar
             data = data,
             defines = defines,
             local_defines = local_defines,
-            simd = True,
+            simd = "relaxed_simd",
             threads = False,
             **kwargs
         )
@@ -187,7 +187,7 @@ def _mobile_binary_impl(name, visibility, data, skip_packaging_deps_runfiles, ar
             data = data,
             defines = defines,
             local_defines = local_defines,
-            simd = True,
+            simd = "relaxed_simd",
             threads = True,
             **kwargs
         )

@@ -78,8 +78,10 @@ wasm_test = macro(
             default = False,
             configurable = False,
         ),
-        "simd": attr.bool(
-            default = False,
+        "simd": attr.string(
+            default = "off",
+            values = ["off", "simd128", "relaxed_simd"],
+            doc = "Enable SIMD support via emscripten.",
             configurable = False,
         ),
         "args": attr.string_list(

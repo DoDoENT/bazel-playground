@@ -94,10 +94,20 @@ def _wasm_mobile_binary_impl(name, visibility, data, skip_packaging_deps_runfile
         **kwargs,
     )
 
+    _simd = False 
+    _relaxed_simd = False
+
+    if simd == "simd128":
+        _simd = True
+    elif simd == "relaxed_simd":
+        _simd = True
+        _relaxed_simd = True
+
     wasm_cc_binary(
         name = name + "-wasmcc",
         cc_target = native.package_relative_label(":" + name + "-cc"),
-        simd = simd,
+        simd = _simd,
+        relaxed_simd = _relaxed_simd,
         threads = "off" if not threads else "emscripten",
         outputs = outputs,
         tags = ["manual"],
@@ -146,8 +156,9 @@ wasm_mobile_binary = macro(
             doc = "Enable pthreads support via emscripten.",
             configurable = False,
         ),
-        "simd": attr.bool(
-            default = False,
+        "simd": attr.string(
+            default = "off",
+            values = ["off", "simd128", "relaxed_simd"],
             doc = "Enable SIMD support via emscripten.",
             configurable = False,
         ),
