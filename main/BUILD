@@ -19,6 +19,7 @@ mobile_binary(
         ":hello-greet",
         "//lib:hello-time",
     ],
+    visibility = ["//visibility:public"],
 )
 
 mobile_test(

@@ -7,6 +7,15 @@ define_subpackage_test_suites(
     ],
 )
 
+filegroup(
+    name = "binaries",
+    srcs = [
+        "//main:hello-world",
+        "//opencv:displayImage",
+        "//opencv:cameraTest",
+    ],
+)
+
 alias(
     name = "doom",
     actual = "@rules_doom//examples/launch:freedoom2",
