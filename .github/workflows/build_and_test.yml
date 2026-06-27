@@ -56,10 +56,10 @@ jobs:
           ${{ matrix.target.extra_flags }}
           ${{ steps.flags.outputs.release_flag }}
 
-      - name: OpenCV build
+      - name: Build binaries
         if: matrix.target.label == 'host'
         run: >
-          bazel build //opencv:all
+          bazel build //:binaries
           ${{ matrix.target.extra_flags }}
           ${{ steps.flags.outputs.release_flag }}
 
@@ -92,7 +92,7 @@ jobs:
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '26.5' # Options: 'latest-stable', 'latest-beta', or specific version like '14.2'
+          xcode-version: '26.6' # Options: 'latest-stable', 'latest-beta', or specific version like '14.2'
 
       - name: Set release flag
         id: flags
@@ -109,9 +109,9 @@ jobs:
           ${{ matrix.target.extra_flags }}
           ${{ steps.flags.outputs.release_flag }}
 
-      - name: OpenCV build
+      - name: Build binaries
         if: matrix.target.label == 'host'
         run: >
-          bazel build //opencv:all
+          bazel build //:binaries
           ${{ matrix.target.extra_flags }}
           ${{ steps.flags.outputs.release_flag }}

@@ -11,6 +11,7 @@ mobile_binary(
         "@opencv//:highgui",
     ],
     host_only = True,
+    visibility = ["//visibility:public"],
 )
 
 mobile_binary(
@@ -22,4 +23,5 @@ mobile_binary(
         "@opencv//:highgui",
     ],
     host_only = True,
+    visibility = ["//visibility:public"],
 )
