@@ -1,11 +1,32 @@
 load("//macros:mobile_binary.bzl", "mobile_binary" )
-load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("//macros:mobile_test.bzl", "mobile_test" )
+load("//macros:test_suite.bzl", "define_test_suites" )
+
+define_test_suites(
+    name = "test-suites",
+)
+
+mobile_test(
+    name = "image-manipulation-test",
+    srcs = [
+        "image-manipulation.cc",
+    ],
+    data = [
+        "test-data/image.png",
+        "test-data/expected-result.png",
+    ],
+    deps = [
+        "@opencv//:imgcodecs",
+    ],
+    android_deploy_resources = True,
+    wasm_basic = False,  # OpenCV 5.0.0 fails to build without WASM SIMD
+)
 
 mobile_binary(
     name = "displayImage",
     srcs = ["displayImage.cc"],
     data = [
-        "image.png",
+        "test-data/image.png",
     ],
     deps = [
         "@opencv//:highgui",

@@ -60,6 +60,12 @@ common:offline --remote_cache= --remote_executor=
 # Build flags
 common --copt=-g --strip=never --verbose_failures --copt=-fvisibility=hidden --cxxopt=-fvisibility-inlines-hidden
 
+# ignore warnings for exernal libs
+common --per_file_copt="external/.*@-w"
+
+# Not yet compatible with hermetic LLVM
+# common --features="external_include_paths" --host_features="external_include_paths"
+
 # Treat external include paths as system includes to avoid warnings from 3rd party code
 # disabled due to issue: https://github.com/yuyawk/rules_build_error/issues/145
 # common --features=external_include_paths
@@ -108,7 +114,7 @@ common --repo_env=ACCEPTED_ANDROID_SDK_LICENSE_VERSION=37.0
 common --repo_env=ACCEPTED_ANDROID_NDK_LICENSE_VERSION=r29
 
 common:android --test_tag_filters=android --config=no_sanitizers
-common:android --android_platforms=//platforms/android:arm64-v8a,//platforms/android:armeabi-v7a
+common:android --android_platforms=//platforms/android:arm64-v8a,//platforms/android:armeabi-v7a,//platforms/android:x86_64,//platforms/android:x86
 common:android --features=-android_unwind_tables
 
 # Some issue with rules_android_ndk prevents LTO index files from being generated, so we will rely only on --copt=-flto=thin and --linkopt=-flto=thin for now.
