@@ -32,6 +32,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          lfs: true
 
       - name: Set up Bazel
         uses: bazel-contrib/setup-bazel@0.19.0
@@ -80,6 +82,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          lfs: true
 
       - name: Set up Bazel
         uses: bazel-contrib/setup-bazel@0.19.0

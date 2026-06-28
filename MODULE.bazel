@@ -86,7 +86,7 @@ android.sdk(
 )
 android.ndk(
     version = "r29",
-    api_level = 21,
+    api_level = 24,
 )
 use_repo(android, "androidsdk", "androidndk")
 
