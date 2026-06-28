@@ -13,11 +13,30 @@
 #include <opencv2/imgcodecs.hpp>
 #pragma clang diagnostic pop
 
+
+#ifdef __ANDROID__
+#include "PathProvider.hpp"
+#endif
+
+namespace 
+{
+    std::string resolveImagePath( std::string_view filename )
+    {
+#ifdef __ANDROID__
+        return AndroidPaths::internalStoragePath() + '/' + resolveTestDataPath( filename );
+#else 
+        return resolveTestDataPath( filename );
+#endif
+    }
+}
+
 TEST(OpenCVTest, resizeAndGrayscale)
 {
-    auto path{ resolveTestDataPath( "image.png" ) };
+    auto path{ resolveImagePath( "image.png" ) };
     std::cout << "Loading file: " << path << std::endl;
     cv::Mat inputImage{ cv::imread( path, cv::IMREAD_COLOR ) };
+
+    ASSERT_FALSE( inputImage.empty() ) << "Failed to load file: " << path;
 
     std::cout << "Input image size: " << inputImage.cols << "x" << inputImage.rows << std::endl;
 
@@ -27,7 +46,7 @@ TEST(OpenCVTest, resizeAndGrayscale)
     cv::Mat resizedImage;
     cv::resize( grayImage, resizedImage, cv::Size{ 103, 120 } );
 
-    auto const expectedPath{ resolveTestDataPath( "expected-result.png" ) };
+    auto const expectedPath{ resolveImagePath( "expected-result.png" ) };
 
     cv::Mat expectedImage{ cv::imread( expectedPath, cv::IMREAD_GRAYSCALE ) };
 

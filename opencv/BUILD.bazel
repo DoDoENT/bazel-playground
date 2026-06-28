@@ -18,6 +18,7 @@ mobile_test(
     deps = [
         "@opencv//:imgcodecs",
     ],
+    android_deploy_resources = True,
 )
 
 mobile_binary(
