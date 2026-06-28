@@ -24,7 +24,7 @@ mobile_binary(
     name = "displayImage",
     srcs = ["displayImage.cc"],
     data = [
-        "image.png",
+        "test-data/image.png",
     ],
     deps = [
         "@opencv//:highgui",
