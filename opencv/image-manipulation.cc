@@ -15,7 +15,7 @@
 
 TEST(OpenCVTest, resizeAndGrayscale)
 {
-    auto path{ "opencv/image.png" };
+    auto path{ resolveTestDataPath( "image.png" ) };
     std::cout << "Loading file: " << path << std::endl;
     cv::Mat inputImage{ cv::imread( path, cv::IMREAD_COLOR ) };
 
@@ -27,7 +27,7 @@ TEST(OpenCVTest, resizeAndGrayscale)
     cv::Mat resizedImage;
     cv::resize( grayImage, resizedImage, cv::Size{ 103, 120 } );
 
-    auto const expectedPath{ "opencv/expected-result.png" };
+    auto const expectedPath{ resolveTestDataPath( "expected-result.png" ) };
 
     cv::Mat expectedImage{ cv::imread( expectedPath, cv::IMREAD_GRAYSCALE ) };
 

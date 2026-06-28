@@ -12,8 +12,8 @@ mobile_test(
         "image-manipulation.cc",
     ],
     data = [
-        "image.png",
-        "expected-result.png",
+        "test-data/image.png",
+        "test-data/expected-result.png",
     ],
     deps = [
         "@opencv//:imgcodecs",
