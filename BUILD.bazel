@@ -4,6 +4,7 @@ define_subpackage_test_suites(
     name = "all-test-suites",
     subpackages = [
         "main",
+        "opencv",
     ],
 )
 

@@ -1,5 +1,24 @@
 load("//macros:mobile_binary.bzl", "mobile_binary" )
-load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("//macros:mobile_test.bzl", "mobile_test" )
+load("//macros:test_suite.bzl", "define_test_suites" )
+
+define_test_suites(
+    name = "test-suites",
+)
+
+mobile_test(
+    name = "image-manipulation-test",
+    srcs = [
+        "image-manipulation.cc",
+    ],
+    data = [
+        "image.png",
+        "expected-result.png",
+    ],
+    deps = [
+        "@opencv//:imgcodecs",
+    ],
+)
 
 mobile_binary(
     name = "displayImage",
