@@ -1,10 +1,7 @@
 #include "GoogleTestInvoker.hpp"
 #include "test-support/ios-test/swift-bridge/GoogleTestSwift-Swift.h"
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wcharacter-conversion"
 #include <gtest/gtest.h>
-#pragma clang diagnostic pop
 
 #include <memory>
 
