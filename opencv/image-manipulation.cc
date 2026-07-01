@@ -1,18 +1,10 @@
 #include <Paths.h>
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wcharacter-conversion"
-#include <gtest/gtest.h>
-#pragma clang diagnostic pop
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wconversion"
-#pragma clang diagnostic ignored "-Wdocumentation"
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/imgcodecs.hpp>
-#pragma clang diagnostic pop
 
+#include <gtest/gtest.h>
 
 #ifdef __ANDROID__
 #include "PathProvider.hpp"

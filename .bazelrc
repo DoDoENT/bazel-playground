@@ -63,12 +63,9 @@ common --copt=-g --strip=never --verbose_failures --copt=-fvisibility=hidden --c
 # ignore warnings for exernal libs
 common --per_file_copt="external/.*@-w"
 
-# Not yet compatible with hermetic LLVM
-# common --features="external_include_paths" --host_features="external_include_paths"
-
 # Treat external include paths as system includes to avoid warnings from 3rd party code
 # disabled due to issue: https://github.com/yuyawk/rules_build_error/issues/145
-# common --features=external_include_paths
+common --features="external_include_paths" --host_features="external_include_paths"
 
 # needed android
 common --java_runtime_version=remotejdk_21 --tool_java_runtime_version=remotejdk_21
