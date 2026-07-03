@@ -1,8 +1,6 @@
-#ifndef MAIN_HELLO_GREET_H_
-#define MAIN_HELLO_GREET_H_
+#pragma once
 
 #include <string>
 
-std::string get_greet(const std::string &thing);
-
-#endif
+std::string get_greet( std::string_view who );
+std::string get_greet_with_sysinfo( std::string_view who );

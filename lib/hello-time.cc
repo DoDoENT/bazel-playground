@@ -2,20 +2,29 @@
 #include <ctime>
 #include <iostream>
 
-void print_localtime() {
-  std::time_t result = std::time(nullptr);
-  std::cout << std::asctime(std::localtime(&result));
+std::string get_local_time_as_string()
+{
+    std::time_t result = std::time(nullptr);
+
+    std::string full_string;
+    full_string += std::asctime(std::localtime(&result));
+    full_string += '\n';
 #ifdef __clang__
-  std::cout << "Clang hello!" << std::endl;
+    full_string += "Clang hello!\n";
 #else
-  std::cout << "Another compiler hello!" << std::endl;
-#endif // __clang__
+    full_string += "Another compiler hello!\n";
+#endif
 #if __has_feature(address_sanitizer)
-  std::cout << "AddressSanitizer is enabled!" << std::endl;
+    full_string += "AddressSanitizer is enabled!\n";
 #endif
-#if defined(__has_feature)
-#  if __has_feature(undefined_behavior_sanitizer)
-  std::cout << "Undefined behaviour sanitizer is enabled!" << std::endl;
-#  endif
+#if __has_feature(undefined_behavior_sanitizer)
+    full_string += "Undefined behaviour sanitizer is enabled!\n";
 #endif
+
+    return full_string;
+}
+
+void print_localtime()
+{
+    std::cout << get_local_time_as_string();
 }
