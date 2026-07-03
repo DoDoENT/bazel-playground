@@ -3,15 +3,32 @@
 bazel_real="$BAZEL_REAL"
 bazelrc_lines=()
 
+quote_bazelrc_value() {
+    local value="$1"
+    value=${value//\\/\\\\}
+    value=${value//\"/\\\"}
+    printf '"%s"' "$value"
+}
+
 if [[ $OSTYPE == darwin* ]]; then
     xcode_path=$(xcode-select -p)
     xcode_version=$(xcodebuild -version | tail -1 | cut -d " " -f3)
+    macos_product_version=$(sw_vers -productVersion)
+    macos_build_version=$(sw_vers -buildVersion)
+    clang_path=$(xcrun --sdk macosx --find clang)
+    clang_resource_dir=$("$clang_path" --print-resource-dir)
 
-    bazelrc_lines+=("startup --host_jvm_args=-Xdock:name=$xcode_path")
+    bazelrc_lines+=("startup --host_jvm_args=-Xdock:name=$(quote_bazelrc_value "$xcode_path")")
     bazelrc_lines+=("build --xcode_version=$xcode_version")
     bazelrc_lines+=("build --repo_env=XCODE_VERSION=$xcode_version")
-    bazelrc_lines+=("build --repo_env=DEVELOPER_DIR=$xcode_path")
-    bazelrc_lines+=("common --test_env=DEVELOPER_DIR=$xcode_path")
+    bazelrc_lines+=("build --repo_env=DEVELOPER_DIR=$(quote_bazelrc_value "$xcode_path")")
+    bazelrc_lines+=("build --action_env=APPLE_CLANG_RESOURCE_DIR=$(quote_bazelrc_value "$clang_resource_dir")")
+    bazelrc_lines+=("build --action_env=MACOS_PRODUCT_VERSION=$macos_product_version")
+    bazelrc_lines+=("build --action_env=MACOS_BUILD_VERSION=$macos_build_version")
+    bazelrc_lines+=("build:no_sanitizers --action_env=APPLE_CLANG_RESOURCE_DIR=unsanitized")
+    bazelrc_lines+=("build:no_sanitizers --action_env=MACOS_PRODUCT_VERSION=unsanitized")
+    bazelrc_lines+=("build:no_sanitizers --action_env=MACOS_BUILD_VERSION=unsanitized")
+    bazelrc_lines+=("common --test_env=DEVELOPER_DIR=$(quote_bazelrc_value "$xcode_path")")
 fi
 
 printf '%s\n' "${bazelrc_lines[@]}" > automatic.bazelrc
