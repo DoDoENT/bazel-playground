@@ -79,6 +79,12 @@ bazel_dep(name = "hermetic_android_toolchains", version = "0.2.0")
 bazel_dep(name = "rules_android", version = "0.7.3")
 bazel_dep(name = "rules_android_ndk", version = "0.1.5")
 
+git_override(
+    module_name = "hermetic_android_toolchains",
+    remote = "https://github.com/keith/hermetic_android_toolchains.git",
+    branch = "ks/add-support-for-downloading-emulators-and-system-images",
+)
+
 android = use_extension("@hermetic_android_toolchains//:extensions.bzl", "android", dev_dependency = True)
 android.sdk(
     build_tools_version = "37.0.0",
@@ -88,6 +94,16 @@ android.ndk(
     version = "r29",
     api_level = 24,
 )
+android.emulator(version = "36.6.11")
+android.system_image(
+    arch = "x86_64",
+    version = "24",
+)
+android.system_image(
+    arch = "arm64-v8a",
+    version = "24",
+)
+
 use_repo(android, "androidsdk", "androidndk")
 
 # Make @rules_android's @androidsdk labels resolve to the hermetic SDK.

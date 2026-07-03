@@ -26,8 +26,8 @@ jobs:
           - label: wasm
             command: bazel test //:wasm-all
             extra_flags: --config=wasm
-          - label: android
-            command: bazel build //:android
+          - label: android-x86_64
+            command: bazel test //:android-emulator
             extra_flags: --config=android
     steps:
       - name: Checkout
@@ -79,6 +79,9 @@ jobs:
           - label: ios
             command: bazel test //:ios
             extra_flags: --config=ios_simulator
+          - label: android-arm64
+            command: bazel test //:android-emulator
+            extra_flags: --config=android
     steps:
       - name: Checkout
         uses: actions/checkout@v7
