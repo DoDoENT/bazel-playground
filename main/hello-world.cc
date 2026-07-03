@@ -4,6 +4,10 @@
 #include <string>
 #include <thread>
 
+#if defined( __linux__ )
+#   include <sys/utsname.h>
+#endif
+
 #ifdef __EMSCRIPTEN_PTHREADS__
 void threadWork()
 {
@@ -12,24 +16,28 @@ void threadWork()
 #endif
 
 int main(int argc, char** argv) {
-  std::string who = "world";
-  if (argc > 1) {
-    who = argv[1];
-  }
-  std::cout << get_greet(who) << std::endl;
-  print_localtime();
+    std::string who = "world";
+    if (argc > 1) {
+      who = argv[1];
+    }
+#if defined( __linux__ )
+    std::cout << get_greet_with_sysinfo( who ) << std::endl;
+#else
+    std::cout << get_greet( who ) << std::endl;
+#endif
+    print_localtime();
 #ifdef __cpp_rtti
     std::cout << "type id of who is" << typeid(who).name() << std::endl;
 #endif
 #ifdef __EMSCRIPTEN__
-  std::cout << "Helloworld compiled with Emscripten!" << std::endl;
+    std::cout << "Helloworld compiled with Emscripten!" << std::endl;
 #ifdef __wasm_simd128__
-  std::cout << "Running in WebAssembly SIMD mode!" << std::endl;
+    std::cout << "Running in WebAssembly SIMD mode!" << std::endl;
 #endif
 #ifdef __EMSCRIPTEN_PTHREADS__
-  std::cout << "Running in WebAssembly Threads mode!" << std::endl;
-  std::thread someThread{ threadWork };
-  someThread.join();
+    std::cout << "Running in WebAssembly Threads mode!" << std::endl;
+    std::thread someThread{ threadWork };
+    someThread.join();
 #endif
 #endif
 #ifdef __APPLE__
