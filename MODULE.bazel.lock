@@ -624,7 +624,7 @@
     "@@rules_android+//rules/android_sdk_repository:rule.bzl%android_sdk_repository_extension": {
       "general": {
         "bzlTransitiveDigest": "qHbR00gVzVzkxX+PRtv4UGcUFMtBz7TK9CNYUWH8nIE=",
-        "usagesDigest": "JvJEWcCLUYJRAhXC7g/So8ynIk1+OhdcPJTRWsbS+aw=",
+        "usagesDigest": "XcFVCh8zGj+HY6diT/lMHHU9A3bM6+gYQzHYUoTClWU=",
         "recordedInputs": [],
         "generatedRepoSpecs": {
           "androidsdk": {
