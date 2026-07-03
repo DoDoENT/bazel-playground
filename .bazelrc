@@ -115,7 +115,7 @@ common --repo_env=ACCEPTED_ANDROID_NDK_LICENSE_VERSION=r29
 
 common --repo_env=APPLE_SUPPORT_RULES_BASED_TOOLCHAIN=1
 
-common:android --test_tag_filters=android --config=no_sanitizers
+common:android --test_tag_filters=android,android-emulator --config=no_sanitizers
 common:android --android_platforms=//platforms/android:arm64-v8a,//platforms/android:armeabi-v7a,//platforms/android:x86_64,//platforms/android:x86
 common:android --features=-android_unwind_tables
 
