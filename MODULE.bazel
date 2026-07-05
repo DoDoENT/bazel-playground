@@ -153,7 +153,7 @@ bazel_dep(name = "emsdk", version = "6.0.2")
 
 emscripten_deps = use_extension("@emsdk//:emscripten_deps.bzl", "emscripten_deps")
 emscripten_deps.config(
-    version = "6.0.1", # Must match the cache
+    version = "6.0.2", # Must match the cache
 )
 
 emscripten_cache = use_extension(
@@ -163,8 +163,8 @@ emscripten_cache = use_extension(
 
 # NOTE: See tools/emsdk-cache-builder/README.md for instructions on how to build emsdk cache tarball and upload it to the artifactory
 emscripten_cache.prebuilt_cache(
-    http_archive_url = "https://github.com/DoDoENT/bazel-playground/releases/download/emsdk-cache/emsdk-cache-6.0.1.tar.gz",
-    sha256 = "7975fa18da9868f08cc2b8ec9b47e9a65aec060982ed3015a133809abec335e7",
+    http_archive_url = "https://github.com/DoDoENT/bazel-playground/releases/download/emsdk-cache/emsdk-cache-6.0.2.tar.gz",
+    sha256 = "0edc2a7e9e25606f412b7650fef00b467120097b5a905f4b9f020e1df5efc9dd",
     strip_prefix = "emsdk-cache",
 )
 
