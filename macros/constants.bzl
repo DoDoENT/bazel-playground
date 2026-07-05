@@ -6,7 +6,9 @@ TAG_ANDROID = "android"
 TAG_ANDROID_EMULATOR = "android-emulator"
 TAG_WASM_BASIC = "wasm-basic"
 TAG_WASM_SIMD = "wasm-simd"
+TAG_WASM_RELAXED_SIMD = "wasm-relaxed-simd"
 TAG_WASM_SIMD_THREADS = "wasm-simd-threads"
+TAG_WASM_RELAXED_SIMD_THREADS = "wasm-relaxed-simd-threads"
 TAG_STARLARK = "starlark"
 
 # Use this tag on tests that require multiple CPU cores to prevent server overcomit
