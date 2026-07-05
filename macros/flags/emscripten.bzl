@@ -40,7 +40,8 @@ def _calculate_emscripten_flags():
         "-Wno-limited-postlink-optimizations",
         # "-s STRICT=1",
         "-s ALLOW_MEMORY_GROWTH=1",
-        "--no-heap-copy",
+        "-sGROWABLE_ARRAYBUFFERS=0",  # not compatible with file packager yet
+        "-Wno-pthreads-mem-growth",
         "-s INITIAL_MEMORY=209715200", # 200MB
         "-s MEMORY_GROWTH_LINEAR_STEP=2097152", # 2MB
         "-s STACK_SIZE=262144", # 256KB
