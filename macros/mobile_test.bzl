@@ -241,7 +241,7 @@ def _mobile_test_impl(name, visibility, args, data, skip_packaging_deps_runfiles
                 target_compatible_with = kwargs.get("target_compatible_with", []),
             )
             wasm_test(
-                name = name + "-wasm-simd-threads",
+                name = name + "-wasm-relaxed-simd-threads",
                 visibility = visibility,
                 srcs = srcs,
                 copts = copts,

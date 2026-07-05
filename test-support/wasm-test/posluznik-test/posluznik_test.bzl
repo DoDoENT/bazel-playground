@@ -29,8 +29,12 @@ def _posluznik_test_impl(ctx):
             wasm_validate_flags = "--disable-simd"
         elif ctx.attr.validate_binary == "simd":
             wasm_validate_flags = ""
+        elif ctx.attr.validate_binary == "relaxed_simd":
+            wasm_validate_flags = "--enable-relaxed-simd"
         elif ctx.attr.validate_binary == "simd+threads":
             wasm_validate_flags = "--enable-threads"
+        elif ctx.attr.validate_binary == "relaxed_simd+threads":
+            wasm_validate_flags = "--enable-threads --enable-relaxed-simd"
 
         substitutions["%(wasm_validate_enabled)b"] = "true"
         substitutions["%(wasm_validate_flags)s"] = wasm_validate_flags
@@ -66,7 +70,7 @@ posluznik_test = rule(
         ),
         "validate_binary": attr.string(
             default = "off",
-            values = ["off", "basic", "simd", "simd+threads"],
+            values = ["off", "basic", "simd", "relaxed_simd", "simd+threads", "relaxed_simd+threads"],
         ),
         "_posluznik_test_template": attr.label(
             default = "posluznik_test.template.sh",

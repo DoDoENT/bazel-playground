@@ -139,7 +139,7 @@ mobile-install:windows --adb=external/+android+androidsdk_windows/platform-tools
 common:ios_device --config=no_sanitizers --ios_multi_cpus=arm64 --test_tag_filters=ios --strategy=FindProvisioningProfile=sandboxed,local
 common:ios_simulator --config=no_sanitizers --ios_multi_cpus=sim_arm64,x86_64 --test_tag_filters=ios --strategy=FindProvisioningProfile=sandboxed,local
 
-common:wasm --test_tag_filters=wasm-basic,wasm-simd,wasm-simd-threads --features=optimized_for_size
+common:wasm --test_tag_filters=wasm-basic,wasm-simd,wasm-relaxed-simd,wasm-simd-threads,wasm-relaxed-simd-threads --features=optimized_for_size
 
 common:linux --@opencv//:gtk3=@ubuntu-gtk-deps//:gtk3 --@opencv//:with_gtk3=True
 
