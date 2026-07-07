@@ -28,6 +28,12 @@ bazel test //:ios --test_arg=--destination=platform=ios_device,id=<device_id> --
 bazel test //:android --test_arg=--device_id=<device_id> --config=android
 ```
 
+## Run all tests on Android emulator
+
+```
+bazel test //:android-emulator --config=android
+```
+
 ## Run all WebAssembly tests on Google Chrome
 
 ```

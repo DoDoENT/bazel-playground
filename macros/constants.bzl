@@ -3,6 +3,7 @@
 TAG_HOST = "host"
 TAG_IOS = "ios"
 TAG_ANDROID = "android"
+TAG_ANDROID_EMULATOR = "android-emulator"
 TAG_WASM_BASIC = "wasm-basic"
 TAG_WASM_SIMD = "wasm-simd"
 TAG_WASM_SIMD_THREADS = "wasm-simd-threads"

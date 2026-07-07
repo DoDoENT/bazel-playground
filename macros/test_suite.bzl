@@ -5,6 +5,7 @@ load(
     "TAG_WASM_SIMD_THREADS",
     "TAG_IOS",
     "TAG_ANDROID",
+    "TAG_ANDROID_EMULATOR",
     "TAG_HOST",
 )
 
@@ -17,6 +18,11 @@ def _define_test_suites_impl(name, visibility):
     native.test_suite(
         name = TAG_ANDROID,
         tags = [TAG_ANDROID],
+    )
+
+    native.test_suite(
+        name = TAG_ANDROID_EMULATOR,
+        tags = [TAG_ANDROID_EMULATOR],
     )
 
     native.test_suite(
@@ -62,6 +68,11 @@ def _define_subpackage_test_suites_impl(name, visibility, subpackages):
     native.test_suite(
         name = TAG_ANDROID,
         tests = collect_subpackages(TAG_ANDROID),
+    )
+
+    native.test_suite(
+        name = TAG_ANDROID_EMULATOR,
+        tests = collect_subpackages(TAG_ANDROID_EMULATOR),
     )
 
     native.test_suite(
