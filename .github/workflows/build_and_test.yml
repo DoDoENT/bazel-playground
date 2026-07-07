@@ -27,7 +27,7 @@ jobs:
             command: bazel test //:wasm-all
             extra_flags: --config=wasm
           - label: android
-            command: bazel build //:android
+            command: bazel build //:android  # Note: KVM/HVF not available on GHA runners, so emulator can't boot
             extra_flags: --config=android
     steps:
       - name: Checkout
