@@ -113,7 +113,7 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
             "@platforms//os:macos": "@androidsdk//:emulator_images_android_24_arm64-v8a_qemu2_extra",
             "//platforms/linux:is_any_intel": "@androidsdk//:emulator_images_android_24_x86_64_qemu2_extra",
         }),
-        tags = tags + [TAG_ANDROID_EMULATOR],
+        tags = tags + [TAG_ANDROID_EMULATOR, "cpu:2"],  # emulators require 2 CPU cores to run, so we reserve them to prevent overcommit
         test_app = native.package_relative_label(":" + name + "-test-app"),
     )
 
