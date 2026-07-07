@@ -1,10 +1,10 @@
 load("//macros:mobile_library.bzl", "mobile_library")
 load("//test-support/android-test/android_instrumentation_test:android_instrumentation_test.bzl", "android_instrumentation_test")
+load("//test-support/android-test/android_instrumentation_test:android_emulator_instrumentation_test.bzl", "android_emulator_instrumentation_test")
 load(":android_build_config.bzl", "android_build_config")
 load(":android_utils.bzl", "SANITIZER_SUPPORT_LIBS")
 load(":constants.bzl", "TAG_ANDROID", "TAG_ANDROID_EMULATOR")
 load(":test_utils.bzl", "prepare_assets")
-load("@hermetic_android_toolchains//tests/emulator_instrumentation:android_emulator_instrumentation_test.bzl", "android_emulator_instrumentation_test")
 load("@rules_android//android:rules.bzl", "android_binary")
 
 def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, skip_packaging_deps_runfiles, defines, local_defines, deploy_resources, size, timeout, target_compatible_with):
