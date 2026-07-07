@@ -66,6 +66,7 @@ system_image_dir="$(cd "$(dirname "$system_image_source_properties")" && pwd)"
 test_tmpdir="${TEST_TMPDIR:-$(mktemp -d)}"
 port_lock_root="${ANDROID_EMULATOR_PORT_LOCK_ROOT:-/tmp/bazel-android-emulator-ports}"
 adb_server_port="${ADB_SERVER_PORT:-}"
+modem_simulator_port=""
 emulator_pid=""
 allocated_port_locks=()
 adb_cmd=()
@@ -148,12 +149,25 @@ choose_adb_server_port() {
   exit 1
 }
 
+choose_modem_simulator_port() {
+  local offset port
+  for offset in $(seq 0 16383); do
+    port=$((49152 + (($$ + 4096 + offset) % 16384)))
+    if is_port_available "$port" && reserve_port "$port"; then
+      modem_simulator_port="$port"
+      return
+    fi
+  done
+  echo "Failed to find an available emulator modem simulator port." >&2
+  exit 1
+}
+
 choose_emulator_port() {
   local requested="$1"
   local port offset adb_port
   if [[ -n "$requested" ]]; then
-    if ! is_integer "$requested" || ((requested % 2 != 0)); then
-      echo "Invalid --emulator_port. Expected an even integer, got: $requested" >&2
+    if ! is_integer "$requested" || ((requested % 2 != 0 || requested < 5554 || requested > 5584)); then
+      echo "Invalid --emulator_port. Expected an even integer in the 5554..5584 range, got: $requested" >&2
       exit 1
     fi
     adb_port=$((requested + 1))
@@ -167,8 +181,8 @@ choose_emulator_port() {
     echo "Requested emulator port pair is not available: ${requested}/${adb_port}" >&2
     exit 1
   fi
-  for offset in $(seq 0 64); do
-    port=$((5554 + 2 * (($$ + offset) % 65)))
+  for offset in $(seq 0 15); do
+    port=$((5554 + 2 * (($$ + offset) % 16)))
     adb_port=$((port + 1))
     if is_port_available "$port" && is_port_available "$adb_port" && reserve_port "$port"; then
       if reserve_port "$adb_port"; then
@@ -188,6 +202,19 @@ print_emulator_log() {
   fi
 }
 
+cleanup_package() {
+  local pkg_id="$1"
+  "${adb_cmd[@]}" shell am force-stop "$pkg_id" >/dev/null 2>&1 || true
+  "${adb_cmd[@]}" shell pm uninstall --user all "$pkg_id" >/dev/null 2>&1 || true
+  "${adb_cmd[@]}" uninstall "$pkg_id" >/dev/null 2>&1 || true
+
+  if "${adb_cmd[@]}" shell pm path "$pkg_id" 2>/dev/null | grep -q "package:"; then
+    echo "Warning: $pkg_id still exists in PackageManager database. Forcing deep clear..." >&2
+    "${adb_cmd[@]}" shell pm clear "$pkg_id" >/dev/null 2>&1 || true
+    "${adb_cmd[@]}" shell pm uninstall --user all "$pkg_id" >/dev/null 2>&1 || true
+  fi
+}
+
 cleanup() {
   set +e
   if ((${#adb_cmd[@]} == 0)); then
@@ -195,14 +222,10 @@ cleanup() {
     return
   fi
   if [[ -n "${instrumentation_app_id:-}" ]]; then
-    "${adb_cmd[@]}" shell am force-stop "$instrumentation_app_id" >/dev/null 2>&1
-    "${adb_cmd[@]}" shell pm uninstall --user all "$instrumentation_app_id" >/dev/null 2>&1
-    "${adb_cmd[@]}" uninstall "$instrumentation_app_id" >/dev/null 2>&1
+    cleanup_package "$instrumentation_app_id"
   fi
   if [[ -n "${test_host_app_id:-}" ]]; then
-    "${adb_cmd[@]}" shell am force-stop "$test_host_app_id" >/dev/null 2>&1
-    "${adb_cmd[@]}" shell pm uninstall --user all "$test_host_app_id" >/dev/null 2>&1
-    "${adb_cmd[@]}" uninstall "$test_host_app_id" >/dev/null 2>&1
+    cleanup_package "$test_host_app_id"
   fi
   if [[ -n "$emulator_pid" ]]; then
     "${adb_cmd[@]}" emu kill >/dev/null 2>&1
@@ -225,6 +248,7 @@ elif ! is_integer "$adb_server_port"; then
   echo "Invalid ADB_SERVER_PORT: $adb_server_port" >&2
   exit 1
 fi
+choose_modem_simulator_port
 
 if [[ -z "$device_id" ]]; then
   if [[ "$emulator_port_explicit" == true ]]; then
@@ -300,6 +324,7 @@ EOF
       -no-snapshot \
       -no-snapshot-save \
       -wipe-data \
+      -modem-simulator-port "$modem_simulator_port" \
       -gpu swiftshader_indirect \
       >"${test_tmpdir}/emulator.log" 2>&1 &
   emulator_pid="$!"
@@ -340,6 +365,20 @@ if [[ "$boot_completed" != true ]]; then
   exit 1
 fi
 
+package_manager_ready=false
+for _ in $(seq 1 60); do
+  if "${adb_cmd[@]}" shell pm list packages >/dev/null 2>&1; then
+    package_manager_ready=true
+    break
+  fi
+  sleep 1
+done
+if [[ "$package_manager_ready" != true ]]; then
+  echo "Emulator PackageManager did not become ready." >&2
+  print_emulator_log
+  exit 1
+fi
+
 have_test_host_apk=false
 if [[ -n "$test_host_apk" && -f "$test_host_apk" ]]; then
   have_test_host_apk=true
@@ -348,11 +387,53 @@ fi
 instrumentation_app_id="$("$aapt2" dump packagename "$instrumentation_apk")"
 
 if [[ "$have_test_host_apk" == true ]]; then
-  "${adb_cmd[@]}" install -r -t -g "$test_host_apk"
-  "${adb_cmd[@]}" install -r -t -g "$instrumentation_apk"
-else
-  "${adb_cmd[@]}" install -r -t -g "$instrumentation_apk"
+  cleanup_package "$test_host_app_id"
 fi
+cleanup_package "$instrumentation_app_id"
+
+install_success=false
+max_install_retries=5
+set +e
+for retry_count in $(seq 1 "$max_install_retries"); do
+  if [[ "$have_test_host_apk" == true ]]; then
+    "${adb_cmd[@]}" install -r -t -g "$test_host_apk"
+    test_host_install_status=$?
+    if [[ "$test_host_install_status" -eq 0 ]]; then
+      "${adb_cmd[@]}" install -r -t -g "$instrumentation_apk"
+      instrumentation_install_status=$?
+    else
+      instrumentation_install_status=1
+    fi
+  else
+    "${adb_cmd[@]}" install -r -t -g "$instrumentation_apk"
+    instrumentation_install_status=$?
+    test_host_install_status=0
+  fi
+
+  if [[ "$test_host_install_status" -eq 0 && "$instrumentation_install_status" -eq 0 ]]; then
+    install_success=true
+    break
+  fi
+
+  echo "Install failed. Retrying in 5s... ($((max_install_retries - retry_count)) attempts left)" >&2
+  if [[ "$have_test_host_apk" == true ]]; then
+    cleanup_package "$test_host_app_id"
+  fi
+  cleanup_package "$instrumentation_app_id"
+  sleep 5
+done
+set -e
+
+if [[ "$install_success" != true ]]; then
+  echo "Installation failed after ${max_install_retries} attempts." >&2
+  print_emulator_log
+  exit 1
+fi
+
+if [[ "$have_test_host_apk" == true ]]; then
+  "${adb_cmd[@]}" shell pm path "$test_host_app_id"
+fi
+"${adb_cmd[@]}" shell pm path "$instrumentation_app_id"
 
 "${adb_cmd[@]}" logcat -c
 set +e
