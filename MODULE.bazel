@@ -159,7 +159,7 @@ maven.install(
 # Android rules end
 
 # Emscripten rules begin
-bazel_dep(name = "emsdk", version = "6.0.2")
+bazel_dep(name = "emsdk", version = "6.0.3")
 
 emscripten_deps = use_extension("@emsdk//:emscripten_deps.bzl", "emscripten_deps")
 emscripten_deps.config(
