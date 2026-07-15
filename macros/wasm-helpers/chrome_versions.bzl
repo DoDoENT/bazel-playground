@@ -6,9 +6,9 @@
 
 CHROME_VERSIONS = {
     "150": {
-        "version": "150.0.7871.24",
-        "linux64-integrity": "sha256-b52s85PZnDEVqIp73emRZ6ksmFbL0cIYfKds1HHVoto=",
-        "mac-arm64-integrity": "sha256-3AxBmHvpJnc9ueEuZSELBPrEbe98LtpMTrF1oMRpHmo=",
+        "version": "150.0.7871.124",
+        "linux64-integrity": "sha256-mN4LzcZh0UsvwSKumaJ9811H5GTo04pKXgH4GkzilcI=",
+        "mac-arm64-integrity": "sha256-wFDSjDTh9HUwkT2nRMpbzxDEgt+HJRAt/dKqYz1yBTs=",
     },
     "141": {
         "version": "141.0.7390.78",

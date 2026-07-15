@@ -116,6 +116,8 @@
     "https://bcr.bazel.build/modules/eigen/5.0.1.bcr.1/source.json": "605848c92e5b5d56842bfa656b6f373ac6601ee9581b1d84c1b9f4cd7a7c4854",
     "https://bcr.bazel.build/modules/emsdk/6.0.2/MODULE.bazel": "4a3c4195e5f2e0056bc18bf9f8af631c4f720c3e8cea45cfb7247eacf02e27fe",
     "https://bcr.bazel.build/modules/emsdk/6.0.2/source.json": "53111cbcb9f0971aa14da976bafbb937a1bc92a2580c8881890983cd2d289af0",
+    "https://bcr.bazel.build/modules/emsdk/6.0.3/MODULE.bazel": "1c226ea7a8f170dff4de85b039c77b3a1339c9d6338c56c9463c1cd5b0a5ada0",
+    "https://bcr.bazel.build/modules/emsdk/6.0.3/source.json": "74ad41f12344d753827f664f12a253e3c8ee1876aa427495dfe75c1d27252e11",
     "https://bcr.bazel.build/modules/gawk/5.3.2.bcr.1/MODULE.bazel": "cdf8cbe5ee750db04b78878c9633cc76e80dcf4416cbe982ac3a9222f80713c8",
     "https://bcr.bazel.build/modules/gawk/5.3.2.bcr.3/MODULE.bazel": "f1b7bb2dd53e8f2ef984b39485ec8a44e9076dda5c4b8efd2fb4c6a6e856a31d",
     "https://bcr.bazel.build/modules/gawk/5.3.2.bcr.3/source.json": "ebe931bfe362e4b41e59ee00a528db6074157ff2ced92eb9e970acab2e1089c9",
