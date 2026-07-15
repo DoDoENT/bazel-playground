@@ -110,7 +110,7 @@ override_repo(rules_android_ndk, "androidndk")
 
 register_toolchains("@androidsdk//:all", "@androidndk//:all", dev_dependency = True)
 
-bazel_dep(name = "rules_java", version = "9.6.1")
+bazel_dep(name = "rules_java", version = "9.7.0")
 bazel_dep(name = "protobuf", version = "35.1")
 bazel_dep(name = "rules_jvm_external", version = "7.0")
 
