@@ -147,7 +147,7 @@ def _mobile_binary_impl(name, visibility, data, skip_packaging_deps_runfiles, ar
             data = data,
             defines = defines,
             local_defines = local_defines,
-            simd = False,
+            simd = "off",
             threads = False,
             **kwargs
         )
@@ -167,7 +167,27 @@ def _mobile_binary_impl(name, visibility, data, skip_packaging_deps_runfiles, ar
             data = data,
             defines = defines,
             local_defines = local_defines,
-            simd = True,
+            simd = "simd128",
+            threads = False,
+            **kwargs
+        )
+        wasm_mobile_binary(
+            name = name + "-wasm-relaxed-simd",
+            visibility = visibility,
+            srcs = srcs,
+            copts = copts,
+            conlyopts = conlyopts,
+            cxxopts = cxxopts,
+            linkopts = linkopts,
+            deps = deps + [
+                native.package_relative_label(":" + name + "-paths"),
+            ],
+            skip_packaging_deps_runfiles = skip_packaging_deps_runfiles,
+            tags = tags,
+            data = data,
+            defines = defines,
+            local_defines = local_defines,
+            simd = "relaxed_simd",
             threads = False,
             **kwargs
         )
@@ -187,7 +207,27 @@ def _mobile_binary_impl(name, visibility, data, skip_packaging_deps_runfiles, ar
             data = data,
             defines = defines,
             local_defines = local_defines,
-            simd = True,
+            simd = "simd128",
+            threads = True,
+            **kwargs
+        )
+        wasm_mobile_binary(
+            name = name + "-wasm-relaxed-simd-threads",
+            visibility = visibility,
+            srcs = srcs,
+            copts = copts,
+            conlyopts = conlyopts,
+            cxxopts = cxxopts,
+            linkopts = linkopts,
+            deps = deps + [
+                native.package_relative_label(":" + name + "-paths"),
+            ],
+            skip_packaging_deps_runfiles = skip_packaging_deps_runfiles,
+            tags = tags,
+            data = data,
+            defines = defines,
+            local_defines = local_defines,
+            simd = "relaxed_simd",
             threads = True,
             **kwargs
         )

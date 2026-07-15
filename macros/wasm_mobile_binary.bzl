@@ -146,8 +146,9 @@ wasm_mobile_binary = macro(
             doc = "Enable pthreads support via emscripten.",
             configurable = False,
         ),
-        "simd": attr.bool(
-            default = False,
+        "simd": attr.string(
+            default = "off",
+            values = ["off", "simd128", "relaxed_simd"],
             doc = "Enable SIMD support via emscripten.",
             configurable = False,
         ),

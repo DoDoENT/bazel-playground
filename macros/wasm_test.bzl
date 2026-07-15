@@ -27,10 +27,15 @@ def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts,
     )
 
     validate_binary = "basic"
-    if simd and threads:
-        validate_binary = "simd+threads"
-    elif simd:
-        validate_binary = "simd"
+    if simd != "off":
+        if simd == "simd128":
+            simd_type = "simd"
+        else:
+            simd_type = "relaxed_simd"
+        if threads:
+            validate_binary = simd_type + "+threads"
+        else:
+            validate_binary = simd_type
 
     posluznik_test(
         name = name,
@@ -78,8 +83,10 @@ wasm_test = macro(
             default = False,
             configurable = False,
         ),
-        "simd": attr.bool(
-            default = False,
+        "simd": attr.string(
+            default = "off",
+            values = ["off", "simd128", "relaxed_simd"],
+            doc = "Enable SIMD support via emscripten.",
             configurable = False,
         ),
         "args": attr.string_list(

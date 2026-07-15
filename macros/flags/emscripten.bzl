@@ -10,33 +10,33 @@ def _calculate_emscripten_flags():
         "-Wl,--thinlto-jobs=4",
     ]
     _local_emscripten_flags["cxx_compiler_exceptions_off"] = _local_emscripten_flags["cxx_compiler_exceptions_off"] + [
-        "-s DISABLE_EXCEPTION_CATCHING=1"
+        "-sDISABLE_EXCEPTION_CATCHING=1"
     ]
 
     _local_emscripten_flags["cxx_compiler_exceptions_on"] = _local_emscripten_flags["cxx_compiler_exceptions_on"] + [
-        "-s DISABLE_EXCEPTION_CATCHING=0"
+        "-sDISABLE_EXCEPTION_CATCHING=0"
     ]
     _local_emscripten_flags["linker_exceptions_off"] = [
-        "-s DISABLE_EXCEPTION_CATCHING=1"
+        "-sDISABLE_EXCEPTION_CATCHING=1"
     ]
     _local_emscripten_flags["linker_exceptions_on"] = [
-        "-s DISABLE_EXCEPTION_CATCHING=0"
+        "-sDISABLE_EXCEPTION_CATCHING=0"
     ]
     _local_emscripten_flags["linker_runtime_checks"] = [
-        "-s ASSERTIONS=2",
-        "-s STACK_OVERFLOW_CHECK=2",
-        "-s GL_ASSERTIONS=1",
-        "-s SAFE_HEAP=1",
+        "-sASSERTIONS=2",
+        "-sSTACK_OVERFLOW_CHECK=2",
+        "-sGL_ASSERTIONS=1",
+        "-sSAFE_HEAP=1",
     ]
     _local_emscripten_flags["linker_release_flags"] = [
         "-O3",
-        "-s ASSERTIONS=0",
-        "-s STACK_OVERFLOW_CHECK=0",
+        "-sASSERTIONS=0",
+        "-sSTACK_OVERFLOW_CHECK=0",
         "--closure 1",
-        "-s IGNORE_CLOSURE_COMPILER_ERRORS=1",
+        "-sIGNORE_CLOSURE_COMPILER_ERRORS=1",
     ]
     _local_emscripten_flags["linker_common_flags"] = [
-        "-s MALLOC=emmalloc",
+        "-sMALLOC=emmalloc",
         "-Wno-limited-postlink-optimizations",
         # "-s STRICT=1",
         "-s ALLOW_MEMORY_GROWTH=1",
