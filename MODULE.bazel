@@ -161,9 +161,9 @@ maven.install(
 # Emscripten rules begin
 bazel_dep(name = "emsdk", version = "6.0.3")
 
-local_path_override(
-    module_name = "emsdk",
-    path = "/home/dodo/CloneOuts/emsdk/bazel",
+emscripten_config = use_extension("@emsdk//:emscripten_config.bzl", "emscripten_config")
+emscripten_config.configure(
+    version = "6.0.2",
 )
 
 emscripten_deps = use_extension("@emsdk//:emscripten_deps.bzl", "emscripten_deps")

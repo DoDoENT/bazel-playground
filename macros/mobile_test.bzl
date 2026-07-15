@@ -193,28 +193,29 @@ def _mobile_test_impl(name, visibility, args, data, skip_packaging_deps_runfiles
                 size = test_size,
                 timeout = test_timeout,
             )
-            wasm_test(
-                name = name + "-wasm-relaxed-simd",
-                visibility = visibility,
-                srcs = srcs,
-                copts = copts,
-                conlyopts = conlyopts,
-                cxxopts = cxxopts,
-                linkopts = linkopts,
-                deps = deps + [
-                    native.package_relative_label(":" + name + "-paths"),
-                ],
-                skip_packaging_deps_runfiles = skip_packaging_deps_runfiles,
-                threads = False,
-                simd = "relaxed_simd",
-                args = args,
-                tags = tags_without_multi_cpu + [TAG_WASM_RELAXED_SIMD],
-                data = data,
-                defines = defines,
-                local_defines = local_defines,
-                size = test_size,
-                timeout = test_timeout,
-            )
+            # Compiler crash on OpenCV's imgwarp.cpp. https://github.com/emscripten-core/emscripten/issues/27356
+            # wasm_test(
+            #     name = name + "-wasm-relaxed-simd",
+            #     visibility = visibility,
+            #     srcs = srcs,
+            #     copts = copts,
+            #     conlyopts = conlyopts,
+            #     cxxopts = cxxopts,
+            #     linkopts = linkopts,
+            #     deps = deps + [
+            #         native.package_relative_label(":" + name + "-paths"),
+            #     ],
+            #     skip_packaging_deps_runfiles = skip_packaging_deps_runfiles,
+            #     threads = False,
+            #     simd = "relaxed_simd",
+            #     args = args,
+            #     tags = tags_without_multi_cpu + [TAG_WASM_RELAXED_SIMD],
+            #     data = data,
+            #     defines = defines,
+            #     local_defines = local_defines,
+            #     size = test_size,
+            #     timeout = test_timeout,
+            # )
 
         if wasm_simd_threads:
             wasm_test(
@@ -240,29 +241,30 @@ def _mobile_test_impl(name, visibility, args, data, skip_packaging_deps_runfiles
                 timeout = test_timeout,
                 target_compatible_with = kwargs.get("target_compatible_with", []),
             )
-            wasm_test(
-                name = name + "-wasm-relaxed-simd-threads",
-                visibility = visibility,
-                srcs = srcs,
-                copts = copts,
-                conlyopts = conlyopts,
-                cxxopts = cxxopts,
-                linkopts = linkopts,
-                deps = deps + [
-                    native.package_relative_label(":" + name + "-paths"),
-                ],
-                skip_packaging_deps_runfiles = skip_packaging_deps_runfiles,
-                threads = True,
-                simd = "relaxed_simd",
-                args = args,
-                tags = tags + [TAG_WASM_RELAXED_SIMD_THREADS],
-                data = data,
-                defines = defines,
-                local_defines = local_defines,
-                size = test_size,
-                timeout = test_timeout,
-                target_compatible_with = kwargs.get("target_compatible_with", []),
-            )
+            # Compiler crash on OpenCV's imgwarp.cpp. https://github.com/emscripten-core/emscripten/issues/27356
+            # wasm_test(
+            #     name = name + "-wasm-relaxed-simd-threads",
+            #     visibility = visibility,
+            #     srcs = srcs,
+            #     copts = copts,
+            #     conlyopts = conlyopts,
+            #     cxxopts = cxxopts,
+            #     linkopts = linkopts,
+            #     deps = deps + [
+            #         native.package_relative_label(":" + name + "-paths"),
+            #     ],
+            #     skip_packaging_deps_runfiles = skip_packaging_deps_runfiles,
+            #     threads = True,
+            #     simd = "relaxed_simd",
+            #     args = args,
+            #     tags = tags + [TAG_WASM_RELAXED_SIMD_THREADS],
+            #     data = data,
+            #     defines = defines,
+            #     local_defines = local_defines,
+            #     size = test_size,
+            #     timeout = test_timeout,
+            #     target_compatible_with = kwargs.get("target_compatible_with", []),
+            # )
 
 
 mobile_test = macro(
