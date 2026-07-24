@@ -29,7 +29,7 @@ bazel_dep(name = "rules_xcodeproj", version = "4.1.0")
 
 # LLVM rules begin
 
-bazel_dep(name = "llvm", version = "0.8.11")
+bazel_dep(name = "llvm", version = "0.8.14")
 
 # llvm_source = use_extension("@llvm//extensions:llvm_source.bzl", "llvm_source")
 # requires 22.1.0 at minimum (fails to build 21.1.8)
