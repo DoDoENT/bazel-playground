@@ -1,9 +1,5 @@
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wconversion"
-#pragma clang diagnostic ignored "-Wdocumentation"
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
-#pragma clang diagnostic pop
 
 #include <iostream>
 
