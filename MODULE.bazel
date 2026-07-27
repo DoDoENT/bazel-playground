@@ -15,6 +15,16 @@ bazel_dep(name = "rules_license", version = "1.0.0")
 
 # Bazel rules end
 
+# TODO: remove this once [this PR](https://github.com/bazelbuild/rules_cc/pull/802) gets merged and released
+
+single_version_override(
+    module_name = "rules_cc",
+    patch_strip = 1,
+    patches = [
+        "//3rdparty:rules_cc.patch",
+    ],
+)
+
 # Host platform detection
 host_platform = use_extension("//platforms:extension.bzl", "host_platform")
 use_repo(host_platform, "host_platform")
@@ -29,10 +39,7 @@ bazel_dep(name = "rules_xcodeproj", version = "4.1.0")
 
 # LLVM rules begin
 
-# TODO: Much more convenient than toolchains_llvm, but:
-#  - no support for sanitizers yet (on roadmap; setting --@toolchains_llvm_bootstrapped//config:ubsan=True, does not help)
-#  - no support for choosing LLVM version yet
-bazel_dep(name = "llvm", version = "0.8.11")
+bazel_dep(name = "llvm", version = "0.8.14")
 
 # llvm_source = use_extension("@llvm//extensions:llvm_source.bzl", "llvm_source")
 # requires 22.1.0 at minimum (fails to build 21.1.8)
@@ -78,6 +85,23 @@ use_repo(pip, "coverage_pip_deps")
 bazel_dep(name = "hermetic_android_toolchains", version = "0.3.0", dev_dependency = True)
 bazel_dep(name = "rules_android", version = "0.7.3", dev_dependency = True)
 bazel_dep(name = "rules_android_ndk", version = "0.1.5", dev_dependency = True)
+
+# Needed to resolve conflict between gazelle and rules_android
+bazel_dep(name = "rules_go", version = "0.62.0", dev_dependency = True)
+
+go_sdk = use_extension("@rules_go//go:extensions.bzl", "go_sdk", dev_dependency = True)
+go_sdk.download(version = "1.25.0")
+# ...
+# TODO: remove rules_go dependency after `rules_android` is updated
+
+# TODO: remove this patch once [this PR](https://github.com/bazelbuild/rules_android_ndk/pull/135) gets merged and released
+single_version_override(
+    module_name = "rules_android_ndk",
+    patch_strip = 1,
+    patches = [
+        "//3rdparty:rules_android_ndk.patch",
+    ],
+)
 
 android = use_extension("@hermetic_android_toolchains//:extensions.bzl", "android", dev_dependency = True)
 android.sdk(
@@ -225,4 +249,3 @@ http_archive(
 
 # details: https://github.com/finn-ball/rules_doom
 bazel_dep(name = "rules_doom", version = "0.1.0", dev_dependency = True)
-
