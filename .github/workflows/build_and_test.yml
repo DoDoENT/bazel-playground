@@ -119,3 +119,21 @@ jobs:
           bazel build //:binaries
           ${{ matrix.target.extra_flags }}
           ${{ steps.flags.outputs.release_flag }}
+
+  gate:
+    name: Build and test gate
+    needs: [macos, linux]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify build and test results
+        env:
+          LINUX_RESULT: ${{ needs.linux.result }}
+          MACOS_RESULT: ${{ needs.macos.result }}
+        run: |
+          if [ "$MACOS_RESULT" != "success" ] && [ "$LINUX_RESULT" != "success" ]; then
+            echo "One or more build and test jobs did not succeed: $LINUX_RESULT"
+            exit 1
+          fi
+
+          echo "All enabled build and test jobs succeeded."
