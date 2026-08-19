@@ -216,7 +216,7 @@ git_override(
 chrome_extension = use_extension("//macros/wasm-helpers:chrome_repo.bzl", "chrome_extension")
 chrome_extension.install_chrome(
     name = "chrome",
-    version = "150",
+    version = "152",
 )
 use_repo(chrome_extension, "chrome")
 
@@ -228,7 +228,7 @@ bazel_dep(name = "wabt", version = "1.0.37")
 # DEV DEPENDENCIES
 
 
-bazel_dep(name = "googletest", version = "1.18.0", dev_dependency = True)
+bazel_dep(name = "googletest", version = "1.17.0.bcr.2", dev_dependency = True)
 
 bazel_dep(name = "opencv", version = "5.0.0.bcr.2")
 
