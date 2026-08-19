@@ -5,6 +5,11 @@
 # Discover the latest version here: https://googlechromelabs.github.io/chrome-for-testing/
 
 CHROME_VERSIONS = {
+    "152": {
+        "version": "152.0.7977.42",
+        "linux64-integrity": "sha256-EpaGonDYSsRjfGFIAsVUY0qoJ6oTIUIW+B4KC5QQ+M8=",
+        "mac-arm64-integrity": "sha256-TMpQRCAcVHJGnSa+9Eokqi7C4M4tHvSVm42uP6ZizsE=",
+    },
     "150": {
         "version": "150.0.7871.124",
         "linux64-integrity": "sha256-mN4LzcZh0UsvwSKumaJ9811H5GTo04pKXgH4GkzilcI=",

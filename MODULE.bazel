@@ -59,7 +59,7 @@ register_toolchains("@llvm_toolchains//:all")
 # LLVM rules end
 # Python rules begin
 
-bazel_dep(name = "rules_python", version = "2.2.0")
+bazel_dep(name = "rules_python", version = "2.3.1")
 
 PYTHON_VERSION = "3.14"
 
@@ -216,7 +216,7 @@ git_override(
 chrome_extension = use_extension("//macros/wasm-helpers:chrome_repo.bzl", "chrome_extension")
 chrome_extension.install_chrome(
     name = "chrome",
-    version = "150",
+    version = "152",
 )
 use_repo(chrome_extension, "chrome")
 
@@ -229,13 +229,6 @@ bazel_dep(name = "wabt", version = "1.0.37")
 
 
 bazel_dep(name = "googletest", version = "1.17.0.bcr.2", dev_dependency = True)
-single_version_override(
-    module_name = "googletest",
-    patch_strip = 1,
-    patches = [
-        "//3rdparty:googletest.patch",
-    ],
-)
 
 bazel_dep(name = "opencv", version = "5.0.0.bcr.2")
 
