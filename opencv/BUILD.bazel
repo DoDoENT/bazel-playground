@@ -1,6 +1,7 @@
 load("//macros:mobile_binary.bzl", "mobile_binary" )
 load("//macros:mobile_test.bzl", "mobile_test" )
 load("//macros:test_suite.bzl", "define_test_suites" )
+load("@rules_qt//:qt.bzl", "qt_cc_binary", "qt_cc_test")
 
 define_test_suites(
     name = "test-suites",
@@ -22,7 +23,23 @@ mobile_test(
     wasm_basic = False,  # OpenCV 5.0.0 fails to build without WASM SIMD
 )
 
-mobile_binary(
+qt_cc_test(
+    name = "qt-integration-test",
+    srcs = ["qt-integration-test.cc"],
+    env = {
+        # fontconfig retains process-global allocations that LeakSanitizer
+        # otherwise reports when Qt initializes its font database.
+        "LSAN_OPTIONS": "detect_leaks=0",
+        "QT_QPA_PLATFORM": "offscreen",
+    },
+    tags = ["host"],
+    deps = [
+        "@opencv//:core",
+        "@opencv//:highgui",
+    ],
+)
+
+qt_cc_binary(
     name = "displayImage",
     srcs = ["displayImage.cc"],
     data = [
@@ -31,7 +48,7 @@ mobile_binary(
     deps = [
         "@opencv//:highgui",
     ],
-    host_only = True,
+    tags = ["host"],
     visibility = ["//visibility:public"],
 )
 
