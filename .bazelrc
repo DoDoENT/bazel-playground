@@ -21,7 +21,7 @@ common --remote_executor=grpcs://remote.buildbuddy.io --remote_local_fallback
 common --remote_cache_compression
 common --experimental_remote_downloader=grpcs://remote.buildbuddy.io
 # Give Bazel enough 'slots' to actually saturate the remote executor
-common --jobs=100
+common --jobs=300
 
 common:ci --build_metadata=ROLE=CI
 

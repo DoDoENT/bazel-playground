@@ -229,13 +229,8 @@ bazel_dep(name = "wabt", version = "1.0.37")
 
 bazel_dep(name = "googletest", version = "1.18.0.bcr.1", dev_dependency = True)
 
-bazel_dep(name = "opencv", version = "5.0.0.bcr.3")
+bazel_dep(name = "opencv", version = "5.0.0.bcr.4")
 bazel_dep(name = "rules_qt", version = "0.0.7", dev_dependency = True)
-
-local_path_override(
-    module_name = "opencv",
-    path = "/home/dodo/Cloneouts/opencv",
-)
 
 rules_qt_fetch = use_extension("@rules_qt//extension:qt.bzl", "fetch", dev_dependency = True)
 use_repo(
