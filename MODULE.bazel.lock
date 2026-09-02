@@ -237,7 +237,8 @@
     "https://bcr.bazel.build/modules/protobuf/33.4/MODULE.bazel": "114775b816b38b6d0ca620450d6b02550c60ceedfdc8d9a229833b34a223dc42",
     "https://bcr.bazel.build/modules/protobuf/34.0.bcr.1/MODULE.bazel": "74e541b0ba877813da786a11707d4e394433c157841d5111a36be0d44b907931",
     "https://bcr.bazel.build/modules/protobuf/36.0.bcr.1/MODULE.bazel": "c9f7d8150608ade08bbf871182311021ad5fe08bb3ac13527d5ab341cf2fac2b",
-    "https://bcr.bazel.build/modules/protobuf/36.0.bcr.1/source.json": "31d92819fdd4ef26a324c85eec4f845080155872db5143920b5b1b09837d09c9",
+    "https://bcr.bazel.build/modules/protobuf/36.1.bcr.1/MODULE.bazel": "4cc1928927b3460ec07e35623ae3d52c8d77ebed515681e0400d9b14b221a586",
+    "https://bcr.bazel.build/modules/protobuf/36.1.bcr.1/source.json": "566e7f47e4efaa1b6b5197d0cda7a228fe3ee6324d29463b0a43fc6f56ead03d",
     "https://bcr.bazel.build/modules/pybind11_bazel/2.11.1/MODULE.bazel": "88af1c246226d87e65be78ed49ecd1e6f5e98648558c14ce99176da041dc378e",
     "https://bcr.bazel.build/modules/pybind11_bazel/2.12.0/MODULE.bazel": "e6f4c20442eaa7c90d7190d8dc539d0ab422f95c65a57cc59562170c58ae3d34",
     "https://bcr.bazel.build/modules/pybind11_bazel/2.13.6/MODULE.bazel": "2d746fda559464b253b2b2e6073cb51643a2ac79009ca02100ebbc44b4548656",
@@ -573,7 +574,7 @@
     "@@protobuf+//python/dist:system_python.bzl%system_python_extension": {
       "general": {
         "bzlTransitiveDigest": "qh0n9IrXU/xS94wxKQrG1J63zrLkA1Wy2Y3BQxptPcI=",
-        "usagesDigest": "kVbxR/mYndN3QWrZLS6jdk6e1CL7kQy3QMa3NBMjEpE=",
+        "usagesDigest": "5nmtRivsScwzftla7fWqD7lfrvKOqRvRmabq+cY3KLU=",
         "recordedInputs": [],
         "generatedRepoSpecs": {
           "system_python": {
@@ -1052,7 +1053,7 @@
     "@@rules_rust+//crate_universe:extension.bzl%crate": {
       "general": {
         "bzlTransitiveDigest": "/R0tYY66ygeEr4l0rQLXEKv2dIqSe+oVDPrtQvH2RmM=",
-        "usagesDigest": "9LN6m+YHl20zBJeYsKiFPnYddxqtel9ljVH56g8jowE=",
+        "usagesDigest": "P+vTUXwGxTQ/FU83v72GOwJO09jC8EEo33DwYN++YFI=",
         "recordedInputs": [
           "ENV:CARGO_BAZEL_DEBUG \\0",
           "ENV:CARGO_BAZEL_GENERATOR_SHA256 \\0",
