@@ -31,6 +31,59 @@ bazel_dep(name = "rules_xcodeproj", version = "4.1.0")
 
 bazel_dep(name = "llvm", version = "0.8.19")
 
+# The hermetic macOS SDK is intentionally minimal. OpenCV's Cocoa highgui and
+# AVFoundation backends include umbrella headers with a broad framework
+# closure, so make that closure available in addition to the SDK defaults.
+llvm_osx = use_extension("@llvm//extensions:osx.bzl", "osx")
+llvm_osx.frameworks(
+    names = [
+        "AVFAudio",
+        "AVFCapture",
+        "AVFoundation",
+        "AVFCore",
+        "AVRouting",
+        "Accelerate",
+        "AppKit",
+        "ApplicationServices",
+        "AudioToolbox",
+        "CFNetwork",
+        "CloudKit",
+        "Cocoa",
+        "ColorSync",
+        "CoreAudio",
+        "CoreAudioTypes",
+        "CoreData",
+        "CoreFoundation",
+        "CoreGraphics",
+        "CoreImage",
+        "CoreLocation",
+        "CoreMIDI",
+        "CoreMedia",
+        "CoreServices",
+        "CoreText",
+        "CoreVideo",
+        "DiskArbitration",
+        "Foundation",
+        "FontServices",
+        "IOKit",
+        "IOSurface",
+        "ImageIO",
+        "Kernel",
+        "MediaToolbox",
+        "Metal",
+        "OSLog",
+        "OpenGL",
+        "PrintCore",
+        "QuartzCore",
+        "Security",
+        "Symbols",
+        "SystemConfiguration",
+        "UniformTypeIdentifiers",
+        "_LocationEssentials",
+    ],
+)
+use_repo(llvm_osx, "macos_sdk")
+
 # Register all LLVM toolchains for all platforms
 register_toolchains("@llvm//toolchain:all")
 
@@ -217,8 +270,6 @@ use_repo(chrome_extension, "chrome")
 bazel_dep(name = "wabt", version = "1.0.37")
 
 # Emscripten rules end
-
-# DEV DEPENDENCIES
 
 
 bazel_dep(name = "googletest", version = "1.18.0.bcr.1", dev_dependency = True)
