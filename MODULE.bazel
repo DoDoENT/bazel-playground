@@ -15,16 +15,6 @@ bazel_dep(name = "rules_license", version = "1.0.0")
 
 # Bazel rules end
 
-# TODO: remove this once [this PR](https://github.com/bazelbuild/rules_cc/pull/802) gets merged and released
-
-single_version_override(
-    module_name = "rules_cc",
-    patch_strip = 1,
-    patches = [
-        "//3rdparty:rules_cc.patch",
-    ],
-)
-
 # Host platform detection
 host_platform = use_extension("//platforms:extension.bzl", "host_platform")
 use_repo(host_platform, "host_platform")
@@ -59,7 +49,7 @@ register_toolchains("@llvm_toolchains//:all")
 # LLVM rules end
 # Python rules begin
 
-bazel_dep(name = "rules_python", version = "2.3.2")
+bazel_dep(name = "rules_python", version = "2.3.3")
 
 PYTHON_VERSION = "3.14"
 
@@ -229,7 +219,7 @@ bazel_dep(name = "wabt", version = "1.0.37")
 
 bazel_dep(name = "googletest", version = "1.18.0.bcr.1", dev_dependency = True)
 
-bazel_dep(name = "opencv", version = "5.0.0.bcr.4")
+bazel_dep(name = "opencv", version = "5.0.0.bcr.5")
 
 http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 http_archive(
