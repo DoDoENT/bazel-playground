@@ -94,6 +94,7 @@ jobs:
             common --remote_header=x-buildbuddy-api-key=${{ secrets.BUILDBUDDY_API_KEY }} --config=ci
 
       - name: Setup Xcode
+        if: matrix.target.label == 'ios'
         uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: '26.6' # Options: 'latest-stable', 'latest-beta', or specific version like '14.2'
