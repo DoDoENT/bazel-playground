@@ -15,16 +15,6 @@ bazel_dep(name = "rules_license", version = "1.0.0")
 
 # Bazel rules end
 
-# TODO: remove this once [this PR](https://github.com/bazelbuild/rules_cc/pull/802) gets merged and released
-
-single_version_override(
-    module_name = "rules_cc",
-    patch_strip = 1,
-    patches = [
-        "//3rdparty:rules_cc.patch",
-    ],
-)
-
 # Host platform detection
 host_platform = use_extension("//platforms:extension.bzl", "host_platform")
 use_repo(host_platform, "host_platform")
