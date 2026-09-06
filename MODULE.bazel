@@ -35,16 +35,18 @@ bazel_dep(name = "llvm", version = "0.8.19")
 # requires 22.1.0 at minimum (fails to build 21.1.8)
 # llvm_source.version(llvm_version = "22.1.0")
 
-toolchain = use_extension("@llvm//extensions:toolchain.bzl", "toolchain")
+# toolchain = use_extension("@llvm//extensions:toolchain.bzl", "toolchain")
+#
+# toolchain.exec(arch = "x86_64", os = "linux")
+# toolchain.exec(arch = "aarch64", os = "linux")
+# toolchain.target(arch = "x86_64", os = "linux")
+# toolchain.target(arch = "aarch64", os = "linux")
+#
+#
+# use_repo(toolchain, "llvm_toolchains")
+# register_toolchains("@llvm_toolchains//:all")
 
-toolchain.exec(arch = "x86_64", os = "linux")
-toolchain.exec(arch = "aarch64", os = "linux")
-toolchain.target(arch = "x86_64", os = "linux")
-toolchain.target(arch = "aarch64", os = "linux")
-
-
-use_repo(toolchain, "llvm_toolchains")
-register_toolchains("@llvm_toolchains//:all")
+register_toolchains("@llvm//toolchain:all")
 
 # LLVM rules end
 # Python rules begin
