@@ -66,7 +66,14 @@ def _mobile_test_impl(name, visibility, args, data, skip_packaging_deps_runfiles
     })
     linkstatic = kwargs.pop("linkstatic")
     if linkstatic == None:
-        linkstatic = True  # Default to static linking if not specified
+        # Darwin sanitizer runtimes are dylibs. Dynamic linking mode makes the
+        # C++ toolchain propagate them into the executable's runfiles and add
+        # the corresponding @loader_path rpaths. Keep the existing static
+        # default for release builds and all other platforms.
+        linkstatic = select({
+            Label("//macros/flags:macos_sanitizer_build"): False,
+            Label("//conditions:default"): True,
+        })
     test_size = kwargs.pop("size")
     test_timeout = kwargs.pop("timeout")
 
@@ -264,7 +271,7 @@ def _mobile_test_impl(name, visibility, args, data, skip_packaging_deps_runfiles
                 size = test_size,
                 timeout = test_timeout,
                 target_compatible_with = kwargs.get("target_compatible_with", []),
-            )
+        )
 
 
 mobile_test = macro(

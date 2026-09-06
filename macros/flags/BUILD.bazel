@@ -67,8 +67,22 @@ selects.config_setting_group(
 )
 
 selects.config_setting_group(
-    name = "sanitizer_build",
-    match_any = [":debug", ":devRelease"],
+    name = "dynamic_sanitizer_enabled",
+    match_any = [
+        "@llvm//config:target_asan_enabled",
+        "@llvm//config:target_lsan_enabled",
+        "@llvm//config:target_tsan_enabled",
+        "@llvm//config:target_ubsan_enabled",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+selects.config_setting_group(
+    name = "macos_sanitizer_build",
+    match_all = [
+        ":dynamic_sanitizer_enabled",
+        "@platforms//os:macos",
+    ],
     visibility = ["//visibility:public"],
 )
 

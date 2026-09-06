@@ -8,7 +8,11 @@ def _calculate_apple_flags():
     ]
 
     _local_apple_flags["linker_lto"] = _local_apple_flags["linker_lto"] + [
+
+        # used with LLVM toolchain
         "-Wl,--thinlto-jobs=4",
+
+        # used with Xcode toolchain
         # "-Wl,-mllvm,-threads=4",
     ]
 
