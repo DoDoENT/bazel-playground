@@ -31,20 +31,77 @@ bazel_dep(name = "rules_xcodeproj", version = "4.1.0")
 
 bazel_dep(name = "llvm", version = "0.8.19")
 
+# The hermetic macOS SDK is intentionally minimal. OpenCV's Cocoa highgui and
+# AVFoundation backends include umbrella headers with a broad framework
+# closure, so make that closure available in addition to the SDK defaults.
+llvm_osx = use_extension("@llvm//extensions:osx.bzl", "osx")
+llvm_osx.frameworks(
+    names = [
+        "AVFAudio",
+        "AVFCapture",
+        "AVFoundation",
+        "AVFCore",
+        "AVRouting",
+        "Accelerate",
+        "AppKit",
+        "ApplicationServices",
+        "AudioToolbox",
+        "CFNetwork",
+        "CloudKit",
+        "Cocoa",
+        "ColorSync",
+        "CoreAudio",
+        "CoreAudioTypes",
+        "CoreData",
+        "CoreFoundation",
+        "CoreGraphics",
+        "CoreImage",
+        "CoreLocation",
+        "CoreMIDI",
+        "CoreMedia",
+        "CoreServices",
+        "CoreText",
+        "CoreVideo",
+        "DiskArbitration",
+        "Foundation",
+        "FontServices",
+        "IOKit",
+        "IOSurface",
+        "ImageIO",
+        "Kernel",
+        "MediaToolbox",
+        "Metal",
+        "OSLog",
+        "OpenGL",
+        "PrintCore",
+        "QuartzCore",
+        "Security",
+        "Symbols",
+        "SystemConfiguration",
+        "UniformTypeIdentifiers",
+        "_LocationEssentials",
+    ],
+)
+use_repo(llvm_osx, "macos_sdk")
+
+# Register all LLVM toolchains for all platforms
+register_toolchains("@llvm//toolchain:all")
+
+# # Example when specific version of LLVM should be used
 # llvm_source = use_extension("@llvm//extensions:llvm_source.bzl", "llvm_source")
 # requires 22.1.0 at minimum (fails to build 21.1.8)
 # llvm_source.version(llvm_version = "22.1.0")
 
-toolchain = use_extension("@llvm//extensions:toolchain.bzl", "toolchain")
-
-toolchain.exec(arch = "x86_64", os = "linux")
-toolchain.exec(arch = "aarch64", os = "linux")
-toolchain.target(arch = "x86_64", os = "linux")
-toolchain.target(arch = "aarch64", os = "linux")
-
-
-use_repo(toolchain, "llvm_toolchains")
-register_toolchains("@llvm_toolchains//:all")
+# # In case when LLVM should be used only for Linux
+# toolchain = use_extension("@llvm//extensions:toolchain.bzl", "toolchain")
+#
+# toolchain.exec(arch = "x86_64", os = "linux")
+# toolchain.exec(arch = "aarch64", os = "linux")
+# toolchain.target(arch = "x86_64", os = "linux")
+# toolchain.target(arch = "aarch64", os = "linux")
+#
+# use_repo(toolchain, "llvm_toolchains")
+# register_toolchains("@llvm_toolchains//:all")
 
 # LLVM rules end
 # Python rules begin
@@ -214,12 +271,10 @@ bazel_dep(name = "wabt", version = "1.0.37")
 
 # Emscripten rules end
 
-# DEV DEPENDENCIES
-
 
 bazel_dep(name = "googletest", version = "1.18.0.bcr.1", dev_dependency = True)
 
-bazel_dep(name = "opencv", version = "5.0.0.bcr.5")
+bazel_dep(name = "opencv", version = "5.0.0.bcr.6")
 
 http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 http_archive(
