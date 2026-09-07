@@ -37,6 +37,10 @@ qt_cc_test(
         "@opencv//:core",
         "@opencv//:highgui",
     ],
+    linkstatic = select({
+        "//macros/flags:macos_sanitizer_build": False,
+        "//conditions:default": True,
+    }),
 )
 
 qt_cc_binary(
@@ -50,9 +54,13 @@ qt_cc_binary(
     ],
     tags = ["host"],
     visibility = ["//visibility:public"],
+    linkstatic = select({
+        "//macros/flags:macos_sanitizer_build": False,
+        "//conditions:default": True,
+    }),
 )
 
-mobile_binary(
+qt_cc_binary(
     name = "cameraTest",
     srcs = [
         "cameraTest.cc",
@@ -60,6 +68,9 @@ mobile_binary(
     deps = [
         "@opencv//:highgui",
     ],
-    host_only = True,
     visibility = ["//visibility:public"],
+    linkstatic = select({
+        "//macros/flags:macos_sanitizer_build": False,
+        "//conditions:default": True,
+    }),
 )
