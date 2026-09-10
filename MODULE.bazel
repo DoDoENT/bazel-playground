@@ -153,10 +153,10 @@ single_version_override(
 android = use_extension("@hermetic_android_toolchains//:extensions.bzl", "android", dev_dependency = True)
 android.sdk(
     build_tools_version = "37.0.0",
-    version = "37.0",
+    version = "37.2",
 )
 android.ndk(
-    version = "r29",
+    version = "r30",
     api_level = 24,
 )
 android.emulator(version = "36.6.11")

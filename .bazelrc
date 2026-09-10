@@ -103,8 +103,8 @@ common:debug --compilation_mode=dbg
 # in CMake builds.
 #     (2025-10-28) (Nenad Mikša)
 
-common --repo_env=ACCEPTED_ANDROID_SDK_LICENSE_VERSION=37.0
-common --repo_env=ACCEPTED_ANDROID_NDK_LICENSE_VERSION=r29
+common --repo_env=ACCEPTED_ANDROID_SDK_LICENSE_VERSION=37.2
+common --repo_env=ACCEPTED_ANDROID_NDK_LICENSE_VERSION=r30
 
 common --repo_env=APPLE_SUPPORT_RULES_BASED_TOOLCHAIN=1
 
