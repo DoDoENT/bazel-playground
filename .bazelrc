@@ -25,6 +25,9 @@ common --jobs=100
 
 common:ci --build_metadata=ROLE=CI
 
+# Does not play nicely with GHA
+common:ci --curses="no"
+
 # Enable Dynamic Execution (Runs local and remote in parallel, takes fastest)
 common --spawn_strategy=dynamic
 
