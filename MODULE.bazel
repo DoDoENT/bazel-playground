@@ -25,6 +25,24 @@ bazel_dep(name = "rules_apple", version = "5.0.0")
 bazel_dep(name = "rules_swift", version = "4.0.1")
 bazel_dep(name = "rules_xcodeproj", version = "4.1.0")
 
+# Keep Xcode-dependent helpers on macOS while allowing LLVM to cross-compile
+# ordinary macOS tools on Linux. Remove these overrides after fixed releases.
+# https://github.com/bazelbuild/apple_support/issues/636
+# https://github.com/bazelbuild/apple_support/pull/637
+git_override(
+    module_name = "apple_support",
+    commit = "540128c8e9986527b8561a92772f5faf44d8135a",
+    remote = "https://github.com/DoDoENT/apple_support.git",
+)
+
+# https://github.com/bazelbuild/rules_apple/issues/3064
+# https://github.com/bazelbuild/rules_apple/pull/3065
+git_override(
+    module_name = "rules_apple",
+    commit = "73e84cf7b5b65500a6e3aa6ef80e237023bc5264",
+    remote = "https://github.com/DoDoENT/rules_apple.git",
+)
+
 # Apple rules end
 
 # LLVM rules begin

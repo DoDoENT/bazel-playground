@@ -59,7 +59,10 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, lin
             Label("//conditions:default"): None
         }),
         test_host = Label("//test-support/ios-test/GoogleTestHost:GoogleTestHost"),
-        tags = tags + [TAG_IOS, "exclusive", "no-remote-exec"], # need to be exclusive to prevent parallel invocation on the same device
+        # exclusive keeps simulator tests local and sequential. no-remote-exec
+        # also propagates to bundling, which may use Linux-configured tools.
+        # https://github.com/bazelbuild/rules_apple/issues/3064
+        tags = tags + [TAG_IOS, "exclusive"],
         resources = [
             native.package_relative_label(":" + name + "-resources")
         ],
