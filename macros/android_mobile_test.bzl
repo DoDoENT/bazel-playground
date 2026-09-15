@@ -115,10 +115,6 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
         }),
         tags = tags + [TAG_ANDROID_EMULATOR, "cpu:2"],  # emulators require 2 CPU cores to run, so we reserve them to prevent overcommit
         test_app = native.package_relative_label(":" + name + "-test-app"),
-        exec_compatible_with = [  # Allow running only on Apple Silicon Macs
-            "@platforms//os:macos",
-            "@platforms//cpu:arm64",
-        ]
     )
 
 

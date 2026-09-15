@@ -96,29 +96,29 @@ android_emulator_instrumentation_test = rule(
         ),
         "_aapt2": attr.label(
             allow_files = True,
-            cfg = "exec",
+            cfg = config.exec("test"),
             default = "@androidsdk//:aapt2",
         ),
         "_adb": attr.label(
             allow_files = True,
-            cfg = "exec",
+            cfg = config.exec("test"),
             default = "@androidsdk//:platform-tools/adb",
             executable = True,
         ),
         "_emulator": attr.label(
             allow_files = True,
-            cfg = "exec",
+            cfg = config.exec("test"),
             default = "@androidsdk//:emulator",
             executable = True,
         ),
         "_emulator_shared_libs": attr.label(
             allow_files = True,
-            cfg = "exec",
+            cfg = config.exec("test"),
             default = "@androidsdk//:emulator_shared_libs",
         ),
         "_emulator_x86_bios": attr.label(
             allow_files = True,
-            cfg = "exec",
+            cfg = config.exec("test"),
             default = "@androidsdk//:emulator_x86_bios",
         ),
         "_instrumentation_test_template": attr.label(
@@ -127,13 +127,13 @@ android_emulator_instrumentation_test = rule(
         ),
         "_mksd": attr.label(
             allow_files = True,
-            cfg = "exec",
+            cfg = config.exec("test"),
             default = "@androidsdk//:mksd",
             executable = True,
         ),
         "_qemu2": attr.label(
             allow_files = True,
-            cfg = "exec",
+            cfg = config.exec("test"),
             default = "@androidsdk//:qemu2",
         ),
     },

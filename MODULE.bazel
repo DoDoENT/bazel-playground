@@ -172,6 +172,10 @@ android.ndk(
 )
 android.emulator(version = "36.6.11")
 android.system_image(
+    arch = "x86_64",
+    version = "24",
+)
+android.system_image(
     arch = "arm64-v8a",
     version = "24",
 )
