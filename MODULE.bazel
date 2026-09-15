@@ -50,7 +50,7 @@ git_override(
 
 # LLVM rules begin
 
-bazel_dep(name = "llvm", version = "0.8.19")
+bazel_dep(name = "llvm", version = "0.8.20")
 
 # The hermetic macOS SDK is intentionally minimal. OpenCV's Cocoa highgui and
 # AVFoundation backends include umbrella headers with a broad framework
