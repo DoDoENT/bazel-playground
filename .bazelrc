@@ -38,7 +38,9 @@ common --repo_contents_cache=~/.bazel-cache/repo-contents
 # startup --experimental_remote_repo_contents_cache
 
 common --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
-common --platforms=@host_platform//:host --extra_execution_platforms=@host_platform//:host
+common --platforms=@host_platform//:host --extra_execution_platforms=//platforms/linux:haswell_x86_64,//platforms/macos:arm64
+
+common:offline --extra_execution_platforms=@host_platform//:host
 
 # disable platforms for info, as it fails to resolve @host_platform
 info --platforms=
@@ -134,8 +136,8 @@ common:linux --@opencv//:gtk3=@ubuntu-gtk-deps//:gtk3 --@opencv//:with_gtk3=True
 #common:linux --@llvm//toolchain:bootstrap_stage=stage1_from_source
 # common:linux --@llvm//toolchain:source=bootstrapped
 
-common:linux_haswell --platforms=//platforms/linux:haswell_x86_64 --extra_execution_platforms=//platforms/linux:haswell_x86_64
-common:linux_generic --platforms=//platforms/linux:x86_64 --extra_execution_platforms=//platforms/linux:x86_64
+common:linux_haswell --platforms=//platforms/linux:haswell_x86_64 
+common:linux_generic --platforms=//platforms/linux:x86_64
 
 common:rules_xcodeproj --config=no_sanitizers
 

@@ -65,13 +65,13 @@ android_instrumentation_test = rule(
         ),
         "_adb": attr.label(
             allow_files = True,
-            cfg = "exec",
+            cfg = config.exec("test"),
             default = "@androidsdk//:platform-tools/adb",
             executable = True,
         ),
         "_aapt2": attr.label(
             allow_files = True,
-            cfg = "exec",
+            cfg = config.exec("test"),
             default = "@androidsdk//:aapt2",
         ),
     },

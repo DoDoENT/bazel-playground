@@ -4,8 +4,8 @@ module(name = "playground")
 
 # Note: This needs to be before rules_cc in order to correctly configure the C++ toolchain.
 # See here why: https://www.smileykeith.com/2025/09/21/understanding-apple-debug-info/
-bazel_dep(name = "apple_support", version = "2.8.2")
-bazel_dep(name = "rules_cc", version = "0.2.22")
+bazel_dep(name = "apple_support", version = "2.8.3")
+bazel_dep(name = "rules_cc", version = "0.2.25")
 bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
 bazel_dep(name = "bazel_skylib", version = "1.9.2")
 bazel_dep(name = "bazelrc-preset.bzl", version = "1.9.2")
@@ -21,15 +21,26 @@ use_repo(host_platform, "host_platform")
 
 # Apple rules begin
 
-bazel_dep(name = "rules_apple", version = "5.0.0")
+bazel_dep(name = "rules_apple", version = "5.0.1")
 bazel_dep(name = "rules_swift", version = "4.0.1")
 bazel_dep(name = "rules_xcodeproj", version = "4.1.0")
+
+# rules_apple 5.0.1 predates the macOS execution fixes. Keep this override
+# until a release includes both PRs; apple_support 2.8.3 already has its fix.
+# https://github.com/bazelbuild/rules_apple/issues/3064
+# https://github.com/bazelbuild/rules_apple/pull/3066
+# https://github.com/bazelbuild/rules_apple/pull/3067
+git_override(
+    module_name = "rules_apple",
+    commit = "9e3b8103a289d87efcfd957513869a9c8bd2fb50",
+    remote = "https://github.com/bazelbuild/rules_apple.git",
+)
 
 # Apple rules end
 
 # LLVM rules begin
 
-bazel_dep(name = "llvm", version = "0.8.19")
+bazel_dep(name = "llvm", version = "0.8.20")
 
 # The hermetic macOS SDK is intentionally minimal. OpenCV's Cocoa highgui and
 # AVFoundation backends include umbrella headers with a broad framework

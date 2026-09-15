@@ -78,24 +78,24 @@ posluznik_test = rule(
         ),
         "_posluznik": attr.label(
             allow_files = True,
-            cfg = "exec",
+            cfg = config.exec("test"),
             default = "@posluznik//:posluznik",
             executable = True,
         ),
         "_chrome": attr.label(
             allow_files = True,
-            cfg = "exec",
+            cfg = config.exec("test"),
             default = "@chrome//:chrome",
             executable = True,
         ),
         "_chrome_data": attr.label(
             allow_files = True,
-            cfg = "exec",
+            cfg = config.exec("test"),
             default = "@chrome//:chrome-data",
         ),
         "_wasm_validate": attr.label(
             allow_files = True,
-            cfg = "exec",
+            cfg = config.exec("test"),
             default = "@wabt//src/tools:wasm-validate",
             executable = True,
         ),
