@@ -32,7 +32,7 @@ bazel_dep(name = "rules_xcodeproj", version = "4.1.0")
 # https://github.com/bazelbuild/rules_apple/pull/3067
 git_override(
     module_name = "rules_apple",
-    commit = "9e3b8103a289d87efcfd957513869a9c8bd2fb50",
+    commit = "100b0ec58d84f810a7456705bf2ec0b50b082bda",
     remote = "https://github.com/bazelbuild/rules_apple.git",
 )
 
