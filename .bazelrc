@@ -40,6 +40,8 @@ common --repo_contents_cache=~/.bazel-cache/repo-contents
 common --repo_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
 common --platforms=@host_platform//:host --extra_execution_platforms=//platforms/linux:haswell_x86_64,//platforms/macos:arm64
 
+common:offline --extra_execution_platforms=@host_platform//:host
+
 # disable platforms for info, as it fails to resolve @host_platform
 info --platforms=
 
