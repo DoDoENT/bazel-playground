@@ -25,6 +25,17 @@ bazel_dep(name = "rules_apple", version = "5.0.1")
 bazel_dep(name = "rules_swift", version = "4.0.1")
 bazel_dep(name = "rules_xcodeproj", version = "4.1.0")
 
+# rules_apple 5.0.1 predates the macOS execution fixes. Keep this override
+# until a release includes both PRs; apple_support 2.8.3 already has its fix.
+# https://github.com/bazelbuild/rules_apple/issues/3064
+# https://github.com/bazelbuild/rules_apple/pull/3066
+# https://github.com/bazelbuild/rules_apple/pull/3067
+git_override(
+    module_name = "rules_apple",
+    commit = "9e3b8103a289d87efcfd957513869a9c8bd2fb50",
+    remote = "https://github.com/bazelbuild/rules_apple.git",
+)
+
 # Apple rules end
 
 # LLVM rules begin
