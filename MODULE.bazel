@@ -205,7 +205,7 @@ maven.install(
     name = "android_ide_common_30_1_3",
     artifacts = [
         "com.google.protobuf:protobuf-java:4.36.1",
-        "com.google.protobuf:protobuf-java-util:4.36.1",
+        "com.google.protobuf:protobuf-java-util:4.36.2",
     ],
     repositories = [
         "https://maven.google.com",
@@ -218,7 +218,7 @@ maven.install(
     name = "rules_android_maven",
     artifacts = [
         "com.google.protobuf:protobuf-java:4.36.1",
-        "com.google.protobuf:protobuf-java-util:4.36.1",
+        "com.google.protobuf:protobuf-java-util:4.36.2",
     ],
     repositories = [
         "https://maven.google.com",
