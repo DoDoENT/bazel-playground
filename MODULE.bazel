@@ -4,7 +4,7 @@ module(name = "playground")
 
 # Note: This needs to be before rules_cc in order to correctly configure the C++ toolchain.
 # See here why: https://www.smileykeith.com/2025/09/21/understanding-apple-debug-info/
-bazel_dep(name = "apple_support", version = "2.8.3")
+bazel_dep(name = "apple_support", version = "2.8.4")
 bazel_dep(name = "rules_cc", version = "0.2.25")
 bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
 bazel_dep(name = "bazel_skylib", version = "1.9.2")
@@ -182,7 +182,7 @@ override_repo(rules_android_ndk, "androidndk")
 register_toolchains("@androidsdk//:all", "@androidndk//:all", dev_dependency = True)
 
 bazel_dep(name = "rules_java", version = "9.9.0")
-bazel_dep(name = "protobuf", version = "36.1.bcr.1")
+bazel_dep(name = "protobuf", version = "36.2")
 bazel_dep(name = "rules_jvm_external", version = "7.1")
 
 maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
@@ -204,8 +204,8 @@ use_repo(maven, "android_test_deps")
 maven.install(
     name = "android_ide_common_30_1_3",
     artifacts = [
-        "com.google.protobuf:protobuf-java:4.36.1",
-        "com.google.protobuf:protobuf-java-util:4.36.1",
+        "com.google.protobuf:protobuf-java:4.36.2",
+        "com.google.protobuf:protobuf-java-util:4.36.2",
     ],
     repositories = [
         "https://maven.google.com",
@@ -217,8 +217,8 @@ maven.install(
 maven.install(
     name = "rules_android_maven",
     artifacts = [
-        "com.google.protobuf:protobuf-java:4.36.1",
-        "com.google.protobuf:protobuf-java-util:4.36.1",
+        "com.google.protobuf:protobuf-java:4.36.2",
+        "com.google.protobuf:protobuf-java-util:4.36.2",
     ],
     repositories = [
         "https://maven.google.com",
