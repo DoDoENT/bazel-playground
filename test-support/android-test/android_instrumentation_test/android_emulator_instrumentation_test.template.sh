@@ -447,8 +447,28 @@ if [[ "$instrumentation_status" -ne 0 ]]; then
   echo "$log_output"
   exit "$instrumentation_status"
 fi
-if echo "$output" | grep -q "FAILURES"; then
+# adb can exit successfully even when the runner crashes. Require a completed
+# test (status 0) and Activity.RESULT_OK (-1), and reject explicit failures.
+if ! awk '
+  /FAILURES|INSTRUMENTATION_FAILED|INSTRUMENTATION_ABORTED|shortMsg=/ { failed = 1 }
+  /^INSTRUMENTATION_STATUS_CODE:/ {
+    if ($0 ~ /^INSTRUMENTATION_STATUS_CODE: 0[[:space:]]*$/) {
+      test_completed = 1
+    } else if ($0 !~ /^INSTRUMENTATION_STATUS_CODE: (1|-3|-4)[[:space:]]*$/) {
+      failed = 1
+    }
+  }
+  /^INSTRUMENTATION_CODE:/ {
+    result_count++
+    if ($0 !~ /^INSTRUMENTATION_CODE: -1[[:space:]]*$/) {
+      failed = 1
+    }
+  }
+  END { exit (failed || !test_completed || result_count != 1) }
+' <<<"$output"; then
+  echo "Instrumentation failed or did not report a completed test." >&2
   echo "$output"
+  echo "$log_output"
   exit 1
 fi
 if echo "$log_output" | grep "Fatal signal" | grep -v -q "Fatal signal 31"; then
