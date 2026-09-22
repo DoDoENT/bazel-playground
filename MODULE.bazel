@@ -106,7 +106,7 @@ register_toolchains("@llvm//toolchain:all")
 # LLVM rules end
 # Python rules begin
 
-bazel_dep(name = "rules_python", version = "2.3.3")
+bazel_dep(name = "rules_python", version = "2.3.4")
 
 PYTHON_VERSION = "3.14"
 
