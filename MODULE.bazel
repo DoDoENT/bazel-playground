@@ -230,11 +230,11 @@ maven.install(
 # Android rules end
 
 # Emscripten rules begin
-bazel_dep(name = "emsdk", version = "6.0.9")
+bazel_dep(name = "emsdk", version = "6.0.10")
 
 emscripten_deps = use_extension("@emsdk//:emscripten_deps.bzl", "emscripten_deps")
 emscripten_deps.config(
-    version = "6.0.9", # Must match the cache
+    version = "6.0.10", # Must match the cache
 )
 
 emscripten_cache = use_extension(
@@ -244,8 +244,8 @@ emscripten_cache = use_extension(
 
 # NOTE: See tools/emsdk-cache-builder/README.md for instructions on how to build emsdk cache tarball and upload it to the artifactory
 emscripten_cache.prebuilt_cache(
-    http_archive_url = "https://github.com/DoDoENT/bazel-playground/releases/download/emsdk-cache/emsdk-cache-6.0.9.tar.gz",
-    sha256 = "9e56910b20c28684c191c429c7101113dcd69f91e90b93a35046d6c8b62bde66",
+    http_archive_url = "https://github.com/DoDoENT/bazel-playground/releases/download/emsdk-cache/emsdk-cache-6.0.10.tar.gz",
+    sha256 = "3686906d5058acf1fa9d1cd3e3634619ce51d7d93f714755b6bcdd842eee3498",
     strip_prefix = "emsdk-cache",
 )
 
