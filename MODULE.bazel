@@ -29,7 +29,7 @@ bazel_dep(name = "rules_xcodeproj", version = "4.1.0")
 
 # LLVM rules begin
 
-bazel_dep(name = "llvm", version = "0.8.21")
+bazel_dep(name = "llvm", version = "0.8.23")
 
 # The hermetic macOS SDK is intentionally minimal. OpenCV's Cocoa highgui and
 # AVFoundation backends include umbrella headers with a broad framework
