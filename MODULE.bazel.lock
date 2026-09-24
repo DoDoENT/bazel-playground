@@ -33,7 +33,8 @@
     "https://bcr.bazel.build/modules/apple_support/2.8.0/MODULE.bazel": "c45f5176057092afba0be6c48a9ea02101666802f8be536947e099e94757f8ed",
     "https://bcr.bazel.build/modules/apple_support/2.8.1/MODULE.bazel": "a45654117b289b9f696a889424d942c9872bf53fb4567e614a06ced67d71a2fc",
     "https://bcr.bazel.build/modules/apple_support/2.8.4/MODULE.bazel": "83ae0682db2a4ea86d20416a9b3bdba7f6c2a81e136b4d210e5986e30436585e",
-    "https://bcr.bazel.build/modules/apple_support/2.8.4/source.json": "1c9c86472ed56669622b46e2ddfeb36f58e1234cea73d52740f09de58e93ec6e",
+    "https://bcr.bazel.build/modules/apple_support/2.9.0/MODULE.bazel": "a0c39a33fcb3f69862df482219b0efc0577b556521830ffcd526f173fbd3218a",
+    "https://bcr.bazel.build/modules/apple_support/2.9.0/source.json": "f2c1a1e4d53530ffbc83e5b38809fbc2f90b8699e249fd8e6e375d51e726b31b",
     "https://bcr.bazel.build/modules/aspect_bazel_lib/2.14.0/MODULE.bazel": "2b31ffcc9bdc8295b2167e07a757dbbc9ac8906e7028e5170a3708cecaac119f",
     "https://bcr.bazel.build/modules/aspect_bazel_lib/2.19.3/MODULE.bazel": "253d739ba126f62a5767d832765b12b59e9f8d2bc88cc1572f4a73e46eb298ca",
     "https://bcr.bazel.build/modules/aspect_bazel_lib/2.22.5/MODULE.bazel": "004ba890363d05372a97248c37205ae64b6fa31047629cd2c0895a9d0c7779e8",
@@ -187,14 +188,16 @@
     "https://bcr.bazel.build/modules/libxfixes/6.0.2/source.json": "d32eb54de54d918b6c5b2a5f2162bb5c503f883306110917a9fb63cf1848f230",
     "https://bcr.bazel.build/modules/libxi/1.8.2/MODULE.bazel": "24e96d505d7a185d9ba89e0345237b4ae07da3bc339d12d6272a94855dcabcb5",
     "https://bcr.bazel.build/modules/libxi/1.8.2/source.json": "6c1740c6aa816e5d95191e9b130e43272dd442cd5c5d710a744ebded173bdc05",
+    "https://bcr.bazel.build/modules/libxml2/2.15.3/MODULE.bazel": "a6bffafd8aa8b0c13eaa4bf25d55be188ec8548549395f03e98c39bab264adaa",
+    "https://bcr.bazel.build/modules/libxml2/2.15.3/source.json": "fd7c420cb14981416c9fadd0db555bd1e249355e0e5b63b2ce15b92996b5fbfb",
     "https://bcr.bazel.build/modules/libxrandr/1.5.4/MODULE.bazel": "cc55ebb8ef3169904e5c01d12524e6563abe24ec6166715115a793eefbaf4515",
     "https://bcr.bazel.build/modules/libxrandr/1.5.4/source.json": "9cdbe2a22090e51e902dd63f0e0cdb1abcc171d0694d7e69e2a6b70e1fb0fb67",
     "https://bcr.bazel.build/modules/libxrender/0.9.12/MODULE.bazel": "8ad3471b63d95036a5381dd5602a2184cd11bdffc4303d2bc7075fa5e404d51b",
     "https://bcr.bazel.build/modules/libxrender/0.9.12/source.json": "c80962d7f86ef8dc59375ee3dae70d6bc6e9511aac6f67a82d50aaa74fedd821",
     "https://bcr.bazel.build/modules/libxtrans/1.5.2.bcr.2/MODULE.bazel": "650996be59296ad8da2265b1a33beff410a6ba9b83c7b4031cea0733f7db31ac",
     "https://bcr.bazel.build/modules/libxtrans/1.5.2.bcr.2/source.json": "f5778884502bdb1d315f9e60518ffcb6603c29c855464dbd4a80fb0099640a07",
-    "https://bcr.bazel.build/modules/llvm/0.8.21/MODULE.bazel": "25ef6d4fc7f7a496ea1d32d1ed76a97d56caf54706e047829548e47c33581689",
-    "https://bcr.bazel.build/modules/llvm/0.8.21/source.json": "78144685266c0823823ced190f147e56658a5042767b9a732314aee384150eb4",
+    "https://bcr.bazel.build/modules/llvm/0.8.23/MODULE.bazel": "315c8a46a968844d9bd70b06056110dcad9832882e5c9358eff66cebd4fb78d1",
+    "https://bcr.bazel.build/modules/llvm/0.8.23/source.json": "0dca662d1d8a9fe12f44c68bbf27210f62898361226a2e2c95084815729af488",
     "https://bcr.bazel.build/modules/lz4/1.10.0.bcr.1/MODULE.bazel": "701a49c6304d1f836604dbfbb1642a0c89320c8bd2fbe5a768ae97b48c8df1d4",
     "https://bcr.bazel.build/modules/lz4/1.10.0.bcr.1/source.json": "33ed2bd01e038792015c2097fdbd4f4ce4f00c2046e9ea62e7fff1ab151754e4",
     "https://bcr.bazel.build/modules/nasm/2.16.03.bcr.3/MODULE.bazel": "c2a14e98f8aee6546486d34b5e9d02f53afe1a29ec138260338f15a8ba07cd46",
@@ -4564,7 +4567,7 @@
     "@@windows_support+//windows:extensions.bzl%msvc_runtime": {
       "general": {
         "bzlTransitiveDigest": "yv3gSwY6QneXA6YvHLn9tSmuOkNp2EPN5NFXHC48mdE=",
-        "usagesDigest": "j8EMwmbQHIUSKsY4k1yYsDZjs7jVmpl6RzACaxmhnVk=",
+        "usagesDigest": "m67sI6g3ruyNAyu/1PGe93zIaYYu657llz9tL/yw7DM=",
         "recordedInputs": [
           "REPO_MAPPING:windows_support+,bazel_tools bazel_tools"
         ],
@@ -4595,7 +4598,7 @@
     "@@windows_support+//windows:extensions.bzl%windows_sdk": {
       "general": {
         "bzlTransitiveDigest": "yv3gSwY6QneXA6YvHLn9tSmuOkNp2EPN5NFXHC48mdE=",
-        "usagesDigest": "l8Y8yuk3rYSaWDELd/p665JeBEmW5E00q/JPz8/wDQE=",
+        "usagesDigest": "GjUMkGyQ3YMFaT/hnZciiR6YOXM+c2OgsWHa4rUWZXs=",
         "recordedInputs": [
           "REPO_MAPPING:windows_support+,bazel_tools bazel_tools"
         ],
