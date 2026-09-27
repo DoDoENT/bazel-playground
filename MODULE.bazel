@@ -4,7 +4,7 @@ module(name = "playground")
 
 # Note: This needs to be before rules_cc in order to correctly configure the C++ toolchain.
 # See here why: https://www.smileykeith.com/2025/09/21/understanding-apple-debug-info/
-bazel_dep(name = "apple_support", version = "2.9.0")
+bazel_dep(name = "apple_support", version = "2.9.1")
 bazel_dep(name = "rules_cc", version = "0.2.25")
 bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
 bazel_dep(name = "bazel_skylib", version = "1.9.2")
@@ -21,15 +21,15 @@ use_repo(host_platform, "host_platform")
 
 # Apple rules begin
 
-bazel_dep(name = "rules_apple", version = "5.1.0")
-bazel_dep(name = "rules_swift", version = "4.1.1")
+bazel_dep(name = "rules_apple", version = "5.2.0")
+bazel_dep(name = "rules_swift", version = "4.1.2")
 bazel_dep(name = "rules_xcodeproj", version = "4.1.0")
 
 # Apple rules end
 
 # LLVM rules begin
 
-bazel_dep(name = "llvm", version = "0.8.23")
+bazel_dep(name = "llvm", version = "0.8.24")
 
 # The hermetic macOS SDK is intentionally minimal. OpenCV's Cocoa highgui and
 # AVFoundation backends include umbrella headers with a broad framework
@@ -129,7 +129,7 @@ use_repo(pip, "coverage_pip_deps")
 # Python rules end
 
 # Android rules begin
-bazel_dep(name = "hermetic_android_toolchains", version = "0.4.0", dev_dependency = True)
+bazel_dep(name = "hermetic_android_toolchains", version = "0.5.0", dev_dependency = True)
 bazel_dep(name = "rules_android", version = "0.7.3", dev_dependency = True)
 bazel_dep(name = "rules_android_ndk", version = "0.1.5", dev_dependency = True)
 

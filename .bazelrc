@@ -2,9 +2,6 @@
 
 import %workspace%/tools/preset.bazelrc
 
-# Limit JVM heap size for bazel server to 4GB to avoid it using too much memory while doing analysis
-startup --host_jvm_args="-Xmx4g"
-
 # Apple iOS rules expect rules_python to be preloaded.
 # Also, without preloading rules_android, bazel complains about missing aar_import and similar rules
 # in rules_jvm_external.
