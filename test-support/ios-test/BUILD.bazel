@@ -11,6 +11,9 @@ local_provisioning_profile(
     target_compatible_with = [
         "@platforms//os:ios",
     ],
+    exec_compatible_with = [
+        "@platforms//os:macos",
+    ],
 )
 
 xcode_provisioning_profile(
@@ -21,11 +24,18 @@ xcode_provisioning_profile(
     target_compatible_with = [
         "@platforms//os:ios",
     ],
+    exec_compatible_with = [
+        "@platforms//os:macos",
+    ],
 )
 
 ios_test_runner(
     name = "ios_device_test_runner",
     visibility = ["//visibility:public"],
+    execution_requirements = {
+        "requires-darwin": "",
+        "local": "",
+    }
 )
 
 config_setting(
@@ -40,6 +50,7 @@ config_setting(
 ios_xctestrun_runner(
     name = "ios_simulator_test_runner",
     device_type = "iPhone 17",
-    os_version = "26.4",
+    os_version = "27.0",
+    reuse_simulator = True,
     visibility = ["//visibility:public"],
 )

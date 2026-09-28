@@ -64,8 +64,9 @@ fi
 
 system_image_dir="$(cd "$(dirname "$system_image_source_properties")" && pwd)"
 test_tmpdir="${TEST_TMPDIR:-$(mktemp -d)}"
+emulator_log="${TEST_UNDECLARED_OUTPUTS_DIR:-$test_tmpdir}/emulator.log"
 port_lock_root="${ANDROID_EMULATOR_PORT_LOCK_ROOT:-/tmp/bazel-android-emulator-ports}"
-adb_server_port="${ADB_SERVER_PORT:-}"
+adb_server_port="${ANDROID_ADB_SERVER_PORT:-}"
 modem_simulator_port=""
 emulator_pid=""
 allocated_port_locks=()
@@ -80,12 +81,20 @@ is_port_available() {
   if ! is_integer "$port"; then
     return 1
   fi
+  # 127.0.0.1 is IPv4 loopback on the host running this script, not inside the
+  # Android guest. The services launched here share this network namespace,
+  # including on a remote Bazel worker. The literal address avoids localhost
+  # resolving to IPv6; this probe intentionally checks only IPv4 listeners.
+  # This is best-effort: a failed connection does not prove bind() will succeed
+  # (e.g. IPv6-only listeners, bound sockets not yet listening, or startup races).
   if (echo >"/dev/tcp/127.0.0.1/${port}") >/dev/null 2>&1; then
     return 1
   fi
   return 0
 }
 
+# Directory locks coordinate copies sharing this lock root; they do not reserve
+# OS sockets or prevent unrelated processes from taking a port before startup.
 reserve_port() {
   local port="$1"
   local lock_dir="${port_lock_root}/${port}.lock"
@@ -165,6 +174,10 @@ choose_modem_simulator_port() {
 choose_emulator_port() {
   local requested="$1"
   local port offset adb_port
+  # Each emulator needs an even console port and the following odd ADB port.
+  # Reserve both for concurrent tests; roll back the first lock if the second
+  # cannot be acquired. This ADB port is separate from adb_server_port.
+  # An explicit request must succeed as given, without falling back to a new pair.
   if [[ -n "$requested" ]]; then
     if ! is_integer "$requested" || ((requested % 2 != 0 || requested < 5554 || requested > 5584)); then
       echo "Invalid --emulator_port. Expected an even integer in the 5554..5584 range, got: $requested" >&2
@@ -181,6 +194,8 @@ choose_emulator_port() {
     echo "Requested emulator port pair is not available: ${requested}/${adb_port}" >&2
     exit 1
   fi
+  # Try all 16 pairs in this script's 5554..5584 console-port range. Starting
+  # at a PID-derived offset spreads concurrent attempts; the locks coordinate them.
   for offset in $(seq 0 15); do
     port=$((5554 + 2 * (($$ + offset) % 16)))
     adb_port=$((port + 1))
@@ -197,8 +212,8 @@ choose_emulator_port() {
 }
 
 print_emulator_log() {
-  if [[ -f "${test_tmpdir}/emulator.log" ]]; then
-    tail -200 "${test_tmpdir}/emulator.log" >&2
+  if [[ -f "$emulator_log" ]]; then
+    tail -200 "$emulator_log" >&2
   fi
 }
 
@@ -232,7 +247,7 @@ cleanup() {
     wait "$emulator_pid" >/dev/null 2>&1
   fi
   if [[ -n "$adb_server_port" ]]; then
-    env ADB_SERVER_PORT="$adb_server_port" "$adb" kill-server >/dev/null 2>&1
+    "$adb" -P "$adb_server_port" kill-server >/dev/null 2>&1
   fi
   release_port_locks
 }
@@ -245,9 +260,10 @@ source_property() {
 if [[ -z "$adb_server_port" ]]; then
   choose_adb_server_port
 elif ! is_integer "$adb_server_port"; then
-  echo "Invalid ADB_SERVER_PORT: $adb_server_port" >&2
+  echo "Invalid ANDROID_ADB_SERVER_PORT: $adb_server_port" >&2
   exit 1
 fi
+adb_cmd=("$adb" -P "$adb_server_port")
 choose_modem_simulator_port
 
 if [[ -z "$device_id" ]]; then
@@ -257,6 +273,10 @@ if [[ -z "$device_id" ]]; then
     choose_emulator_port ""
   fi
   device_id="emulator-${emulator_port}"
+  # Each test owns its ADB server. Disable scanning for other tests' emulators;
+  # our emulator announces itself to this server through ANDROID_ADB_SERVER_PORT.
+  export ADB_LOCAL_TRANSPORT_MAX_PORT=0
+  "${adb_cmd[@]}" start-server
   sdcard="${test_tmpdir}/sdcard.img"
   "$mksd" 64M "$sdcard" >/dev/null
   system_image_abi="$(source_property "SystemImage.Abi")"
@@ -294,7 +314,7 @@ disk.dataPartition.size=2048M
 hw.cpu.arch=$cpu_arch
 hw.cpu.ncore=2
 hw.gpu.enabled=yes
-hw.gpu.mode=swiftshader_indirect
+hw.gpu.mode=swiftshader
 hw.keyboard=yes
 hw.lcd.density=420
 hw.lcd.height=1920
@@ -311,7 +331,7 @@ target=android-${api_level}
 EOF
 
   env \
-    ADB_SERVER_PORT="$adb_server_port" \
+    ANDROID_ADB_SERVER_PORT="$adb_server_port" \
     ANDROID_AVD_HOME="$avd_home" \
     ANDROID_SDK_HOME="${test_tmpdir}/sdk-home" \
     "$emulator" \
@@ -325,12 +345,12 @@ EOF
       -no-snapshot-save \
       -wipe-data \
       -modem-simulator-port "$modem_simulator_port" \
-      -gpu swiftshader_indirect \
-      >"${test_tmpdir}/emulator.log" 2>&1 &
+      -gpu swiftshader \
+      >"$emulator_log" 2>&1 &
   emulator_pid="$!"
 fi
 
-adb_cmd=(env ADB_SERVER_PORT="$adb_server_port" "$adb" -s "$device_id")
+adb_cmd+=(-s "$device_id")
 
 device_connected=false
 for _ in $(seq 1 90); do

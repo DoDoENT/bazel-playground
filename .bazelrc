@@ -118,9 +118,9 @@ mobile-install:windows --adb=external/+android+androidsdk_windows/platform-tools
 # For these reasons, we disable sanitizers on iOS builds.
 #     (2025-10-28) (Nenad Mikša)
 
-common:ios --xcode_version_config=//xcode:host --config=no_sanitizers --strategy=FindProvisioningProfile=sandboxed,local
+common:ios --xcode_version_config=//xcode:host --config=no_sanitizers 
 
-common:ios_device --config=ios --ios_multi_cpus=arm64
+common:ios_device --config=ios --ios_multi_cpus=arm64 --strategy=FindProvisioningProfile=sandboxed,local
 common:ios_simulator --config=ios --ios_multi_cpus=sim_arm64,x86_64
 
 common:wasm --features=optimized_for_size
