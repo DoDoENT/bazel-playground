@@ -22,6 +22,12 @@ bazel test //:host
 bazel test //:ios --test_arg=--destination=platform=ios_device,id=<device_id> --config=ios_device
 ```
 
+## Run all tests on iOS simulator
+
+```
+bazel test //:ios --config=ios_simulator
+```
+
 ## Run all tests on attached Android device
 
 ```
