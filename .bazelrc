@@ -58,7 +58,7 @@ common --per_file_copt="external/.*@-w"
 common --features="external_include_paths" --host_features="external_include_paths"
 
 # needed android
-common --java_runtime_version=remotejdk_21 --tool_java_runtime_version=remotejdk_21
+common --java_runtime_version=remotejdk_21 --tool_java_runtime_version=remotejdk_21 --tool_java_language_version=17
 
 # Build features
 common --features=asan --features=ubsan
@@ -98,7 +98,8 @@ common --repo_env=ACCEPTED_ANDROID_SDK_LICENSE_VERSION=37.2
 common --repo_env=ACCEPTED_ANDROID_NDK_LICENSE_VERSION=r30
 
 common:android --config=no_sanitizers
-common:android --android_platforms=//platforms/android:arm64-v8a,//platforms/android:armeabi-v7a,//platforms/android:x86_64,//platforms/android:x86
+# These platform labels resolve in rules_android's transitions and downstream projects.
+common:android --android_platforms=@rules_android//:arm64-v8a,@rules_android//:armeabi-v7a,@rules_android//:x86_64,@rules_android//:x86
 common:android --features=-android_unwind_tables
 
 # Some issue with rules_android_ndk prevents LTO index files from being generated, so we will rely only on --copt=-flto=thin and --linkopt=-flto=thin for now.
