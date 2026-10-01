@@ -2,7 +2,7 @@ load("@rules_cc//cc:cc_import.bzl", "cc_import")
 load("@rules_java//java:java_library.bzl", "java_library")
 load("@bazel_skylib//lib:selects.bzl", "selects")
 
-_NDK_CLANG_VERSION = "21"
+_NDK_CLANG_VERSION = "22"
 _PACKAGE_ROOT = "macros/android-helpers"
 
 # https://github.com/bazelbuild/rules_android/issues/189
