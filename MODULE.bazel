@@ -5,7 +5,7 @@ module(name = "playground")
 # Note: This needs to be before rules_cc in order to correctly configure the C++ toolchain.
 # See here why: https://www.smileykeith.com/2025/09/21/understanding-apple-debug-info/
 bazel_dep(name = "apple_support", version = "2.9.1")
-bazel_dep(name = "rules_cc", version = "0.2.25")
+bazel_dep(name = "rules_cc", version = "0.2.26")
 bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
 bazel_dep(name = "bazel_skylib", version = "1.9.2")
 bazel_dep(name = "bazelrc-preset.bzl", version = "1.9.2")
@@ -106,7 +106,7 @@ register_toolchains("@llvm//toolchain:all")
 # LLVM rules end
 # Python rules begin
 
-bazel_dep(name = "rules_python", version = "2.3.4")
+bazel_dep(name = "rules_python", version = "2.4.1")
 
 PYTHON_VERSION = "3.14"
 
@@ -230,11 +230,11 @@ maven.install(
 # Android rules end
 
 # Emscripten rules begin
-bazel_dep(name = "emsdk", version = "6.0.10")
+bazel_dep(name = "emsdk", version = "6.0.11")
 
 emscripten_deps = use_extension("@emsdk//:emscripten_deps.bzl", "emscripten_deps")
 emscripten_deps.config(
-    version = "6.0.10", # Must match the cache
+    version = "6.0.11", # Must match the cache
 )
 
 emscripten_cache = use_extension(
@@ -244,8 +244,8 @@ emscripten_cache = use_extension(
 
 # NOTE: See tools/emsdk-cache-builder/README.md for instructions on how to build emsdk cache tarball and upload it to the artifactory
 emscripten_cache.prebuilt_cache(
-    http_archive_url = "https://github.com/DoDoENT/bazel-playground/releases/download/emsdk-cache/emsdk-cache-6.0.10.tar.gz",
-    sha256 = "3686906d5058acf1fa9d1cd3e3634619ce51d7d93f714755b6bcdd842eee3498",
+    http_archive_url = "https://github.com/DoDoENT/bazel-playground/releases/download/emsdk-cache/emsdk-cache-6.0.11.tar.gz",
+    sha256 = "a89064d2f5c5928b25ff578e1d98e21d4faa09d2f928d7f0c86dc83d31e076ba",
     strip_prefix = "emsdk-cache",
 )
 
