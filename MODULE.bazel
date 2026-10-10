@@ -4,7 +4,7 @@ module(name = "playground")
 
 # Note: This needs to be before rules_cc in order to correctly configure the C++ toolchain.
 # See here why: https://www.smileykeith.com/2025/09/21/understanding-apple-debug-info/
-bazel_dep(name = "apple_support", version = "2.9.1")
+bazel_dep(name = "apple_support", version = "2.10.1")
 bazel_dep(name = "rules_cc", version = "0.2.26")
 bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
 bazel_dep(name = "bazel_skylib", version = "1.9.2")
@@ -21,8 +21,8 @@ use_repo(host_platform, "host_platform")
 
 # Apple rules begin
 
-bazel_dep(name = "rules_apple", version = "5.2.0")
-bazel_dep(name = "rules_swift", version = "4.1.2")
+bazel_dep(name = "rules_apple", version = "5.3.0")
+bazel_dep(name = "rules_swift", version = "4.2.1")
 bazel_dep(name = "rules_xcodeproj", version = "4.1.0")
 
 # Apple rules end
@@ -106,7 +106,7 @@ register_toolchains("@llvm//toolchain:all")
 # LLVM rules end
 # Python rules begin
 
-bazel_dep(name = "rules_python", version = "2.4.1")
+bazel_dep(name = "rules_python", version = "2.4.2")
 
 PYTHON_VERSION = "3.14"
 
