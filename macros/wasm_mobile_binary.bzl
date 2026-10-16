@@ -50,6 +50,9 @@ def _wasm_mobile_binary_impl(name, visibility, data, skip_packaging_deps_runfile
     provided_additional_linker_inputs = kwargs.pop("additional_linker_inputs") or select({
         Label("//conditions:default"): [],
     })
+    target_compatible_with = kwargs.pop("target_compatible_with") or select({
+        "//conditions:default": [],
+    })
 
     outputs = [
         name + "/" + name + "-cc.wasm",
@@ -91,6 +94,9 @@ def _wasm_mobile_binary_impl(name, visibility, data, skip_packaging_deps_runfile
             "EMSCRIPTEN_EMRUN_MAX_NUMBER_OF_WORKERS=" + str(max_number_of_wasm_workers),
         ],
         additional_linker_inputs = additional_linker_inputs + provided_additional_linker_inputs,
+        target_compatible_with = target_compatible_with + [
+            "@platforms//os:emscripten",
+        ],
         **kwargs,
     )
 

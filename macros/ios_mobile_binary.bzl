@@ -13,6 +13,9 @@ def _ios_mobile_binary_impl(name, visibility, args, skip_packaging_deps_runfiles
     })
     tags = kwargs.pop("tags") or []
     data = kwargs.pop("data") or []
+    target_compatible_with = kwargs.pop("target_compatible_with") or select({
+        "//conditions:default": [],
+    })
 
     remove_cc_binary_specific_attrs(kwargs)
 
@@ -24,6 +27,9 @@ def _ios_mobile_binary_impl(name, visibility, args, skip_packaging_deps_runfiles
         alwayslink = True,
         linkstatic = kwargs.pop("linkstatic") and False,
         tags = ["manual"],
+        target_compatible_with = target_compatible_with + [
+            "@platforms//os:ios",
+        ],
         **kwargs,
     )
 

@@ -38,6 +38,9 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
         local_defines = local_defines,
         defines = defines,
         tags = ["manual"],
+        target_compatible_with = [
+            "@platforms//os:android",
+        ],
     )
 
     android_build_config(
