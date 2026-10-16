@@ -11,4 +11,7 @@ mobile_library(
     ],
     strip_include_prefix = "Source",
     visibility = ["//visibility:public"],
+    target_compatible_with = [
+        "@platforms//os:android",
+    ],
 )

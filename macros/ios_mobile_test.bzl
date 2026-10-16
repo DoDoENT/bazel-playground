@@ -21,6 +21,9 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, lin
         alwayslink = True,
         local_defines = local_defines,
         defines = defines,
+        target_compatible_with = [
+            "@platforms//os:ios",
+        ],
     )
 
     prepare_assets(
