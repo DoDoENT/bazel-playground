@@ -121,8 +121,8 @@
     "https://bcr.bazel.build/modules/egl-registry/0.0.0-20250527/source.json": "61778a668126614d951ef0fecda3b25a4506d1142248458ea6aabc48427b4781",
     "https://bcr.bazel.build/modules/eigen/5.0.1.bcr.2/MODULE.bazel": "393a9b0df436c276387471dca1712b52d3d03973f1f3f5fe806385a1b1f6f4b5",
     "https://bcr.bazel.build/modules/eigen/5.0.1.bcr.2/source.json": "9b0db51137b0517e2c55fe21f87e0957abe6eb195cf39c59a8e7c3f2af5a91b9",
-    "https://bcr.bazel.build/modules/emsdk/6.0.12/MODULE.bazel": "b1b90fe401d915a07073ccf9f2576910f88787c8af95a3ee7d25cffc91b43ba3",
-    "https://bcr.bazel.build/modules/emsdk/6.0.12/source.json": "bc53f386e3f2f2da0f078bc1440f626887e4c8cc3ecf679cab5b1e0f0d8b386f",
+    "https://bcr.bazel.build/modules/emsdk/6.0.13/MODULE.bazel": "2af9ef2d9ab2279df90d3bb4ad5ae20c59ba26dada11c785684bbd68e417df55",
+    "https://bcr.bazel.build/modules/emsdk/6.0.13/source.json": "8dbab8c8770266f5bf27ace003bced36debab86b02aee916549efc1a82121eaf",
     "https://bcr.bazel.build/modules/gawk/5.3.2.bcr.1/MODULE.bazel": "cdf8cbe5ee750db04b78878c9633cc76e80dcf4416cbe982ac3a9222f80713c8",
     "https://bcr.bazel.build/modules/gawk/5.3.2.bcr.3/MODULE.bazel": "f1b7bb2dd53e8f2ef984b39485ec8a44e9076dda5c4b8efd2fb4c6a6e856a31d",
     "https://bcr.bazel.build/modules/gawk/5.3.2.bcr.3/source.json": "ebe931bfe362e4b41e59ee00a528db6074157ff2ced92eb9e970acab2e1089c9",
@@ -495,7 +495,7 @@
     "@@emsdk+//:emscripten_cache.bzl%emscripten_cache": {
       "general": {
         "bzlTransitiveDigest": "3DgiP8fPZPy6qdtRGjf4cPNZFohfnP8gP3DSqOJ/bTQ=",
-        "usagesDigest": "pw3c6R93ypUzSROTynRt9rwnoYsnJOndMFPXEH1K+Ik=",
+        "usagesDigest": "zFXJTnD1RKQlZdMFpgxGRxy/Y8MHpGduAxqQj0mJiiI=",
         "recordedInputs": [],
         "generatedRepoSpecs": {
           "emscripten_cache": {
@@ -503,8 +503,8 @@
             "attributes": {
               "configuration": [],
               "targets": [],
-              "prebuilt_cache_url": "https://github.com/DoDoENT/bazel-playground/releases/download/emsdk-cache/emsdk-cache-6.0.12.tar.gz",
-              "prebuilt_cache_sha256": "9fb047913a6186a1c08488fffec101a3c8f9a7bea5caa03c2368b3c78c9e55e6",
+              "prebuilt_cache_url": "https://github.com/DoDoENT/bazel-playground/releases/download/emsdk-cache/emsdk-cache-6.0.13.tar.gz",
+              "prebuilt_cache_sha256": "469f304bc3d2b69bda767f9ae44bc272265acccaa71d8bbc73f5d4942266c0f9",
               "prebuilt_cache_strip_prefix": "emsdk-cache"
             }
           }
@@ -513,8 +513,8 @@
     },
     "@@emsdk+//:emscripten_deps.bzl%emscripten_deps": {
       "general": {
-        "bzlTransitiveDigest": "mYOcUdDViAJwLm4COYH7vFiOjLPFg/L20jajiZxgwPs=",
-        "usagesDigest": "g5iS7ERdysrDBnneBZxvN2kOfgMQ5j2lzuvK9mq0z+4=",
+        "bzlTransitiveDigest": "5v9KEPlFxQKhnFeNaYfHNCW8CS3UfAgEZMyoasEDckE=",
+        "usagesDigest": "lArd88I/gqZD+7kbjcuXMT9dQUCeMvBjXYHO2aS2oIk=",
         "recordedInputs": [
           "REPO_MAPPING:bazel_features+,bazel_features_globals bazel_features++version_extension+bazel_features_globals",
           "REPO_MAPPING:bazel_features+,bazel_features_version bazel_features++version_extension+bazel_features_version",
@@ -534,50 +534,50 @@
             "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
             "attributes": {
               "build_file_content": "\npackage(default_visibility = ['//visibility:public'])\n\nfilegroup(\n    name = \"all\",\n    srcs = glob([\"**\"]),\n)\n\nfilegroup(\n    name = \"includes\",\n    srcs = glob([\n        \"emscripten/cache/sysroot/include/c++/v1/**\",\n        \"emscripten/cache/sysroot/include/compat/**\",\n        \"emscripten/cache/sysroot/include/**\",\n        \"lib/clang/**/include/**\",\n    ]),\n)\n\nfilegroup(\n    name = \"builtin_cache\",\n    srcs = glob([\n        \"emscripten/cache/**\",\n    ]),\n)\n\nfilegroup(\n    name = \"emcc_common\",\n    srcs = [\n        \"emscripten/emcc.py\",\n        \"emscripten/em++.py\",\n        \"emscripten/embuilder.py\",\n        \"emscripten/emscripten-version.txt\",\n        \"emscripten/cache/sysroot_install.stamp\",\n        \"emscripten/src/settings.js\",\n        \"emscripten/src/settings_internal.js\",\n    ] + glob(\n        include = [\n            \"emscripten/third_party/**\",\n            \"emscripten/tools/**\",\n        ],\n        exclude = [\n            \"**/__pycache__/**\",\n        ],\n    ),\n)\n\nfilegroup(\n    name = \"compiler_files\",\n    srcs = [\n        \"bin/clang\",\n        \"bin/clang++\",\n        \":emcc_common\",\n        \":includes\",\n    ],\n)\n\nfilegroup(\n    name = \"linker_files\",\n    srcs = [\n        \"bin/clang\",\n        \"bin/llvm-ar\",\n        \"bin/llvm-dwarfdump\",\n        \"bin/llvm-nm\",\n        \"bin/llvm-objcopy\",\n        \"bin/wasm-ctor-eval\",\n        \"bin/wasm-emscripten-finalize\",\n        \"bin/wasm-ld\",\n        \"bin/wasm-metadce\",\n        \"bin/wasm-opt\",\n        \"bin/wasm-split\",\n        \"bin/wasm2js\",\n        \":emcc_common\",\n    ] + glob(\n        include = [\n            \"emscripten/cache/sysroot/lib/**\",\n            \"emscripten/node_modules/**\",\n            \"emscripten/src/**\",\n        ],\n    ),\n)\n\nfilegroup(\n    name = \"ar_files\",\n    srcs = [\n        \"bin/llvm-ar\",\n        \"emscripten/emar.py\",\n        \"emscripten/emscripten-version.txt\",\n        \"emscripten/src/settings.js\",\n        \"emscripten/src/settings_internal.js\",\n    ] + glob(\n        include = [\n            \"emscripten/tools/**\",\n        ],\n        exclude = [\n            \"**/__pycache__/**\",\n        ],\n    ),\n)\n",
-              "sha256": "7b073a102b07eca5a0fe344037681e53162639f3540432456874c0446a5e8fa7",
+              "sha256": "cda6801012ff3319a539111826ed02a9abd7eff135c2ef261c8941caf5a3763e",
               "strip_prefix": "install",
               "type": "tar.xz",
-              "url": "https://storage.googleapis.com/webassembly/emscripten-releases-builds/linux/6e9f6885cb17a3d6c8fd488a5cff730f50aba61d/wasm-binaries.tar.xz"
+              "url": "https://storage.googleapis.com/webassembly/emscripten-releases-builds/linux/eb132757325583b787fe9414b09afea9442b72ad/wasm-binaries.tar.xz"
             }
           },
           "emscripten_bin_linux_arm64": {
             "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
             "attributes": {
               "build_file_content": "\npackage(default_visibility = ['//visibility:public'])\n\nfilegroup(\n    name = \"all\",\n    srcs = glob([\"**\"]),\n)\n\nfilegroup(\n    name = \"includes\",\n    srcs = glob([\n        \"emscripten/cache/sysroot/include/c++/v1/**\",\n        \"emscripten/cache/sysroot/include/compat/**\",\n        \"emscripten/cache/sysroot/include/**\",\n        \"lib/clang/**/include/**\",\n    ]),\n)\n\nfilegroup(\n    name = \"builtin_cache\",\n    srcs = glob([\n        \"emscripten/cache/**\",\n    ]),\n)\n\nfilegroup(\n    name = \"emcc_common\",\n    srcs = [\n        \"emscripten/emcc.py\",\n        \"emscripten/em++.py\",\n        \"emscripten/embuilder.py\",\n        \"emscripten/emscripten-version.txt\",\n        \"emscripten/cache/sysroot_install.stamp\",\n        \"emscripten/src/settings.js\",\n        \"emscripten/src/settings_internal.js\",\n    ] + glob(\n        include = [\n            \"emscripten/third_party/**\",\n            \"emscripten/tools/**\",\n        ],\n        exclude = [\n            \"**/__pycache__/**\",\n        ],\n    ),\n)\n\nfilegroup(\n    name = \"compiler_files\",\n    srcs = [\n        \"bin/clang\",\n        \"bin/clang++\",\n        \":emcc_common\",\n        \":includes\",\n    ],\n)\n\nfilegroup(\n    name = \"linker_files\",\n    srcs = [\n        \"bin/clang\",\n        \"bin/llvm-ar\",\n        \"bin/llvm-dwarfdump\",\n        \"bin/llvm-nm\",\n        \"bin/llvm-objcopy\",\n        \"bin/wasm-ctor-eval\",\n        \"bin/wasm-emscripten-finalize\",\n        \"bin/wasm-ld\",\n        \"bin/wasm-metadce\",\n        \"bin/wasm-opt\",\n        \"bin/wasm-split\",\n        \"bin/wasm2js\",\n        \":emcc_common\",\n    ] + glob(\n        include = [\n            \"emscripten/cache/sysroot/lib/**\",\n            \"emscripten/node_modules/**\",\n            \"emscripten/src/**\",\n        ],\n    ),\n)\n\nfilegroup(\n    name = \"ar_files\",\n    srcs = [\n        \"bin/llvm-ar\",\n        \"emscripten/emar.py\",\n        \"emscripten/emscripten-version.txt\",\n        \"emscripten/src/settings.js\",\n        \"emscripten/src/settings_internal.js\",\n    ] + glob(\n        include = [\n            \"emscripten/tools/**\",\n        ],\n        exclude = [\n            \"**/__pycache__/**\",\n        ],\n    ),\n)\n",
-              "sha256": "207b288eef73de3aeb3e5e492b76e3e395d049eee9f6c96bfc4396ba275a9bac",
+              "sha256": "18cd1b9df0ef1b6c35648d24cffc8596374a9c02f943ce8e1d2cf468de5033b5",
               "strip_prefix": "install",
               "type": "tar.xz",
-              "url": "https://storage.googleapis.com/webassembly/emscripten-releases-builds/linux/6e9f6885cb17a3d6c8fd488a5cff730f50aba61d/wasm-binaries-arm64.tar.xz"
+              "url": "https://storage.googleapis.com/webassembly/emscripten-releases-builds/linux/eb132757325583b787fe9414b09afea9442b72ad/wasm-binaries-arm64.tar.xz"
             }
           },
           "emscripten_bin_mac": {
             "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
             "attributes": {
               "build_file_content": "\npackage(default_visibility = ['//visibility:public'])\n\nfilegroup(\n    name = \"all\",\n    srcs = glob([\"**\"]),\n)\n\nfilegroup(\n    name = \"includes\",\n    srcs = glob([\n        \"emscripten/cache/sysroot/include/c++/v1/**\",\n        \"emscripten/cache/sysroot/include/compat/**\",\n        \"emscripten/cache/sysroot/include/**\",\n        \"lib/clang/**/include/**\",\n    ]),\n)\n\nfilegroup(\n    name = \"builtin_cache\",\n    srcs = glob([\n        \"emscripten/cache/**\",\n    ]),\n)\n\nfilegroup(\n    name = \"emcc_common\",\n    srcs = [\n        \"emscripten/emcc.py\",\n        \"emscripten/em++.py\",\n        \"emscripten/embuilder.py\",\n        \"emscripten/emscripten-version.txt\",\n        \"emscripten/cache/sysroot_install.stamp\",\n        \"emscripten/src/settings.js\",\n        \"emscripten/src/settings_internal.js\",\n    ] + glob(\n        include = [\n            \"emscripten/third_party/**\",\n            \"emscripten/tools/**\",\n        ],\n        exclude = [\n            \"**/__pycache__/**\",\n        ],\n    ),\n)\n\nfilegroup(\n    name = \"compiler_files\",\n    srcs = [\n        \"bin/clang\",\n        \"bin/clang++\",\n        \":emcc_common\",\n        \":includes\",\n    ],\n)\n\nfilegroup(\n    name = \"linker_files\",\n    srcs = [\n        \"bin/clang\",\n        \"bin/llvm-ar\",\n        \"bin/llvm-dwarfdump\",\n        \"bin/llvm-nm\",\n        \"bin/llvm-objcopy\",\n        \"bin/wasm-ctor-eval\",\n        \"bin/wasm-emscripten-finalize\",\n        \"bin/wasm-ld\",\n        \"bin/wasm-metadce\",\n        \"bin/wasm-opt\",\n        \"bin/wasm-split\",\n        \"bin/wasm2js\",\n        \":emcc_common\",\n    ] + glob(\n        include = [\n            \"emscripten/cache/sysroot/lib/**\",\n            \"emscripten/node_modules/**\",\n            \"emscripten/src/**\",\n        ],\n    ),\n)\n\nfilegroup(\n    name = \"ar_files\",\n    srcs = [\n        \"bin/llvm-ar\",\n        \"emscripten/emar.py\",\n        \"emscripten/emscripten-version.txt\",\n        \"emscripten/src/settings.js\",\n        \"emscripten/src/settings_internal.js\",\n    ] + glob(\n        include = [\n            \"emscripten/tools/**\",\n        ],\n        exclude = [\n            \"**/__pycache__/**\",\n        ],\n    ),\n)\n",
-              "sha256": "2a36ac0619ad5e065d8b520c62ca8228ddf18aaf9624d4e1959b06fc4b9ebfab",
+              "sha256": "3b2e7dd84910f7866e8e5f16627410a2f5255507b90963e460d6a7e8c166eefc",
               "strip_prefix": "install",
               "type": "tar.xz",
-              "url": "https://storage.googleapis.com/webassembly/emscripten-releases-builds/mac/6e9f6885cb17a3d6c8fd488a5cff730f50aba61d/wasm-binaries.tar.xz"
+              "url": "https://storage.googleapis.com/webassembly/emscripten-releases-builds/mac/eb132757325583b787fe9414b09afea9442b72ad/wasm-binaries.tar.xz"
             }
           },
           "emscripten_bin_mac_arm64": {
             "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
             "attributes": {
               "build_file_content": "\npackage(default_visibility = ['//visibility:public'])\n\nfilegroup(\n    name = \"all\",\n    srcs = glob([\"**\"]),\n)\n\nfilegroup(\n    name = \"includes\",\n    srcs = glob([\n        \"emscripten/cache/sysroot/include/c++/v1/**\",\n        \"emscripten/cache/sysroot/include/compat/**\",\n        \"emscripten/cache/sysroot/include/**\",\n        \"lib/clang/**/include/**\",\n    ]),\n)\n\nfilegroup(\n    name = \"builtin_cache\",\n    srcs = glob([\n        \"emscripten/cache/**\",\n    ]),\n)\n\nfilegroup(\n    name = \"emcc_common\",\n    srcs = [\n        \"emscripten/emcc.py\",\n        \"emscripten/em++.py\",\n        \"emscripten/embuilder.py\",\n        \"emscripten/emscripten-version.txt\",\n        \"emscripten/cache/sysroot_install.stamp\",\n        \"emscripten/src/settings.js\",\n        \"emscripten/src/settings_internal.js\",\n    ] + glob(\n        include = [\n            \"emscripten/third_party/**\",\n            \"emscripten/tools/**\",\n        ],\n        exclude = [\n            \"**/__pycache__/**\",\n        ],\n    ),\n)\n\nfilegroup(\n    name = \"compiler_files\",\n    srcs = [\n        \"bin/clang\",\n        \"bin/clang++\",\n        \":emcc_common\",\n        \":includes\",\n    ],\n)\n\nfilegroup(\n    name = \"linker_files\",\n    srcs = [\n        \"bin/clang\",\n        \"bin/llvm-ar\",\n        \"bin/llvm-dwarfdump\",\n        \"bin/llvm-nm\",\n        \"bin/llvm-objcopy\",\n        \"bin/wasm-ctor-eval\",\n        \"bin/wasm-emscripten-finalize\",\n        \"bin/wasm-ld\",\n        \"bin/wasm-metadce\",\n        \"bin/wasm-opt\",\n        \"bin/wasm-split\",\n        \"bin/wasm2js\",\n        \":emcc_common\",\n    ] + glob(\n        include = [\n            \"emscripten/cache/sysroot/lib/**\",\n            \"emscripten/node_modules/**\",\n            \"emscripten/src/**\",\n        ],\n    ),\n)\n\nfilegroup(\n    name = \"ar_files\",\n    srcs = [\n        \"bin/llvm-ar\",\n        \"emscripten/emar.py\",\n        \"emscripten/emscripten-version.txt\",\n        \"emscripten/src/settings.js\",\n        \"emscripten/src/settings_internal.js\",\n    ] + glob(\n        include = [\n            \"emscripten/tools/**\",\n        ],\n        exclude = [\n            \"**/__pycache__/**\",\n        ],\n    ),\n)\n",
-              "sha256": "8e91c0eca2b8728aa2babb32b805318eaf5e8d6652c6535163d0ea467a6d907c",
+              "sha256": "3d8ced05935fbef5b3edda4252dce260004860bf8d579617f13d417338aa4cac",
               "strip_prefix": "install",
               "type": "tar.xz",
-              "url": "https://storage.googleapis.com/webassembly/emscripten-releases-builds/mac/6e9f6885cb17a3d6c8fd488a5cff730f50aba61d/wasm-binaries-arm64.tar.xz"
+              "url": "https://storage.googleapis.com/webassembly/emscripten-releases-builds/mac/eb132757325583b787fe9414b09afea9442b72ad/wasm-binaries-arm64.tar.xz"
             }
           },
           "emscripten_bin_win": {
             "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
             "attributes": {
               "build_file_content": "\npackage(default_visibility = ['//visibility:public'])\n\nfilegroup(\n    name = \"all\",\n    srcs = glob([\"**\"]),\n)\n\nfilegroup(\n    name = \"includes\",\n    srcs = glob([\n        \"emscripten/cache/sysroot/include/c++/v1/**\",\n        \"emscripten/cache/sysroot/include/compat/**\",\n        \"emscripten/cache/sysroot/include/**\",\n        \"lib/clang/**/include/**\",\n    ]),\n)\n\nfilegroup(\n    name = \"builtin_cache\",\n    srcs = glob([\n        \"emscripten/cache/**\",\n    ]),\n)\n\nfilegroup(\n    name = \"emcc_common\",\n    srcs = [\n        \"emscripten/emcc.py\",\n        \"emscripten/em++.py\",\n        \"emscripten/embuilder.py\",\n        \"emscripten/emscripten-version.txt\",\n        \"emscripten/cache/sysroot_install.stamp\",\n        \"emscripten/src/settings.js\",\n        \"emscripten/src/settings_internal.js\",\n    ] + glob(\n        include = [\n            \"emscripten/third_party/**\",\n            \"emscripten/tools/**\",\n        ],\n        exclude = [\n            \"**/__pycache__/**\",\n        ],\n    ),\n)\n\nfilegroup(\n    name = \"compiler_files\",\n    srcs = [\n        \"bin/clang.exe\",\n        \"bin/clang++.exe\",\n        \":emcc_common\",\n        \":includes\",\n    ],\n)\n\nfilegroup(\n    name = \"linker_files\",\n    srcs = [\n        \"bin/clang.exe\",\n        \"bin/llvm-ar.exe\",\n        \"bin/llvm-dwarfdump.exe\",\n        \"bin/llvm-nm.exe\",\n        \"bin/llvm-objcopy.exe\",\n        \"bin/wasm-ctor-eval.exe\",\n        \"bin/wasm-emscripten-finalize.exe\",\n        \"bin/wasm-ld.exe\",\n        \"bin/wasm-metadce.exe\",\n        \"bin/wasm-opt.exe\",\n        \"bin/wasm-split.exe\",\n        \"bin/wasm2js.exe\",\n        \":emcc_common\",\n    ] + glob(\n        include = [\n            \"emscripten/cache/sysroot/lib/**\",\n            \"emscripten/node_modules/**\",\n            \"emscripten/src/**\",\n        ],\n    ),\n)\n\nfilegroup(\n    name = \"ar_files\",\n    srcs = [\n        \"bin/llvm-ar.exe\",\n        \"emscripten/emar.py\",\n        \"emscripten/emscripten-version.txt\",\n        \"emscripten/src/settings.js\",\n        \"emscripten/src/settings_internal.js\",\n    ] + glob(\n        include = [\n            \"emscripten/tools/**\",\n        ],\n        exclude = [\n            \"**/__pycache__/**\",\n        ],\n    ),\n)\n",
-              "sha256": "51ac2e51a2c6eeba09fa04418496750662b5c1f022665814b0ee8f557c8328c9",
+              "sha256": "937b834b397e33645923794c1a20566a86c63ebc02b213e537c0a86dd380ab6c",
               "strip_prefix": "install",
               "type": "zip",
-              "url": "https://storage.googleapis.com/webassembly/emscripten-releases-builds/win/6e9f6885cb17a3d6c8fd488a5cff730f50aba61d/wasm-binaries.zip"
+              "url": "https://storage.googleapis.com/webassembly/emscripten-releases-builds/win/eb132757325583b787fe9414b09afea9442b72ad/wasm-binaries.zip"
             }
           }
         }
@@ -672,7 +672,7 @@
     "@@rules_nodejs+//nodejs:extensions.bzl%node": {
       "general": {
         "bzlTransitiveDigest": "4pUxCNc22K4I+6+4Nxu52Hur12tFRfa1JMsN5mdDv60=",
-        "usagesDigest": "kE4u2BjDc7ucbxGKQtesi89UX50bptTwmVAiIQJI7hs=",
+        "usagesDigest": "30YrcrZ46cxVcxCkPRQGRrtfSyVP7lD+2wTaG/bF69I=",
         "recordedInputs": [],
         "generatedRepoSpecs": {
           "nodejs_linux_amd64": {
