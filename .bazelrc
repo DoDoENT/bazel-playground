@@ -20,6 +20,10 @@ common --experimental_remote_downloader=grpcs://remote.buildbuddy.io
 # Give Bazel enough 'slots' to actually saturate the remote executor
 common --jobs=100
 
+# Module maintenance (including Renovate) must work without BuildBuddy credentials.
+# Clear the executor too, since Bazel otherwise uses it as the remote cache endpoint.
+mod --remote_executor= --remote_cache= --experimental_remote_downloader=
+
 common:ci --build_metadata=ROLE=CI
 
 # Does not play nicely with GHA
@@ -151,6 +155,10 @@ common:ci --show_progress_rate_limit=10 --show_progress --test_output=errors --r
 
 # Increase timeouts in CI to avoid flakes due to slow machines / network
 common:ci --experimental_scale_timeouts=5.0 --http_timeout_scaling=5.0
+
+# Fail the build if the MODULE.bazel.lock file is out of date.
+# Using this mode in ci prevents the lockfile from being out of date.
+common:ci --lockfile_mode="error"
 
 # Reduce connection pressure when running many builds in parallel in CI
 build:ci --grpc_keepalive_time=60s
