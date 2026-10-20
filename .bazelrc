@@ -152,6 +152,10 @@ common:ci --show_progress_rate_limit=10 --show_progress --test_output=errors --r
 # Increase timeouts in CI to avoid flakes due to slow machines / network
 common:ci --experimental_scale_timeouts=5.0 --http_timeout_scaling=5.0
 
+# Fail the build if the MODULE.bazel.lock file is out of date.
+# Using this mode in ci prevents the lockfile from being out of date.
+common:ci --lockfile_mode="error"
+
 # Reduce connection pressure when running many builds in parallel in CI
 build:ci --grpc_keepalive_time=60s
 build:ci --grpc_keepalive_timeout=30s
