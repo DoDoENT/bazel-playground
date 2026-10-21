@@ -1,0 +1,16 @@
+# Keep transitioned application settings within this module, including when it
+# is built as a downstream dependency. External libraries use the baseline.
+project = {
+    "active_directories": {
+        "default": [
+            "//",
+            "@@playground+",
+            # Apple link outputs use this helper's configuration directory.
+            # Preserve transitioned flags so test variants get distinct paths.
+            "@@rules_apple+//apple:default_cc_toolchain_forwarder",
+            # Android native link outputs use this helper's split configuration.
+            # Preserve transitioned flags so test variants get distinct paths.
+            "@@rules_cc+//cc:current_cc_toolchain",
+        ],
+    },
+}
