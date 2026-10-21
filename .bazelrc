@@ -72,10 +72,11 @@ common --@llvm//config:asan=True --@llvm//config:ubsan=True
 # also, ASAN does not work with SAFE_HEAP
 # common --features=wasm_asan --features=wasm_ubsan
 
-# Make sure object files and static libraries are downloaded from remote cache on MacOS as
+# Make sure object files and static libraries are downloaded from remote cache as
 # they are required for debugger to work properly
 # See: https://www.smileykeith.com/2025/09/21/understanding-apple-debug-info/
-build:macos --remote_download_regex='.*\.(a|lo|o)$'
+build:debug --remote_download_regex='.*\.(a|lo|o)$'
+
 build:macos --apple_generate_dsym --output_groups=+dsyms
 
 # Bazel documentation on coverage: https://bazel.build/configure/coverage
@@ -135,8 +136,9 @@ common:linux --@opencv//:gtk3=@ubuntu-gtk-deps//:gtk3 --@opencv//:with_gtk3=True
 #common:linux --@llvm//toolchain:bootstrap_stage=stage1_from_source
 # common:linux --@llvm//toolchain:source=bootstrapped
 
-common:linux_haswell --platforms=//platforms/linux:haswell_x86_64 
-common:linux_generic --platforms=//platforms/linux:x86_64
+common:linux_haswell --platforms=//platforms/linux:haswell_x86_64 --cpu=k8 --output_groups=-dsyms --noapple_generate_dsym
+common:linux_generic --platforms=//platforms/linux:x86_64 --cpu=k8 --output_groups=-dsyms --noapple_generate_dsym
+
 
 common:rules_xcodeproj --config=no_sanitizers
 
