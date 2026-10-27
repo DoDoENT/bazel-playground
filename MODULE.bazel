@@ -4,8 +4,8 @@ module(name = "playground")
 
 # Note: This needs to be before rules_cc in order to correctly configure the C++ toolchain.
 # See here why: https://www.smileykeith.com/2025/09/21/understanding-apple-debug-info/
-bazel_dep(name = "apple_support", version = "2.10.1")
-bazel_dep(name = "rules_cc", version = "0.2.26")
+bazel_dep(name = "apple_support", version = "2.11.0")
+bazel_dep(name = "rules_cc", version = "0.2.27")
 bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
 bazel_dep(name = "bazel_skylib", version = "1.9.2")
 bazel_dep(name = "bazelrc-preset.bzl", version = "1.10.0")
@@ -29,6 +29,8 @@ bazel_dep(name = "rules_xcodeproj", version = "4.1.0")
 
 # LLVM rules begin
 
+# 0.8.26 breaks macOS nodeps shared-library links; keep the previous version until fixed.
+# https://github.com/hermeticbuild/hermetic-llvm/issues/893
 bazel_dep(name = "llvm", version = "0.8.25")
 
 # The hermetic macOS SDK is intentionally minimal. OpenCV's Cocoa highgui and
@@ -106,7 +108,7 @@ register_toolchains("@llvm//toolchain:all")
 # LLVM rules end
 # Python rules begin
 
-bazel_dep(name = "rules_python", version = "2.4.3")
+bazel_dep(name = "rules_python", version = "2.4.5")
 
 PYTHON_VERSION = "3.14"
 
@@ -134,10 +136,10 @@ bazel_dep(name = "rules_android", version = "0.8.0", dev_dependency = True)
 bazel_dep(name = "rules_android_ndk", version = "0.1.5", dev_dependency = True)
 
 # Needed to resolve conflict between gazelle and rules_android
-bazel_dep(name = "rules_go", version = "0.64.2", dev_dependency = True)
+bazel_dep(name = "rules_go", version = "0.65.0", dev_dependency = True)
 
 go_sdk = use_extension("@rules_go//go:extensions.bzl", "go_sdk", dev_dependency = True)
-go_sdk.download(version = "1.25.0")
+go_sdk.download(version = "1.27.3")
 # ...
 # TODO: remove rules_go dependency after `rules_android` is updated
 
