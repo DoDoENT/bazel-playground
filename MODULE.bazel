@@ -29,7 +29,9 @@ bazel_dep(name = "rules_xcodeproj", version = "4.1.0")
 
 # LLVM rules begin
 
-bazel_dep(name = "llvm", version = "0.8.26")
+# 0.8.26 breaks macOS nodeps shared-library links; keep the previous version until fixed.
+# https://github.com/hermeticbuild/hermetic-llvm/issues/893
+bazel_dep(name = "llvm", version = "0.8.25")
 
 # The hermetic macOS SDK is intentionally minimal. OpenCV's Cocoa highgui and
 # AVFoundation backends include umbrella headers with a broad framework
@@ -137,7 +139,7 @@ bazel_dep(name = "rules_android_ndk", version = "0.1.5", dev_dependency = True)
 bazel_dep(name = "rules_go", version = "0.65.0", dev_dependency = True)
 
 go_sdk = use_extension("@rules_go//go:extensions.bzl", "go_sdk", dev_dependency = True)
-go_sdk.download(version = "1.25.0")
+go_sdk.download(version = "1.27.3")
 # ...
 # TODO: remove rules_go dependency after `rules_android` is updated
 
