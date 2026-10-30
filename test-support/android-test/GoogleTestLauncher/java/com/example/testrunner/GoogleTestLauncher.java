@@ -4,7 +4,10 @@ import static android.content.Context.POWER_SERVICE;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.os.Bundle;
 import android.os.PowerManager;
+import android.system.ErrnoException;
+import android.system.Os;
 import android.util.Log;
 
 import java.io.File;
@@ -37,7 +40,7 @@ public class GoogleTestLauncher {
     private static final boolean deployResources = BuildConfig.DEPLOY_RESOURCES;
 
     @Test
-    public void invokeGoogleTest() {
+    public void invokeGoogleTest() throws ErrnoException {
         Context targetContext = InstrumentationRegistry.getInstrumentation().getContext();
         PowerManager powerManager = (PowerManager) targetContext.getSystemService(POWER_SERVICE);
         PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyApp::MyWakelockTag");
@@ -46,16 +49,39 @@ public class GoogleTestLauncher {
         if ( deployResources ) {
             deployAssetsToInternalStorage( targetContext );
         }
+        Bundle arguments = InstrumentationRegistry.getArguments();
+        String totalShards = arguments.getString("gtestTotalShards");
+        String shardIndex = arguments.getString("gtestShardIndex");
+        if ( totalShards != null && shardIndex != null ) {
+            Os.setenv("TEST_TOTAL_SHARDS", totalShards, true);
+            Os.setenv("TEST_SHARD_INDEX", shardIndex, true);
+            Os.setenv("GTEST_TOTAL_SHARDS", totalShards, true);
+            Os.setenv("GTEST_SHARD_INDEX", shardIndex, true);
+        }
+        File shardStatus = new File(targetContext.getFilesDir(), "gtest-shard-status");
+        if ( arguments.getString("gtestShardStatus") != null ) {
+            if ( shardStatus.exists() && !shardStatus.delete() ) {
+                throw new IllegalStateException("Cannot remove previous GoogleTest shard status file");
+            }
+            Os.setenv("GTEST_SHARD_STATUS_FILE", shardStatus.getAbsolutePath(), true);
+        }
         invokeGoogleTest(testArgs, mGTestListener, targetContext);
-
+        if ( shardStatus.exists() && arguments.getString("gtestShardStatus") != null ) {
+            Bundle status = new Bundle();
+            status.putString("gtestShardStatus", "supported");
+            InstrumentationRegistry.getInstrumentation().sendStatus(2, status);
+        }
         wakeLock.release();
     }
 
-    static {
+    static int invokeGoogleTest(String[] arguments, GTestListener listener, Context context) {
+        // GoogleTest reads the shard environment when the native library loads.
+        // Keep loading after instrumentation has configured that environment.
         System.loadLibrary(BuildConfig.NATIVE_LIB_NAME);
+        return invokeGoogleTestNative(arguments, listener, context);
     }
 
-    static native int invokeGoogleTest(String[] arguments, GTestListener listener, Context context);
+    private static native int invokeGoogleTestNative(String[] arguments, GTestListener listener, Context context);
 
     public interface GTestListener
     {

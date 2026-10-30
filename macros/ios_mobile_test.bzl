@@ -5,7 +5,7 @@ load("//macros:mobile_library.bzl", "mobile_library")
 load(":constants.bzl", "TAG_IOS")
 load(":test_utils.bzl", "prepare_assets")
 
-def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, skip_packaging_deps_runfiles, defines, local_defines, size, timeout, target_compatible_with):
+def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, skip_packaging_deps_runfiles, defines, local_defines, size, timeout, shard_count, target_compatible_with):
     mobile_library(
         name = name + "-srcs",
         srcs = srcs,
@@ -79,6 +79,7 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, lin
         ] + target_compatible_with,
         size = size,
         timeout = timeout,
+        shard_count = shard_count,
     )
 
 
@@ -142,12 +143,16 @@ ios_mobile_test = macro(
         "size": attr.string(
             default = "medium",
             doc = "Size of the test: small, medium, large, or enormous.",
-            configurable = False
+            configurable = False,
         ),
         "timeout": attr.string(
             default = "moderate",
             doc = "Timeout for the test: short, moderate, long, or eternal.",
-            configurable = False
+            configurable = False,
+        ),
+        "shard_count": attr.int(
+            default = 0,
+            doc = "Number of test shards; 0 disables sharding.",
         ),
         "target_compatible_with": attr.label_list(
             default = [],

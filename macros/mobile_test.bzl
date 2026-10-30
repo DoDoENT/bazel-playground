@@ -18,7 +18,7 @@ load(
     "TAG_MULTI_CPU",
 )
 
-def _mobile_test_impl(name, visibility, args, data, skip_packaging_deps_runfiles, host_only, android, ios, wasm_basic, wasm_simd, wasm_simd_threads, android_deploy_resources, **kwargs):
+def _mobile_test_impl(name, visibility, args, data, skip_packaging_deps_runfiles, host_only, android, ios, wasm_basic, wasm_simd, wasm_simd_threads, android_deploy_resources, shard_count, **kwargs):
 
     mobile_library(
         name = name + "-paths",
@@ -101,6 +101,7 @@ def _mobile_test_impl(name, visibility, args, data, skip_packaging_deps_runfiles
         linkstatic = linkstatic,
         size = test_size,
         timeout = test_timeout,
+        shard_count = shard_count,
         **kwargs,
     )
     if not host_only:
@@ -125,6 +126,7 @@ def _mobile_test_impl(name, visibility, args, data, skip_packaging_deps_runfiles
                 local_defines = local_defines,
                 size = test_size,
                 timeout = test_timeout,
+                shard_count = shard_count,
                 target_compatible_with = kwargs.get("target_compatible_with", []),
             )
 
@@ -149,6 +151,7 @@ def _mobile_test_impl(name, visibility, args, data, skip_packaging_deps_runfiles
                 deploy_resources = android_deploy_resources,
                 size = test_size,
                 timeout = test_timeout,
+                shard_count = shard_count,
                 target_compatible_with = kwargs.get("target_compatible_with", []),
             )
 
@@ -174,6 +177,7 @@ def _mobile_test_impl(name, visibility, args, data, skip_packaging_deps_runfiles
                 local_defines = local_defines,
                 size = test_size,
                 timeout = test_timeout,
+                shard_count = shard_count,
                 target_compatible_with = kwargs.get("target_compatible_with", []),
             )
 
@@ -198,6 +202,7 @@ def _mobile_test_impl(name, visibility, args, data, skip_packaging_deps_runfiles
                 defines = defines,
                 local_defines = local_defines,
                 size = test_size,
+                shard_count = shard_count,
                 timeout = test_timeout,
             )
             # Compiler crash on OpenCV's imgwarp.cpp. https://github.com/emscripten-core/emscripten/issues/27356
@@ -221,6 +226,7 @@ def _mobile_test_impl(name, visibility, args, data, skip_packaging_deps_runfiles
                 defines = defines,
                 local_defines = local_defines,
                 size = test_size,
+                shard_count = shard_count,
                 timeout = test_timeout,
             )
 
@@ -246,6 +252,7 @@ def _mobile_test_impl(name, visibility, args, data, skip_packaging_deps_runfiles
                 local_defines = local_defines,
                 size = test_size,
                 timeout = test_timeout,
+                shard_count = shard_count,
                 target_compatible_with = kwargs.get("target_compatible_with", []),
             )
             # Compiler crash on OpenCV's imgwarp.cpp. https://github.com/emscripten-core/emscripten/issues/27356
@@ -270,6 +277,7 @@ def _mobile_test_impl(name, visibility, args, data, skip_packaging_deps_runfiles
                 local_defines = local_defines,
                 size = test_size,
                 timeout = test_timeout,
+                shard_count = shard_count,
                 target_compatible_with = kwargs.get("target_compatible_with", []),
         )
 

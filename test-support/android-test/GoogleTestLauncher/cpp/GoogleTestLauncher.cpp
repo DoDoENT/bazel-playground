@@ -70,7 +70,7 @@ namespace
     };
 }
 
-extern "C" JNIEXPORT jint JNICALL JNI_METHOD( invokeGoogleTest )( JNIEnv * env, jclass , jobjectArray args, jobject jGTestListener, jobject jContext )
+extern "C" JNIEXPORT jint JNICALL JNI_METHOD( invokeGoogleTestNative )( JNIEnv * env, jclass , jobjectArray args, jobject jGTestListener, jobject jContext )
 {
     AndroidPaths::startLogger( "GoogleTestLauncher" );
 

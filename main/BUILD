@@ -22,43 +22,22 @@ mobile_binary(
     visibility = ["//visibility:public"],
 )
 
-mobile_test(
-    name = "hello-world-test-default",
-    srcs = ["tests/hello-test-default.cc"],
-    deps = [
-        "//main:hello-greet",
-    ],
-    args = ["--gtest_filter=HelloGreetTest.DefaultGreeting"],
-)
-
-mobile_test(
-    name = "hello-world-test-non-default",
-    srcs = ["tests/hello-test-non-default.cc"],
-    deps = [
-        "//main:hello-greet",
-        "//lib:hello-time",
-    ],
-    args = ["--gtest_filter=HelloGreetTest.NonDefaultGreeting"],
-)
-
 filegroup(
     name = "test-data",
     srcs = glob(["test-data/**"]),
 )
 
 mobile_test(
-    name = "hello-world-test-file",
-    srcs = ["tests/hello-test-file.cc"],
-    args = ["--gtest_filter=HelloGreetTest.ReadFile"],
+    name = "hello-world-test",
+    srcs = [
+        "tests/hello-test-file.cc",
+        "tests/hello-test-non-default.cc",
+        "tests/hello-test-default.cc",
+        "hello-test.cc",
+    ],
+    shard_count = 3,
     data = [
         ":test-data",
-    ],
-)
-
-mobile_test(
-    name = "hello-test",
-    srcs = [
-        "hello-test.cc",
     ],
     deps = [
         "//main:hello-greet",
