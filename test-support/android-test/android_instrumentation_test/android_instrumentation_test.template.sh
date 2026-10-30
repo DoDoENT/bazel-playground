@@ -2,6 +2,11 @@
 
 set -xe
 
+if [[ -n "${TEST_TOTAL_SHARDS:-}" && -z "${TEST_SHARD_INDEX:-}" ]] || [[ -z "${TEST_TOTAL_SHARDS:-}" && -n "${TEST_SHARD_INDEX:-}" ]]; then
+    echo "TEST_TOTAL_SHARDS and TEST_SHARD_INDEX must be set together." >&2
+    exit 1
+fi
+
 adb="%(adb)s"
 aapt2="%(aapt2)s"
 
@@ -47,6 +52,8 @@ fi
 if [[ -z "$device_id" ]]; then
     echo "Warning: --device_id not given. Will use ADB without the '-s <device_id>' parameter, thus expecting that only single Android device is visible."
     device=""
+    echo "Detected devices:"
+    "$adb" devices -l
 else
     device="-s $device_id"
 fi
@@ -106,7 +113,7 @@ while [ $retry_count -lt $max_retries ]; do
         break
     fi
 
-    echo "Install failed (likely PackageManager contention). Retrying in 5s... ($((max_retries - retry_count - 1)) attempts left)"
+    echo "Install failed. Retrying in 5s... ($((max_retries - retry_count - 1)) attempts left)"
     sleep 5
     ((retry_count++))
 done
@@ -126,7 +133,17 @@ sleep 1
 "${adb_cmd[@]}" logcat -c
 
 # run the instrumentation test
-output=$("${adb_cmd[@]}" shell am instrument -r -w "$instrumentation_app_id/androidx.test.runner.AndroidJUnitRunner")
+instrument_args=()
+if [[ -n "${TEST_TOTAL_SHARDS:-}" && -n "${TEST_SHARD_INDEX:-}" ]]; then
+    instrument_args+=(-e gtestTotalShards "$TEST_TOTAL_SHARDS" -e gtestShardIndex "$TEST_SHARD_INDEX")
+fi
+if [[ -n "${TEST_SHARD_STATUS_FILE:-}" ]]; then
+    instrument_args+=(-e gtestShardStatus true)
+fi
+output=$("${adb_cmd[@]}" shell am instrument -r -w ${instrument_args[@]+"${instrument_args[@]}"} "$instrumentation_app_id/androidx.test.runner.AndroidJUnitRunner")
+if [[ -n "${TEST_SHARD_STATUS_FILE:-}" ]] && grep -q '^INSTRUMENTATION_STATUS: gtestShardStatus=supported' <<<"$output"; then
+    touch "$TEST_SHARD_STATUS_FILE"
+fi
 
 log_output=$("${adb_cmd[@]}" logcat -d)
 

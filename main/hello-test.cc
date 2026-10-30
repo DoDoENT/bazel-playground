@@ -3,13 +3,13 @@
 
 #include <gtest/gtest.h>
 
-TEST(HelloGreetTest, DefaultGreeting)
+TEST(HelloGreetTest, DefaultGreeting2)
 {
     auto greet{ get_greet( "world" ) };
     EXPECT_EQ(greet, "Hello world");
 }
 
-TEST(HelloGreetTest, NonDefaultGreeting)
+TEST(HelloGreetTest, NonDefaultGreeting2)
 {
     EXPECT_EQ(get_greet("bazel"), "Hello bazel");
     print_localtime();

@@ -12,6 +12,7 @@ bazel_dep(name = "bazelrc-preset.bzl", version = "1.10.0")
 bazel_dep(name = "platforms", version = "1.1.0")
 bazel_dep(name = "rules_build_error", version = "0.11.0")
 bazel_dep(name = "rules_license", version = "1.0.0")
+bazel_dep(name = "rules_shell", version = "0.8.0")
 
 # Bazel rules end
 
@@ -108,7 +109,7 @@ register_toolchains("@llvm//toolchain:all")
 # LLVM rules end
 # Python rules begin
 
-bazel_dep(name = "rules_python", version = "2.4.5")
+bazel_dep(name = "rules_python", version = "2.4.6")
 
 PYTHON_VERSION = "3.14"
 

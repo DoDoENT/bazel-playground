@@ -2,6 +2,11 @@
 
 set -xeuo pipefail
 
+if [[ -n "${TEST_TOTAL_SHARDS:-}" && -z "${TEST_SHARD_INDEX:-}" ]] || [[ -z "${TEST_TOTAL_SHARDS:-}" && -n "${TEST_SHARD_INDEX:-}" ]]; then
+  echo "TEST_TOTAL_SHARDS and TEST_SHARD_INDEX must be set together." >&2
+  exit 1
+fi
+
 adb="%(adb)s"
 aapt2="%(aapt2)s"
 emulator="%(emulator)s"
@@ -13,6 +18,7 @@ system_image_source_properties="%(system_image_source_properties)s"
 device_id=""
 emulator_port=""
 emulator_port_explicit=false
+coverage=false
 
 while [[ $# -gt 0 ]]; do
   arg="$1"
@@ -29,6 +35,9 @@ while [[ $# -gt 0 ]]; do
       ;;
     --test_host_apk=*)
       test_host_apk="${arg##*=}"
+      ;;
+    --coverage)
+      coverage=true
       ;;
   esac
   shift
@@ -455,12 +464,39 @@ if [[ "$have_test_host_apk" == true ]]; then
 fi
 "${adb_cmd[@]}" shell pm path "$instrumentation_app_id"
 
+instrument_args=()
+coverage_app_id="${test_host_app_id:-$instrumentation_app_id}"
+coverage_device_file="/data/data/${coverage_app_id}/coverage.ec"
+if [[ "$coverage" == true ]]; then
+  instrument_args=(-e coverage true -e coverageFile "$coverage_device_file")
+fi
+if [[ -n "${TEST_TOTAL_SHARDS:-}" && -n "${TEST_SHARD_INDEX:-}" ]]; then
+  instrument_args+=(-e gtestTotalShards "$TEST_TOTAL_SHARDS" -e gtestShardIndex "$TEST_SHARD_INDEX")
+fi
+if [[ -n "${TEST_SHARD_STATUS_FILE:-}" ]]; then
+  instrument_args+=(-e gtestShardStatus true)
+fi
+
 "${adb_cmd[@]}" logcat -c
 set +e
-output="$("${adb_cmd[@]}" shell am instrument -r -w "${instrumentation_app_id}/${instrumentation_runner}" 2>&1)"
+output="$("${adb_cmd[@]}" shell am instrument -r -w ${instrument_args[@]+"${instrument_args[@]}"} "${instrumentation_app_id}/${instrumentation_runner}" 2>&1)"
 instrumentation_status=$?
 set -e
 log_output="$("${adb_cmd[@]}" logcat -d)"
+if [[ -n "${TEST_SHARD_STATUS_FILE:-}" ]] && grep -q '^INSTRUMENTATION_STATUS: gtestShardStatus=supported' <<<"$output"; then
+  touch "$TEST_SHARD_STATUS_FILE"
+fi
+
+if [[ "$coverage" == true ]]; then
+  coverage_output="${TEST_UNDECLARED_OUTPUTS_DIR:-$test_tmpdir}/coverage.ec"
+  if "${adb_cmd[@]}" exec-out run-as "$coverage_app_id" cat "$coverage_device_file" >"$coverage_output" \
+    && [[ -s "$coverage_output" ]]; then
+    echo "Coverage data copied to ${coverage_output} ($(wc -c <"$coverage_output") bytes)."
+  else
+    echo "Warning: no coverage data at ${coverage_device_file}." >&2
+    rm -f "$coverage_output"
+  fi
+fi
 
 if [[ "$instrumentation_status" -ne 0 ]]; then
   echo "$output"
@@ -474,7 +510,7 @@ if ! awk '
   /^INSTRUMENTATION_STATUS_CODE:/ {
     if ($0 ~ /^INSTRUMENTATION_STATUS_CODE: 0[[:space:]]*$/) {
       test_completed = 1
-    } else if ($0 !~ /^INSTRUMENTATION_STATUS_CODE: (1|-3|-4)[[:space:]]*$/) {
+    } else if ($0 !~ /^INSTRUMENTATION_STATUS_CODE: (1|2|-3|-4)[[:space:]]*$/) {
       failed = 1
     }
   }

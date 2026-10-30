@@ -7,7 +7,7 @@ load(":constants.bzl", "TAG_ANDROID", "TAG_ANDROID_EMULATOR")
 load(":test_utils.bzl", "prepare_assets")
 load("@rules_android//android:rules.bzl", "android_binary")
 
-def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, skip_packaging_deps_runfiles, defines, local_defines, deploy_resources, size, timeout, target_compatible_with):
+def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, args, tags, data, skip_packaging_deps_runfiles, defines, local_defines, deploy_resources, size, timeout, shard_count, target_compatible_with):
     # Always use the same package name, as this makes it easier to monitor test runs with ADB and it's not
     # possible to run multiple tests simultaneously anyway (they would conflict on the device).
     package_name = "com.example.testrunner"
@@ -103,6 +103,7 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
         tags = tags + [TAG_ANDROID, "exclusive", "no-remote-exec"],  # need to be exclusive to prevent parallel invocation on the same device
         size = size,
         timeout = timeout,
+        shard_count = shard_count,
         target_compatible_with = target_compatible_with,
     )
 
@@ -118,6 +119,7 @@ def _android_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts,
         }),
         tags = tags + [TAG_ANDROID_EMULATOR, "cpu:2"],  # emulators require 2 CPU cores to run, so we reserve them to prevent overcommit
         test_app = native.package_relative_label(":" + name + "-test-app"),
+        shard_count = shard_count,
     )
 
 
@@ -192,6 +194,10 @@ android_mobile_test = macro(
             default = "moderate",
             doc = "Timeout for the test: short, moderate, long, or eternal.",
             configurable = False
+        ),
+        "shard_count": attr.int(
+            default = 0,
+            doc = "Number of test shards; 0 disables sharding.",
         ),
         "target_compatible_with": attr.label_list(
             default = [],

@@ -1,11 +1,12 @@
-load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
-load("@emsdk//emscripten_toolchain:wasm_rules.bzl", "wasm_cc_binary")
-load(":test_utils.bzl", "prepare_assets")
 load("//macros/flags:flags.bzl", "resolved_flags_select_dicts")
-load(":wasm_mobile_binary.bzl", "wasm_mobile_binary")
 load("//test-support/wasm-test/posluznik-test:posluznik_test.bzl", "posluznik_test")
+load(":test_utils.bzl", "prepare_assets")
+load(":wasm_mobile_binary.bzl", "wasm_mobile_binary")
+load("@emsdk//emscripten_toolchain:wasm_rules.bzl", "wasm_cc_binary")
+load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 
-def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, threads, simd, args, tags, data, skip_packaging_deps_runfiles, defines, local_defines, size, timeout, target_compatible_with):
+def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts, deps, threads, simd, args, tags, data, skip_packaging_deps_runfiles, defines, local_defines, size, timeout, shard_count, target_compatible_with):
+    sharding_js = Label("//test-support/wasm-test/posluznik-test:sharding.js")
     wasm_mobile_binary(
         name = name + "-bin",
         srcs = srcs,
@@ -18,7 +19,11 @@ def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts,
         copts = copts,
         conlyopts = conlyopts,
         cxxopts = cxxopts,
-        linkopts = linkopts,
+        linkopts = linkopts + [
+            "--pre-js",
+            "$(execpath %s)" % sharding_js,
+        ],
+        additional_linker_inputs = [sharding_js],
         deps = deps + [
             Label("@googletest//:gtest_main"),
         ],
@@ -46,6 +51,7 @@ def _wasm_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, linkopts,
         args = args,
         size = size,
         timeout = timeout,
+        shard_count = shard_count,
         target_compatible_with = target_compatible_with,
     )
 
@@ -118,12 +124,16 @@ wasm_test = macro(
         "size": attr.string(
             default = "medium",
             doc = "Size of the test: small, medium, large, or enormous.",
-            configurable = False
+            configurable = False,
         ),
         "timeout": attr.string(
             default = "moderate",
             doc = "Timeout for the test: short, moderate, long, or eternal.",
-            configurable = False
+            configurable = False,
+        ),
+        "shard_count": attr.int(
+            default = 0,
+            doc = "Number of test shards; 0 disables sharding",
         ),
         "target_compatible_with": attr.label_list(
             default = [],

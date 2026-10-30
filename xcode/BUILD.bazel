@@ -112,6 +112,14 @@ xcode_version(
     default_macos_sdk_version = "27.0",
 )
 
+xcode_version(
+    name = "version27_1_0_27A9275",
+    version = "27.1.0.27A9275",
+    aliases = ["27.1.0.27A9275", "27.1", "27.1.0", "27A9275"],
+    default_ios_sdk_version = "27.1",
+    default_macos_sdk_version = "27.0",
+)
+
 available_xcodes(
     name = "available_xcodes",
     versions = [
@@ -121,8 +129,9 @@ available_xcodes(
         ":version26_5_0_17F42",
         ":version26_6_0_17F113",
         ":version27_0_0_27A266a",
+        ":version27_1_0_27A9275",
     ],
-    default = ":version27_0_0_27A266a",
+    default = ":version27_1_0_27A9275",
 )
 
 xcode_config(

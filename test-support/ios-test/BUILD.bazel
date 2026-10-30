@@ -2,7 +2,18 @@ load("@rules_apple//apple:apple.bzl", "local_provisioning_profile")
 load("@rules_apple//apple/testing/default_runner:ios_test_runner.bzl", "ios_test_runner")
 load("@rules_apple//apple/testing/default_runner:ios_xctestrun_runner.bzl", "ios_xctestrun_runner")
 
+load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
+
 load("@rules_xcodeproj//xcodeproj:xcode_provisioning_profile.bzl", "xcode_provisioning_profile")
+
+# The runner expands these expressions after Bazel sets the shard coordinates.
+# Keep them out of ios_unit_test.env, which also changes Bazel's test-action environment.
+_SHARD_ENVIRONMENT = {
+    "TEST_TOTAL_SHARDS": "${TEST_TOTAL_SHARDS:-1}",
+    "TEST_SHARD_INDEX": "${TEST_SHARD_INDEX:-0}",
+    "GTEST_TOTAL_SHARDS": "${TEST_TOTAL_SHARDS:-1}",
+    "GTEST_SHARD_INDEX": "${TEST_SHARD_INDEX:-0}",
+}
 
 local_provisioning_profile(
     name = "provisioning_profile",
@@ -51,6 +62,14 @@ ios_xctestrun_runner(
     name = "ios_simulator_test_runner",
     device_type = "iPhone 17",
     os_version = "27.0",
+    pre_action = ":shard_status",
     reuse_simulator = True,
+    test_environment = _SHARD_ENVIRONMENT,
     visibility = ["//visibility:public"],
+)
+
+sh_binary(
+    name = "shard_status",
+    srcs = ["shard_status.sh"],
+    use_bash_launcher = True,
 )
