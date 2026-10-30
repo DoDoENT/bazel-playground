@@ -22,7 +22,7 @@ use_repo(host_platform, "host_platform")
 
 # Apple rules begin
 
-bazel_dep(name = "rules_apple", version = "5.3.1")
+bazel_dep(name = "rules_apple", version = "5.4.0")
 bazel_dep(name = "rules_swift", version = "4.2.2")
 bazel_dep(name = "rules_xcodeproj", version = "4.1.0")
 
@@ -32,7 +32,7 @@ bazel_dep(name = "rules_xcodeproj", version = "4.1.0")
 
 # 0.8.26 breaks macOS nodeps shared-library links; keep the previous version until fixed.
 # https://github.com/hermeticbuild/hermetic-llvm/issues/893
-bazel_dep(name = "llvm", version = "0.8.25")
+bazel_dep(name = "llvm", version = "0.8.26")
 
 # The hermetic macOS SDK is intentionally minimal. OpenCV's Cocoa highgui and
 # AVFoundation backends include umbrella headers with a broad framework
