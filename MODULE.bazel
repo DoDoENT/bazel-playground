@@ -22,7 +22,7 @@ use_repo(host_platform, "host_platform")
 
 # Apple rules begin
 
-bazel_dep(name = "rules_apple", version = "5.3.1")
+bazel_dep(name = "rules_apple", version = "5.4.0")
 bazel_dep(name = "rules_swift", version = "4.2.2")
 bazel_dep(name = "rules_xcodeproj", version = "4.1.0")
 
@@ -133,7 +133,7 @@ use_repo(pip, "coverage_pip_deps")
 
 # Android rules begin
 bazel_dep(name = "hermetic_android_toolchains", version = "0.5.0", dev_dependency = True)
-bazel_dep(name = "rules_android", version = "0.8.0", dev_dependency = True)
+bazel_dep(name = "rules_android", version = "0.8.1", dev_dependency = True)
 bazel_dep(name = "rules_android_ndk", version = "0.1.5", dev_dependency = True)
 
 # Needed to resolve conflict between gazelle and rules_android
