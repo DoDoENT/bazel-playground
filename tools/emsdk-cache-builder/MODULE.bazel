@@ -1,7 +1,7 @@
 module(name = "emsdk-cache-builder")
 
 bazel_dep(name = "rules_cc", version = "0.2.28")
-bazel_dep(name = "emsdk", version = "6.0.13")
+bazel_dep(name = "emsdk", version = "7.0.0")
 
 emscripten_cache = use_extension(
     "@emsdk//:emscripten_cache.bzl",
@@ -31,6 +31,8 @@ emscripten_cache.targets(targets = [
     "libemmalloc-mt-debug",
     "libemmalloc",
     "libemmalloc-debug",
+    "libemcc",
+    "libemcc-mt",
     "libfetch-mt",
     "libfetch",
     "libGL-getprocaddr",
