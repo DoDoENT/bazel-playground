@@ -138,6 +138,9 @@ common:linux --@opencv//:gtk3=@ubuntu-gtk-deps//:gtk3 --@opencv//:with_gtk3=True
 
 common:linux_haswell --platforms=//platforms/linux:haswell_x86_64 --cpu=k8 --output_groups=-dsyms --noapple_generate_dsym
 common:linux_generic --platforms=//platforms/linux:x86_64 --cpu=k8 --output_groups=-dsyms --noapple_generate_dsym
+common:linux_arm64 --platforms=//platforms/linux:arm64 --cpu=arm64 --output_groups=-dsyms --noapple_generate_dsym
+
+common:macos_arm64 --platforms=//platforms/macos:arm64 --cpu=arm64 --apple_generate_dsym --output_groups=+dsyms
 
 
 common:rules_xcodeproj --config=no_sanitizers
@@ -148,6 +151,8 @@ common:xcode_cache_warming --output_groups=compiles,resources
 common:remote --noremote_local_fallback --spawn_strategy=remote
 common:remote_linux_haswell --config=remote --config=linux_haswell
 common:remote_linux_generic --config=remote --config=linux_generic
+common:remote_linux_arm64 --config=remote --config=linux_arm64
+common:remote_macos --config=remote --config=macos_arm64
 
 # Special flags for CI
 # note - avoid using local disk cache in CI - it's not needed. Bazel's internal cache (~/.cache/bazel) and remote cache are sufficient.

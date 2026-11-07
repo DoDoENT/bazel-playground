@@ -56,7 +56,7 @@ def _ios_mobile_test_impl(name, visibility, srcs, copts, conlyopts, cxxopts, lin
             "TEST_ARGS": " ".join(args),
             "TEST_ARGC": str(len(args)),
         },
-        minimum_os_version = "15.0",
+        minimum_os_version = "17.0",
         provisioning_profile = select({
             Label("//test-support/ios-test:building_for_device"): Label("//test-support/ios-test:xcode_profile"),
             Label("//conditions:default"): None

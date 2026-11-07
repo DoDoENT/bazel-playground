@@ -7,16 +7,18 @@ define_test_suites(
 )
 
 mobile_test(
-    name = "image-manipulation-test",
-    srcs = [
-        "image-manipulation.cc",
-    ],
-    data = [
-        "test-data/image.png",
-        "test-data/expected-result.png",
-    ],
+    name = "opencv-test",
+    srcs = glob([
+        "tests/*.cc",
+        "tests/*.hh",
+    ]),
+    data = glob([
+        "test-data/*.png",
+        "test-data/*.onnx",
+    ]),
     deps = [
         "@opencv//:imgcodecs",
+        "@opencv//:calib",
     ],
     android_deploy_resources = True,
     wasm_basic = False,  # OpenCV 5.0.0 fails to build without WASM SIMD
