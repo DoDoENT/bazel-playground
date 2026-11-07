@@ -22,7 +22,6 @@ mobile_test(
     ],
     android_deploy_resources = True,
     wasm_basic = False,  # OpenCV 5.0.0 fails to build without WASM SIMD
-    shard_count = 6,
 )
 
 mobile_binary(
