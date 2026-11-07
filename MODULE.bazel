@@ -4,8 +4,8 @@ module(name = "playground")
 
 # Note: This needs to be before rules_cc in order to correctly configure the C++ toolchain.
 # See here why: https://www.smileykeith.com/2025/09/21/understanding-apple-debug-info/
-bazel_dep(name = "apple_support", version = "2.11.0")
-bazel_dep(name = "rules_cc", version = "0.2.27")
+bazel_dep(name = "apple_support", version = "2.12.0")
+bazel_dep(name = "rules_cc", version = "0.2.28")
 bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
 bazel_dep(name = "bazel_skylib", version = "1.9.2")
 bazel_dep(name = "bazelrc-preset.bzl", version = "1.10.0")
@@ -32,7 +32,7 @@ bazel_dep(name = "rules_xcodeproj", version = "4.1.0")
 
 # 0.8.26 breaks macOS nodeps shared-library links; keep the previous version until fixed.
 # https://github.com/hermeticbuild/hermetic-llvm/issues/893
-bazel_dep(name = "llvm", version = "0.8.25")
+bazel_dep(name = "llvm", version = "0.8.26")
 
 # The hermetic macOS SDK is intentionally minimal. OpenCV's Cocoa highgui and
 # AVFoundation backends include umbrella headers with a broad framework
