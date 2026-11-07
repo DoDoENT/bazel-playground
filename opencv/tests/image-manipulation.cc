@@ -1,26 +1,10 @@
-#include <Paths.h>
+#include "ocv-test-helper.hh"
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/imgcodecs.hpp>
 
 #include <gtest/gtest.h>
-
-#ifdef __ANDROID__
-#include "PathProvider.hpp"
-#endif
-
-namespace 
-{
-    std::string resolveImagePath( std::string_view filename )
-    {
-#ifdef __ANDROID__
-        return AndroidPaths::internalStoragePath() + '/' + resolveTestDataPath( filename );
-#else 
-        return resolveTestDataPath( filename );
-#endif
-    }
-}
 
 TEST(OpenCVTest, resizeAndGrayscale)
 {
