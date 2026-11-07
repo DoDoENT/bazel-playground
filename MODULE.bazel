@@ -282,7 +282,7 @@ bazel_dep(name = "opencv", version = "5.0.0.bcr.9")
 git_override(
     module_name = "opencv",
     commit = "2ecb9aed828465726ccd643039b9a755f6a928fb",
-    remote = "git@github.com:DoDoENT/opencv.git",
+    remote = "https://github.com/DoDoENT/opencv.git",
 )
 
 http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
