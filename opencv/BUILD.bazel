@@ -7,7 +7,7 @@ define_test_suites(
 )
 
 mobile_test(
-    name = "image-manipulation-test",
+    name = "opencv-test",
     srcs = glob([
         "tests/*.cc",
         "tests/*.hh",
