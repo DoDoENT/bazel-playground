@@ -59,7 +59,7 @@ def _ios_mobile_binary_impl(name, visibility, args, skip_packaging_deps_runfiles
         deps = [
             native.package_relative_label(":" + name + "-srcs"),
         ],
-        minimum_os_version = "15.0",
+        minimum_os_version = "17.0",
         provisioning_profile = select({
             Label("//test-support/ios-test:building_for_device"): Label("//test-support/ios-test:xcode_profile"),
             Label("//conditions:default"): None
