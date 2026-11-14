@@ -1,13 +1,13 @@
 load("@rules_cc//cc:cc_import.bzl", "cc_import")
-load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("@rules_cc//cc:cc_shared_library.bzl", "cc_shared_library")
 
 package(default_visibility = ["//visibility:public"])
 
 cc_import(
     name = "gtk3",
     shared_library = select({
-        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libgtk-3.so",
-        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libgtk-3.so",
+        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libgtk-3.so.0",
+        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libgtk-3.so.0",
     }),
     hdrs = glob(["usr/include/gtk-3.0/**/*.h"]),
     strip_include_prefix = "usr/include/gtk-3.0",
@@ -15,14 +15,17 @@ cc_import(
     deps = [
         ":gdk3",
         ":atk",
+        ":atk-bridge",
+        ":cairo-gobject",
+        ":gmodule",
     ],
 )
 
 cc_import(
     name = "gdk3",
     shared_library = select({
-        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libgdk-3.so",
-        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libgdk-3.so",
+        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libgdk-3.so.0",
+        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libgdk-3.so.0",
     }),
     target_compatible_with = ["@platforms//os:linux"],
     deps = [
@@ -36,21 +39,32 @@ cc_import(
 cc_import(
     name = "pangocairo",
     shared_library = select({
-        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libpangocairo-1.0.so",
-        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libpangocairo-1.0.so",
+        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libpangocairo-1.0.so.0",
+        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libpangocairo-1.0.so.0",
     }),
     target_compatible_with = ["@platforms//os:linux"],
     deps = [
         ":pango",
+        ":pangoft2",
         ":cairo",
     ],
 )
 
 cc_import(
+    name = "pangoft2",
+    shared_library = select({
+        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libpangoft2-1.0.so.0",
+        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libpangoft2-1.0.so.0",
+    }),
+    target_compatible_with = ["@platforms//os:linux"],
+    deps = [":pango"],
+)
+
+cc_import(
     name = "pango",
     shared_library = select({
-        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libpango-1.0.so",
-        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libpango-1.0.so",
+        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libpango-1.0.so.0",
+        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libpango-1.0.so.0",
     }),
     hdrs = glob(["usr/include/pango-1.0/**/*.h"]),
     strip_include_prefix = "usr/include/pango-1.0",
@@ -59,14 +73,15 @@ cc_import(
         ":harfbuzz",
         ":glib",
         ":gobject",
+        ":gthread",
     ],
 )
 
 cc_import(
     name = "harfbuzz",
     shared_library = select({
-        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libharfbuzz.so",
-        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libharfbuzz.so",
+        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libharfbuzz.so.0",
+        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libharfbuzz.so.0",
     }),
     hdrs = glob(["usr/include/harfbuzz/**/*.h"]),
     strip_include_prefix = "usr/include/harfbuzz",
@@ -79,8 +94,8 @@ cc_import(
 cc_import(
     name = "atk",
     shared_library = select({
-        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libatk-1.0.so",
-        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libatk-1.0.so",
+        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libatk-1.0.so.0",
+        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libatk-1.0.so.0",
     }),
     hdrs = glob(["usr/include/atk-1.0/**/*.h"]),
     strip_include_prefix = "usr/include/atk-1.0",
@@ -91,10 +106,34 @@ cc_import(
 )
 
 cc_import(
+    name = "atk-bridge",
+    shared_library = select({
+        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libatk-bridge-2.0.so.0",
+        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libatk-bridge-2.0.so.0",
+    }),
+    target_compatible_with = ["@platforms//os:linux"],
+    deps = [
+        ":atk",
+        ":atspi",
+        ":gmodule",
+    ],
+)
+
+cc_import(
+    name = "atspi",
+    shared_library = select({
+        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libatspi.so.0",
+        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libatspi.so.0",
+    }),
+    target_compatible_with = ["@platforms//os:linux"],
+    deps = [":gobject"],
+)
+
+cc_import(
     name = "cairo-gobject",
     shared_library = select({
-        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libcairo-gobject.so",
-        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libcairo-gobject.so",
+        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libcairo-gobject.so.2",
+        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libcairo-gobject.so.2",
     }),
     target_compatible_with = ["@platforms//os:linux"],
     deps = [
@@ -106,8 +145,8 @@ cc_import(
 cc_import(
     name = "cairo",
     shared_library = select({
-        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libcairo.so",
-        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libcairo.so",
+        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libcairo.so.2",
+        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libcairo.so.2",
     }),
     hdrs = glob(["usr/include/cairo/**/*.h"]),
     strip_include_prefix = "usr/include/cairo",
@@ -121,8 +160,8 @@ cc_import(
 cc_import(
     name = "gdk_pixbuf",
     shared_library = select({
-        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so",
-        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libgdk_pixbuf-2.0.so",
+        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libgdk_pixbuf-2.0.so.0",
+        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libgdk_pixbuf-2.0.so.0",
     }),
     hdrs = glob(["usr/include/gdk-pixbuf-2.0/**/*.h"]),
     strip_include_prefix = "usr/include/gdk-pixbuf-2.0",
@@ -133,56 +172,84 @@ cc_import(
     ],
 )
 
-cc_import(
+alias(
     name = "gio",
-    shared_library = select({
-        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libgio-2.0.so",
-        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libgio-2.0.so",
-    }),
-    hdrs = glob(["usr/include/gio-unix-2.0/**/*.h"]),
-    strip_include_prefix = "usr/include/gio-unix-2.0",
-    target_compatible_with = ["@platforms//os:linux"],
-    deps = [
-        ":glib",
-        ":gobject",
-    ],
+    actual = "@glib//gio",
 )
 
-cc_import(
+alias(
     name = "gobject",
-    shared_library = select({
-        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libgobject-2.0.so",
-        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libgobject-2.0.so",
-    }),
-    target_compatible_with = ["@platforms//os:linux"],
-    deps = [
-        ":glib",
-    ],
+    actual = "@glib//gobject",
 )
 
-cc_library(
-    name = "glibconfig-headers",
-    hdrs = select({
-        "@platforms//cpu:x86_64": glob(["usr/lib/x86_64-linux-gnu/glib-2.0/include/**/*.h"], allow_empty = True),
-        "@platforms//cpu:aarch64": glob(["usr/lib/aarch64-linux-gnu/glib-2.0/include/**/*.h"], allow_empty = True),
-    }),
-    strip_include_prefix = select({
-        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/glib-2.0/include",
-        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/glib-2.0/include",
-    }),
-    target_compatible_with = ["@platforms//os:linux"],
-)
-
-cc_import(
+alias(
     name = "glib",
+    actual = "@glib//glib",
+)
+
+alias(
+    name = "gmodule",
+    actual = "@glib//gmodule",
+)
+
+# GLib moved threading into libglib in 2.32. Old Pango still names this
+# compatibility DSO, which forwards to the shared GLib built below.
+cc_import(
+    name = "gthread",
     shared_library = select({
-        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libglib-2.0.so",
-        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libglib-2.0.so",
+        "@platforms//cpu:x86_64": "usr/lib/x86_64-linux-gnu/libgthread-2.0.so.0",
+        "@platforms//cpu:aarch64": "usr/lib/aarch64-linux-gnu/libgthread-2.0.so.0",
     }),
-    hdrs = glob(["usr/include/glib-2.0/**/*.h"]),
-    strip_include_prefix = "usr/include/glib-2.0",
     target_compatible_with = ["@platforms//os:linux"],
-    deps = [
-        ":glibconfig-headers",
+    deps = [":glib"],
+)
+
+# Keep BCR's GLib targets unmodified. The final executable uses these through
+# dynamic_deps so HarfBuzz and the prebuilt GTK stack share the same GLib.
+cc_shared_library(
+    name = "glib_shared",
+    deps = ["@glib//glib"],
+    shared_lib_name = "libglib-2.0.so.0",
+    target_compatible_with = ["@platforms//os:linux"],
+    user_link_flags = ["-Wl,-soname,libglib-2.0.so.0"],
+)
+
+cc_shared_library(
+    name = "gobject_shared",
+    deps = ["@glib//gobject"],
+    dynamic_deps = [":glib_shared"],
+    shared_lib_name = "libgobject-2.0.so.0",
+    target_compatible_with = ["@platforms//os:linux"],
+    user_link_flags = ["-Wl,-soname,libgobject-2.0.so.0"],
+)
+
+cc_shared_library(
+    name = "gmodule_shared",
+    deps = ["@glib//gmodule"],
+    dynamic_deps = [":glib_shared"],
+    shared_lib_name = "libgmodule-2.0.so.0",
+    target_compatible_with = ["@platforms//os:linux"],
+    user_link_flags = ["-Wl,-soname,libgmodule-2.0.so.0"],
+)
+
+cc_shared_library(
+    name = "zlib_shared",
+    deps = ["@zlib//:zlib"],
+    shared_lib_name = "libz.so.1",
+    target_compatible_with = ["@platforms//os:linux"],
+    user_link_flags = ["-Wl,-soname,libz.so.1"],
+)
+
+cc_shared_library(
+    name = "gio_shared",
+    deps = ["@glib//gio"],
+    dynamic_deps = [
+        ":glib_shared",
+        ":gobject_shared",
+        ":gmodule_shared",
+        ":zlib_shared",
     ],
+    shared_lib_name = "libgio-2.0.so.0",
+    target_compatible_with = ["@platforms//os:linux"],
+    user_link_flags = ["-Wl,-soname,libgio-2.0.so.0"],
 )

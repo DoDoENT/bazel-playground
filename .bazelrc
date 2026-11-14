@@ -132,6 +132,8 @@ common:ios_simulator --config=ios --ios_multi_cpus=sim_arm64,x86_64
 common:wasm --features=optimized_for_size
 
 common:linux --@opencv//:gtk3=@ubuntu-gtk-deps//:gtk3 --@opencv//:with_gtk3=True
+# GIO and OpenCV share zlib through a DSO; its C API must be exported.
+common:linux --per_file_copt="external/zlib[+]/.*@-fvisibility=default"
 
 #common:linux --@llvm//toolchain:bootstrap_stage=stage1_from_source
 # common:linux --@llvm//toolchain:source=bootstrapped

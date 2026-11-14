@@ -34,6 +34,10 @@ mobile_binary(
         "@opencv//:highgui",
     ],
     host_only = True,
+    dynamic_deps = select({
+        "@platforms//os:linux": ["@ubuntu-gtk-deps//:gio_shared"],
+        "//conditions:default": [],
+    }),
     visibility = ["//visibility:public"],
 )
 
@@ -46,5 +50,9 @@ mobile_binary(
         "@opencv//:highgui",
     ],
     host_only = True,
+    dynamic_deps = select({
+        "@platforms//os:linux": ["@ubuntu-gtk-deps//:gio_shared"],
+        "//conditions:default": [],
+    }),
     visibility = ["//visibility:public"],
 )
