@@ -14,7 +14,7 @@ def _calculate_android_flags():
         "-mllvm",
         "-polly",
     ]
-    _local_android_flags["linker_common_flags"] = [
+    _local_android_flags["linker_common_flags"] = _local_android_flags["linker_common_flags"] + [
         "-Wl,--no-undefined",
         "-Wl,-z,relro",
         "-Wl,-z,now",
@@ -25,7 +25,7 @@ def _calculate_android_flags():
     ]
 
     _local_android_flags["linker_lto"] = _local_android_flags["linker_lto"] + [
-        "-Wl,--thinlto-jobs=4",
+        "-Wl,--thinlto-jobs=1",
     ]
     return _local_android_flags
 

@@ -28,7 +28,7 @@ def _calculate_linux_clang_flags():
     ]
 
     _linux_clang_flags["linker_lto"] = _linux_clang_flags["linker_lto"] + [
-        "-Wl,--thinlto-jobs=4",
+        "-Wl,--thinlto-jobs=1",
     ]
 
     return _linux_clang_flags

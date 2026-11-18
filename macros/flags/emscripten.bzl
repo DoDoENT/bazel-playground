@@ -35,7 +35,7 @@ def _calculate_emscripten_flags():
         "--closure 1",
         "-sIGNORE_CLOSURE_COMPILER_ERRORS=1",
     ]
-    _local_emscripten_flags["linker_common_flags"] = [
+    _local_emscripten_flags["linker_common_flags"] = _local_emscripten_flags["linker_common_flags"] + [
         "-sMALLOC=emmalloc",
         "-Wno-limited-postlink-optimizations",
         # "-s STRICT=1",

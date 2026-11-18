@@ -52,7 +52,9 @@ common --incompatible_enable_proto_toolchain_resolution --@protobuf//bazel/toolc
 common:local --remote_cache= --remote_executor= --experimental_remote_downloader=
 
 # Build flags
-common --copt=-g --strip=never --verbose_failures --copt=-fvisibility=hidden --cxxopt=-fvisibility-inlines-hidden
+common --verbose_failures --copt=-fvisibility=hidden --cxxopt=-fvisibility-inlines-hidden
+
+common:dbg_sym --copt=-g --strip=never
 
 # ignore warnings for exernal libs
 common --per_file_copt="external/.*@-w"
