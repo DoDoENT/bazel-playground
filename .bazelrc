@@ -70,6 +70,21 @@ common --java_runtime_version=remotejdk_21 --tool_java_runtime_version=remotejdk
 common --features=asan --features=ubsan
 common --@llvm//config:asan=True --@llvm//config:ubsan=True
 
+# Optimize everything for size in fastbuild (the default mode), including code
+# from external repositories. Unlike --copt=-Oz, this is a toolchain setting
+# bound to --compilation_mode=fastbuild, so dbg (-O0) and opt are unaffected.
+# Note: OpenCV's own BUILD appends -O3 after the toolchain flags, so OpenCV
+# code stays at -O3; this mainly fixes deps that were compiled at -O0.
+common --@llvm//config:fastbuild_optimization_mode=Oz
+
+# Sanitize only the first-party code; skip UBSan instrumentation in external
+# repositories. Last-wins flag ordering makes `-fno-sanitize=undefined` override
+# the toolchain's `-fsanitize=undefined` for external files only, removing the
+# per-check instrumentation (and its static metadata) from 3rd-party deps.
+# Do NOT use the same trick for ASan: uninstrumented code writing into
+# instrumented globals' redzones goes unchecked.
+common --per_file_copt="external/.*@-fno-sanitize=undefined"
+
 # disabled as UBSAN compilation causes clang to allocate 30GB of RAM during the build, crashing the system
 # also, ASAN does not work with SAFE_HEAP
 # common --features=wasm_asan --features=wasm_ubsan
@@ -91,17 +106,6 @@ build:macos --apple_generate_dsym --output_groups=+dsyms
 
 common:no_sanitizers --features=-asan --features=-ubsan --features=-wasm_asan --features=-wasm_ubsan
 common:no_sanitizers --@llvm//config:asan=False --@llvm//config:ubsan=False
-
-# Sanitize only the first-party code; skip UBSan instrumentation in external
-# repositories. Last-wins flag ordering makes `-fno-sanitize=undefined` override
-# the toolchain's `-fsanitize=undefined` for external files only, removing the
-# per-check instrumentation (and its static metadata) from 3rd-party deps.
-# Do NOT use the same trick for ASan: uninstrumented code writing into
-# instrumented globals' redzones goes unchecked.
-# Measured on //opencv:opencv-test (fastbuild): 190MB -> 120MB
-# (vs. 48MB with --config=no_sanitizers; ASan instrumentation is kept everywhere).
-#     (2026-11-18) (Nenad Mikša)
-common:ubsan_first_party --per_file_copt="external/.*@-fno-sanitize=undefined"
 
 # Need to provide both --features=thin_lto and --copt=-flto=thin for thin LTO to work properly as some toolchains (e.g. rules_apple, emscripten) don't propagate the --features=thin_lto flag to the C++ toolchain, which is required for thin LTO to work properly.
 common:release --config=no_sanitizers --compilation_mode=opt --copt=-Oz --copt=-flto=thin --linkopt=-flto=thin --features=thin_lto
