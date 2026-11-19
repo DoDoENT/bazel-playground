@@ -65,7 +65,6 @@ _common_copts = [
     flags_dicts["compiler_common_flags"],
     flags_dicts["compiler_default_warnings"],
     flags_dicts["compiler_warnings_as_errors"],
-    flags_dicts["compiler_debug_symbols"],
     selects.with_or_dict({
         Label(":debug"): flags_dicts["compiler_debug_flags"],
         (Label(":devRelease"), Label(":release")): flags_dicts["compiler_release_flags"],

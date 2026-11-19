@@ -38,6 +38,9 @@ def _calculate_clang_flags():
     _local_clang_flags["linker_coverage"] = [
         "-fprofile-instr-generate",
     ]
+    _local_clang_flags["linker_common_flags"] = [
+        "-Wl,--threads=1",
+    ]
 
     return _local_clang_flags
 

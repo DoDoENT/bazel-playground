@@ -52,7 +52,9 @@ common --incompatible_enable_proto_toolchain_resolution --@protobuf//bazel/toolc
 common:local --remote_cache= --remote_executor= --experimental_remote_downloader=
 
 # Build flags
-common --copt=-g --strip=never --verbose_failures --copt=-fvisibility=hidden --cxxopt=-fvisibility-inlines-hidden
+common --verbose_failures --copt=-fvisibility=hidden --cxxopt=-fvisibility-inlines-hidden
+
+common:dbg_sym --copt=-g --strip=never
 
 # ignore warnings for exernal libs
 common --per_file_copt="external/.*@-w"
@@ -67,6 +69,21 @@ common --java_runtime_version=remotejdk_21 --tool_java_runtime_version=remotejdk
 # Build features
 common --features=asan --features=ubsan
 common --@llvm//config:asan=True --@llvm//config:ubsan=True
+
+# Optimize everything for size in fastbuild (the default mode), including code
+# from external repositories. Unlike --copt=-Oz, this is a toolchain setting
+# bound to --compilation_mode=fastbuild, so dbg (-O0) and opt are unaffected.
+# Note: OpenCV's own BUILD appends -O3 after the toolchain flags, so OpenCV
+# code stays at -O3; this mainly fixes deps that were compiled at -O0.
+common --@llvm//config:fastbuild_optimization_mode=Oz
+
+# Sanitize only the first-party code; skip UBSan instrumentation in external
+# repositories. Last-wins flag ordering makes `-fno-sanitize=undefined` override
+# the toolchain's `-fsanitize=undefined` for external files only, removing the
+# per-check instrumentation (and its static metadata) from 3rd-party deps.
+# Do NOT use the same trick for ASan: uninstrumented code writing into
+# instrumented globals' redzones goes unchecked.
+common --per_file_copt="external/.*@-fno-sanitize=undefined"
 
 # disabled as UBSAN compilation causes clang to allocate 30GB of RAM during the build, crashing the system
 # also, ASAN does not work with SAFE_HEAP
