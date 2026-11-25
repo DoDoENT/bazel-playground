@@ -1,0 +1,70 @@
+diff --git a/emscripten_build_file.bzl b/emscripten_build_file.bzl
+index afea81b..8c810a8 100644
+--- a/emscripten_build_file.bzl
++++ b/emscripten_build_file.bzl
+@@ -78,6 +78,11 @@ filegroup(
+             "emscripten/node_modules/**",
+             "emscripten/src/**",
+         ],
++    ) + glob(
++        # Bundled JS tools (compiler.mjs, acorn-optimizer.mjs, ...) used at
++        # link time. Only present in emscripten >= 7.0.1.
++        include = ["emscripten/dist/**"],
++        allow_empty = True,
+     ),
+ )
+ 
+diff --git a/emscripten_toolchain/default_config b/emscripten_toolchain/default_config
+index 8107fe4..63da338 100644
+--- a/emscripten_toolchain/default_config
++++ b/emscripten_toolchain/default_config
+@@ -5,12 +5,19 @@ ROOT_DIR = os.environ["ROOT_DIR"]
+ EMSCRIPTEN_ROOT = os.environ["EMSCRIPTEN"]
+ BINARYEN_ROOT = os.path.join(ROOT_DIR, os.environ["EM_BIN_PATH"])
+ LLVM_ROOT = os.path.join(BINARYEN_ROOT, "bin")
+-NODE_JS = os.path.join(ROOT_DIR, os.environ["NODE_JS_PATH"])
++# --preserve-symlinks{,-main} keep node from resolving the sandbox symlinks of
++# emscripten's JS tools (e.g. dist/compiler.mjs) to their real location outside
++# the sandbox, so that undeclared inputs fail in local sandboxed builds too.
++NODE_JS = [
++    os.path.join(ROOT_DIR, os.environ["NODE_JS_PATH"]),
++    "--preserve-symlinks",
++    "--preserve-symlinks-main",
++]
+ FROZEN_CACHE = True
+ 
+ # This works around an issue with Bazel RBE where the symlinks in node_modules/.bin
+ # are uploaded as the linked files, which means the cli.js cannot load its
+ # dependencies from the expected locations.
+ # See https://github.com/emscripten-core/emscripten/pull/16640 for more
+-CLOSURE_COMPILER = [NODE_JS, os.path.join(EMSCRIPTEN_ROOT, "node_modules",
++CLOSURE_COMPILER = NODE_JS + [os.path.join(EMSCRIPTEN_ROOT, "node_modules",
+                                           "google-closure-compiler", "cli.js")]
+diff --git a/emscripten_toolchain/env.bat b/emscripten_toolchain/env.bat
+index a2a1610..840f85b 100644
+--- a/emscripten_toolchain/env.bat
++++ b/emscripten_toolchain/env.bat
+@@ -5,3 +5,7 @@ if "%ROOT_DIR%"=="" set ROOT_DIR=%CD%
+ set EMSCRIPTEN=%ROOT_DIR%\%EM_BIN_PATH%\emscripten
+ set EM_CONFIG=%ROOT_DIR%\%EM_CONFIG_PATH%
+ set EMSDK_PYTHON=%ROOT_DIR%\%BAZEL_PYTHON_RELPATH%
++
++REM See env.sh: keep emscripten's Python imports inside the sandbox.
++set PYTHONSAFEPATH=1
++set PYTHONPATH=%EMSCRIPTEN%
+diff --git a/emscripten_toolchain/env.sh b/emscripten_toolchain/env.sh
+index e4e6a12..f7ef8b6 100755
+--- a/emscripten_toolchain/env.sh
++++ b/emscripten_toolchain/env.sh
+@@ -4,3 +4,11 @@ export ROOT_DIR=${EXT_BUILD_ROOT:-$(pwd -P)}
+ export EMSCRIPTEN=$ROOT_DIR/$EM_BIN_PATH/emscripten
+ export EM_CONFIG=$ROOT_DIR/$EM_CONFIG_PATH
+ export EMSDK_PYTHON=$ROOT_DIR/$BAZEL_PYTHON_RELPATH
++
++# Keep Python from resolving the sandbox symlink of the entry script (emcc.py,
++# em++.py, emar.py) when computing sys.path[0]. Otherwise emscripten's `tools`
++# package is imported from the real external repository directory, its root
++# (tools/utils.py:__rootpath__) points outside the sandbox and undeclared
++# toolchain inputs go unnoticed in local sandboxed builds. Requires Python 3.11+.
++export PYTHONSAFEPATH=1
++export PYTHONPATH=$EMSCRIPTEN
