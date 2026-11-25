@@ -235,9 +235,19 @@ maven.install(
 # Emscripten rules begin
 bazel_dep(name = "emsdk", version = "7.0.1")
 
+# TODO: remove this patch once emsdk with the fix for missing emscripten/dist linker inputs
+# (breaks remote execution since 7.0.1) and sandbox-escaping toolchain wrappers is released (expected in 7.0.2)
+single_version_override(
+    module_name = "emsdk",
+    patch_strip = 1,
+    patches = [
+        "//3rdparty:emsdk.patch",
+    ],
+)
+
 emscripten_deps = use_extension("@emsdk//:emscripten_deps.bzl", "emscripten_deps")
 emscripten_deps.config(
-    version = "7.0.0", # Must match the cache
+    version = "7.0.1", # Must match the cache
 )
 
 emscripten_cache = use_extension(
@@ -247,8 +257,8 @@ emscripten_cache = use_extension(
 
 # NOTE: See tools/emsdk-cache-builder/README.md for instructions on how to build emsdk cache tarball and upload it to the artifactory
 emscripten_cache.prebuilt_cache(
-    http_archive_url = "https://github.com/DoDoENT/bazel-playground/releases/download/emsdk-cache/emsdk-cache-7.0.0.tar.gz",
-    sha256 = "81bc25b3e6f0f80cc69d4e9bf127a367cd2c1a5e4f2749391fe1dd5e8f64683a",
+    http_archive_url = "https://github.com/DoDoENT/bazel-playground/releases/download/emsdk-cache/emsdk-cache-7.0.1.tar.gz",
+    sha256 = "15c9f530efc0ad737f531c87f5dec9d404e2f1f4b1a85a481c319949376d37a8",
     strip_prefix = "emsdk-cache",
 )
 
